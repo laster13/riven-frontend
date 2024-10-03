@@ -1,0 +1,27 @@
+{
+  "applications": [
+    {
+      "id": "2",
+      "label": "baikal"
+    }
+  ],
+  "dossiers": {
+    "on_item_type": [
+      "baikal"
+    ],
+    "authentification": {
+      "authappli": "basique",
+      "baikal": "basique"
+    },
+    "domaine": {
+      "baikal": "baikal"
+    }
+  },
+  "updaters": {
+    "plex": {
+      "token": "",
+      "login": "",
+      "password": ""
+    }
+  }
+}

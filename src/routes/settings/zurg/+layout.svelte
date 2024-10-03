@@ -1,31 +1,38 @@
 <script lang="ts">
-        import Header from '$lib/components/header.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Select from '$lib/components/ui/select';
 	import type { NavItem } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import clsx from 'clsx';
+	import Header from '$lib/components/header.svelte'; 
 
-    // Définir les sections principales de l'installation
-    const settingsItems: NavItem[] = [
+	const settingsItems: NavItem[] = [
+		{
+			name: 'test',
+			path: '/settings/test'
+		},
 		{
 			name: 'Installation Seedbox',
 			path: '/settings/seedbox'
 		},
 		{
-			name: 'Installation Riven',
-			path: '/settings/general'
+			name: 'Installation Zurg',
+			path: '/settings/zurg'
+		},
+		{
+			name: 'Applications',
+			path: '/settings/applications'
 		}
-
 	];
+
 </script>
 
+
 <svelte:head>
-    <title>Settings</title>
+	<title>Settings | Seedbox</title>
 </svelte:head>
 
-<Header />
 
 <div class="mt-16 flex w-full flex-col p-8 md:px-24 lg:px-32">
 	<Select.Root

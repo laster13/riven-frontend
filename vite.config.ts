@@ -6,6 +6,9 @@ export default defineConfig({
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
+        server: {
+          port: 3000, // Changez 3000 par le port que vous souhaitez utiliser
+        },
 	define: {
 		SUPERFORMS_LEGACY: true
 	}

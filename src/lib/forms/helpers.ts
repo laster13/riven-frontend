@@ -1,6 +1,329 @@
 import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import { z } from 'zod';
 
+
+// General Settings Zurg -----------------------------------------------------------------------------------
+export const zurgSettingsToGet: string[] = [
+	'downloaders',
+	'media',
+        'symlink'
+];
+
+export const zurgSettingsSchema = z.object({
+	library_path: z.string().min(1),
+	rclone_path: z.string().min(1),
+	realdebrid_enabled: z.boolean().default(false),
+	realdebrid_api_key: z.string().optional().default(''),
+	alldebrid_enabled: z.boolean().default(false),
+	alldebrid_api_key: z.string().optional().default(''),
+	media_enabled: z.boolean().default(false),
+	media_on_item_type: z.string().array().optional().default([]),
+
+});
+
+export type ZurgSettingsSchema = typeof zurgSettingsSchema;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function zurgSettingsToPass(data: any) {
+	return {
+		rclone_path: data.data.symlink.rclone_path,
+		library_path: data.data.symlink.library_path,
+		realdebrid_enabled: data.data.downloaders.real_debrid.enabled,
+		realdebrid_api_key: data.data.downloaders.real_debrid?.api_key,
+		alldebrid_enabled: data.data.downloaders.all_debrid.enabled,
+		alldebrid_api_key: data.data.downloaders.all_debrid?.api_key,
+		media_enabled: data.data.media.enabled,
+		media_on_item_type: data.data.media.on_item_type
+
+	};
+}
+
+export function zurgSettingsToSet(form: SuperValidated<Infer<ZurgSettingsSchema>>) {
+	return [
+		{
+			key: 'symlink',
+			value: {
+				rclone_path: form.data.rclone_path,
+				library_path: form.data.library_path
+			}
+		},
+		{
+			key: 'downloaders',
+			value: {
+				real_debrid: {
+					enabled: form.data.realdebrid_enabled,
+					api_key: form.data.realdebrid_api_key
+				},
+				all_debrid: {
+					enabled: form.data.alldebrid_enabled,
+					api_key: form.data.alldebrid_api_key
+				}
+			}
+		},
+		{
+			key: 'media',
+			value: {
+				enabled: form.data.media_enabled,
+				on_item_type: form.data.media_on_item_type
+			}
+		}
+	];
+}
+
+
+
+// Liste des paramètres à récupérer
+export const applicationsSettingsToGet: string[] = [
+    'authentification',
+    'applications',
+    'dossiers',
+    'domaine',
+    'adapters'
+];
+
+// Schéma de validation pour les paramètres d'application
+// Schéma de validation pour les paramètres d'application
+export const applicationsSettingsSchema = z.object({
+    id: z.union([z.number(), z.string()]).optional().default(0),
+    label: z.string().optional().default(''),
+    dossiers_on_item_type: z.array(z.object({
+        label: z.string()
+    })).optional().default([]),
+
+    authentification: z.record(z.string(), z.union([
+        z.literal("basique"),
+        z.literal("oauth"),
+        z.literal("authelia"),
+        z.literal("aucune")
+    ])).optional().default({}),
+
+    // Accepter un dictionnaire pour domaine, avec des chaînes comme valeurs
+    domaine: z.record(z.string(), z.string().nullable()).optional().default({}),
+    
+    // Ajout des champs plex_login et plex_password
+    plex_token: z.string().optional().default(''),  // `plex_token` est maintenant une chaîne
+    plex_login: z.string().optional().default(''),  // `plex_login` ajouté
+    plex_password: z.string().optional().default('')  // `plex_password` ajouté
+});
+
+export type ApplicationsSettingsSchema = Infer<typeof applicationsSettingsSchema>;
+
+// Fonction pour passer les données au formulaire
+export function applicationsSettingsToPass(data: any) {
+    // Log des données d'authentification avant traitement
+    console.log('Données d\'authentification avant traitement:', data?.data?.dossiers?.authentification);
+
+    let applications = data?.data?.applications || [];
+    // Log des applications
+    console.log('Applications extraites:', applications);
+
+    if (!Array.isArray(applications)) {
+        applications = applications ? [applications] : [];
+    }
+
+    if (applications.length === 0) {
+        console.log('Aucune application trouvée, utilisation des valeurs par défaut.');
+        return {
+            id: 0,
+            label: '',
+            domaine: {},  // Domaine sera un dictionnaire ici
+            dossiers_on_item_type: [],
+            authentification: {
+                authappli: "basique"
+            },
+            // Valeurs par défaut pour Plex
+            plex_token: '',  // Maintenant une chaîne vide par défaut
+            plex_login: '',  // Valeur par défaut pour plex_login
+            plex_password: ''  // Valeur par défaut pour plex_password
+        };
+    }
+
+    const selectedApplication = applications[0];
+    console.log('Application sélectionnée:', selectedApplication);
+
+    // Transforme les chaînes en objets si nécessaire
+    const dossiers_on_item_type = (data?.data?.dossiers?.on_item_type || []).map((item: string) => ({
+        label: item
+    }));
+    // Log des types d'items
+    console.log('Dossiers on item type:', dossiers_on_item_type);
+
+    // Récupérer les authentifications sans inclure `undefined` ni `null`
+    const authentification = dossiers_on_item_type.reduce((acc, item) => {
+        const authValue = data?.data?.dossiers?.authentification?.[item.label];
+        console.log(`Traitement de l'élément: ${item.label}, valeur actuelle: ${authValue}`);
+        acc[item.label] = authValue !== undefined && authValue !== null ? authValue : 'basique';
+        return acc;
+    }, {});
+
+    // Log des authentifications après traitement
+    console.log('authentification après traitement:', authentification);
+
+    // Construire domaine en tant que dictionnaire
+    const domaine = dossiers_on_item_type.reduce((acc, item) => {
+        acc[item.label] = data?.data?.dossiers?.domaine?.[item.label] || '';  // Assigner une valeur vide par défaut
+        return acc;
+    }, {} as Record<string, string>);  // On s'assure que domaine est un dictionnaire
+    // Log du domaine après traitement
+    console.log('Domaine après traitement:', domaine);
+
+    // Log final avant retour
+    const result = {
+        id: selectedApplication.id || 0,
+        label: selectedApplication.label || '',
+        domaine,  // domaine est un dictionnaire ici
+        dossiers_on_item_type,
+        authentification,
+        // Plex data extraction
+        plex_token: data?.data?.updaters?.plex?.token || '',  // Extrait `plex_token` comme une chaîne
+        plex_login: data?.data?.updaters?.plex?.login || '',  // Extrait `plex_login`
+        plex_password: data?.data?.updaters?.plex?.password || ''  // Extrait `plex_password`
+    };
+
+    console.log('Données finales retournées:', result);
+    return result;
+}
+
+// Fonction pour mettre à jour les paramètres
+export function applicationsSettingsToSet(form: SuperValidated<ApplicationsSettingsSchema>, existingData = []) {
+    // Log des données avant traitement
+    console.log('Données du formulaire avant mise à jour:', form.data);
+
+    const newApplication = {
+        id: form.data.id?.toString(),
+        label: form.data.label
+    };
+
+    const dossiers = {
+        on_item_type: form.data.dossiers_on_item_type.map((item) => item.label),
+        authentification: form.data.authentification,
+        domaine: form.data.domaine  // domaine est déjà un dictionnaire ici
+    };
+
+    const updaters = {
+        plex: {
+            token: form.data.plex_token || '',  // `plex_token` est maintenant une chaîne
+            login: form.data.plex_login || '',  // `plex_login` ajouté
+            password: form.data.plex_password || ''  // `plex_password` ajouté
+        }
+    };
+
+    // Log des données mises à jour avant retour
+    const result = [
+        {
+            key: 'applications',
+            value: [...existingData, newApplication]
+        },
+        {
+            key: 'dossiers',
+            value: dossiers
+        },
+        {
+            key: 'updaters',
+            value: updaters
+        }
+    ];
+
+    console.log('Données à retourner après mise à jour:', result);
+    return result;
+}
+
+// seedbox Settings -----------------------------------------------------------------------------------
+// Les clés que nous allons récupérer depuis l'API
+export const seedboxSettingsToGet: string[] = [
+	'cloudflare',
+	'utilisateur'       
+];
+
+export const seedboxSettingsSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email address"),
+  domain: z.string().regex(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid domain format"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+  cloudflare_login: z.string().min(1, "Login is required"),
+  cloudflare_api_key: z.string().min(1, "API key is required"),
+
+  traefik: z.object({
+    authMethod: z.enum(['basique', 'oauth', 'authelia', 'aucune']),
+    // Les champs OAuth sont toujours présents mais avec des valeurs par défaut
+    oauth_client: z.string().default(''), 
+    oauth_secret: z.string().default(''), 
+    oauth_mail: z.string().default(''),
+  }).default({
+    authMethod: 'basique',
+    oauth_client: '',
+    oauth_secret: '',
+    oauth_mail: ''
+  }),
+
+  domainperso: z.string().optional().default("traefik"),
+});
+
+export type SeedboxSettingsSchema = typeof seedboxSettingsSchema;
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function seedboxSettingsToPass(data: any) {
+  const traefik = data.data.utilisateur.traefik || {};
+
+  return {
+    username: data.data.utilisateur.username,
+    email: data.data.utilisateur.email,
+    domain: data.data.utilisateur.domain,
+    password: data.data.utilisateur.password,
+    domainperso: data.data.utilisateur.domainperso,
+    cloudflare_login: data.data.cloudflare.cloudflare_login,
+    cloudflare_api_key: data.data.cloudflare.cloudflare_api_key,
+
+    // On force toujours l'authMethod à "Basique" lors du chargement du formulaire
+    traefik: {
+      authMethod: "basique",  // Toujours "basique" par défaut
+      oauth_client: traefik.oauth_client || '',  // On conserve les valeurs des champs OAuth
+      oauth_secret: traefik.oauth_secret || '',
+      oauth_mail: traefik.oauth_mail || ''
+    }
+  };
+}
+
+export function seedboxSettingsToSet(form: SuperValidated<Infer<SeedboxSettingsSchema>>) {
+  const authMethod = form.data.traefik?.authMethod;
+
+  console.log('authMethod envoyé dans seedboxSettingsToSet:', authMethod);
+  console.log('Données traefik envoyées :', form.data.traefik);
+
+  // Créer l'objet traefik à partir de la méthode d'authentification sélectionnée
+  const traefikData = {
+    authMethod: authMethod,
+    ...(authMethod === 'oauth' && {
+      oauth_client: form.data.traefik.oauth_client,
+      oauth_secret: form.data.traefik.oauth_secret,
+      oauth_mail: form.data.traefik.oauth_mail,
+    })
+  };
+
+  return [
+    {
+      key: 'utilisateur',
+      value: {
+        username: form.data.username,
+        domain: form.data.domain,
+        email: form.data.email,
+        password: form.data.password,
+        traefik: traefikData,  // Envoyer les données traefik correctement
+        domainperso: form.data.domainperso,
+      }
+    },
+    {
+      key: 'cloudflare',
+      value: {
+        cloudflare_login: form.data.cloudflare_login,
+        cloudflare_api_key: form.data.cloudflare_api_key,
+      }
+    }
+  ];
+}
+
+
 // General Settings -----------------------------------------------------------------------------------
 export const generalSettingsToGet: string[] = [
 	'debug',
