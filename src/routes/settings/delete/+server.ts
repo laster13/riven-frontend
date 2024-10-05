@@ -1,11 +1,14 @@
 import { json } from '@sveltejs/kit';
 import fs from 'fs/promises';
+import os from 'os';
+
+const userName = os.userInfo().username;
 
 // Chemins des fichiers
-const settingsFilePath = '/home/laster13/riven-frontend/static/settings.json';
-const localSettingsFilePath = '/home/laster13/riven/data/settings.json'; // Fichier local
-const servicesFilePath = '/home/laster13/riven-frontend/static/services.json';
-const sourceFilePath = '/home/laster13/seedbox-compose/includes/config/services-available';
+const settingsFilePath = `/home/${userName}/projet-riven/riven-frontend/static/settings.json`;
+const localSettingsFilePath = `/home/${userName}/projet-riven/riven/data/settings.json`;
+const servicesFilePath = `/home/${userName}/projet-riven/riven-frontend/static/services.json`;
+const sourceFilePath = `/home/${userName}/seedbox-compose/includes/config/services-available`;
 
 // Fonction pour générer les items à partir de la source
 async function generateJsonFromSource() {

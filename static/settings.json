@@ -1,0 +1,17 @@
+{
+  "applications": [],
+  "dossiers": {
+    "on_item_type": [],
+    "authentification": {
+      "authappli": "basique"
+    },
+    "domaine": {}
+  },
+  "updaters": {
+    "plex": {
+      "token": "",
+      "login": "",
+      "password": ""
+    }
+  }
+}

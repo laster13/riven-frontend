@@ -105,12 +105,13 @@
     <TextField {form} name="cloudflare_login" label="Cloudflare Mail" {formData} />
     <TextField {form} name="cloudflare_api_key" label="Cloudflare Api" {formData} />
 
-    <!-- Boutons radio pour choisir la méthode d'authentification -->
+<!-- Boutons radio pour choisir la méthode d'authentification -->
 <div class="flex items-center gap-4">
-    <label class="text-sm">Authentification Traefik</label>
+    <label class="text-sm" for="auth-basique">Authentification Traefik</label>
     <div class="flex gap-10 ml-20">
-        <label class="flex items-center gap-2 text-sm">
+        <label class="flex items-center gap-2 text-sm" for="auth-basique">
             <input 
+                id="auth-basique"
                 type="radio" 
                 bind:group={$formData.traefik.authMethod} 
                 value="basique" 
@@ -118,8 +119,9 @@
             />
             <span>basique</span>
         </label>
-        <label class="flex items-center gap-2 text-sm">
+        <label class="flex items-center gap-2 text-sm" for="auth-oauth">
             <input 
+                id="auth-oauth"
                 type="radio" 
                 bind:group={$formData.traefik.authMethod} 
                 value="oauth" 
@@ -127,8 +129,9 @@
             />
             <span>Oauth</span>
         </label>
-        <label class="flex items-center gap-2 text-sm">
+        <label class="flex items-center gap-2 text-sm" for="auth-authelia">
             <input 
+                id="auth-authelia"
                 type="radio" 
                 bind:group={$formData.traefik.authMethod} 
                 value="authelia" 
@@ -136,8 +139,9 @@
             />
             <span>authelia</span>
         </label>
-        <label class="flex items-center gap-2 text-sm">
+        <label class="flex items-center gap-2 text-sm" for="auth-aucune">
             <input 
+                id="auth-aucune"
                 type="radio" 
                 bind:group={$formData.traefik.authMethod} 
                 value="aucune" 
@@ -236,7 +240,7 @@
 
 <Separator class="mt-4" />
 
-{#if !showLogs}
-  <SuperDebug data={$formData} />
+{#if formDebug}
+	<SuperDebug data={$formData} />
 {/if}
 
