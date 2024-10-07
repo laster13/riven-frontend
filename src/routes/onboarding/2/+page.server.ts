@@ -30,41 +30,8 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 
     return {
         form: await superValidate(toPassToSchema, zod(seedboxSettingsSchema)),
-	scriptName // scriptName est passé ici
+	scriptName
 
     };
 };
 
-export const actions: Actions = {
-	default: async (event) => {
-		const form = await superValidate(event, zod(seedboxSettingsSchema));
-
-		if (!form.valid) {
-			console.log('form not valid');
-			return fail(400, {
-				form
-			});
-		}
-		const toSet = seedboxSettingsToSet(form);
-
-		try {
-			const data = await setSettings(event.fetch, toSet);
-			if (!data.data.success) {
-				return message(form, `Service(s) failed to initialize. Please check your settings.`, {
-					status: 400
-				});
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const _save = await saveSettings(event.fetch);
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const _load = await loadSettings(event.fetch);
-		} catch (e) {
-			console.error(e);
-			return message(form, 'Unable to save settings. API is down.', {
-				status: 400
-			});
-		}
-
-		return message(form, 'Settings saved!');
-	}
-};

@@ -3,27 +3,6 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { fail, error } from '@sveltejs/kit';
 import { setSettings, saveSettings, loadSettings } from '$lib/forms/helpers.server';
 
-// Validation simple sans zod
-function validateForm(data: any) {
-	const errors: Record<string, string> = {};
-	let valid = true;
-
-	// Exemple de validation basique
-	if (!data.setting1 || data.setting1 === '') {
-		errors.setting1 = 'Setting 1 is required';
-		valid = false;
-	}
-
-	if (!data.setting2 || data.setting2 === '') {
-		errors.setting2 = 'Setting 2 is required';
-		valid = false;
-	}
-
-	// Vous pouvez ajouter d'autres validations selon vos besoins
-
-	return { valid, errors };
-}
-
 export const load: PageServerLoad = async ({ fetch, locals }) => {
 	console.log("Début du chargement des paramètres partiels...");
 
