@@ -28,7 +28,7 @@ export enum TimeWindow {
 export async function getTrending(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	page: number = 1,
 	mediaType: MediaType = MediaType.Movie,
 	timeWindow: TimeWindow = TimeWindow.Week
@@ -51,7 +51,7 @@ export async function getTrending(
 export async function getMoviesNowPlaying(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	page: number = 1
 ) {
 	const params = { language, page };
@@ -67,7 +67,7 @@ export async function getMoviesNowPlaying(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getMoviesPopular(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getMoviesPopular(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -81,7 +81,7 @@ export async function getMoviesPopular(fetch: any, language: string = 'en-US', p
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getMoviesTopRated(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getMoviesTopRated(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -95,7 +95,7 @@ export async function getMoviesTopRated(fetch: any, language: string = 'en-US', 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getMoviesUpcoming(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getMoviesUpcoming(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -111,7 +111,7 @@ export async function getMoviesUpcoming(fetch: any, language: string = 'en-US', 
 export async function getMovieDetails(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	append_to_response: string | null = null,
 	movieId: number
 ) {
@@ -128,7 +128,7 @@ export async function getMovieDetails(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getTVAiringToday(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getTVAiringToday(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -142,7 +142,7 @@ export async function getTVAiringToday(fetch: any, language: string = 'en-US', p
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getTVOnTheAir(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getTVOnTheAir(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -156,7 +156,7 @@ export async function getTVOnTheAir(fetch: any, language: string = 'en-US', page
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getTVPopular(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getTVPopular(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -170,7 +170,7 @@ export async function getTVPopular(fetch: any, language: string = 'en-US', page:
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getTVTopRated(fetch: any, language: string = 'en-US', page: number = 1) {
+export async function getTVTopRated(fetch: any, language: string = 'fr-FR', page: number = 1) {
 	const params = { language, page };
 	const queryString = dictToQueryString(params);
 
@@ -186,7 +186,7 @@ export async function getTVTopRated(fetch: any, language: string = 'en-US', page
 export async function getTVDetails(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	append_to_response: string | null = null,
 	tvId: number
 ) {
@@ -205,7 +205,7 @@ export async function getTVDetails(
 export async function getTVSeasonDetails(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	append_to_response: string | null = null,
 	tvId: number,
 	seasonNumber: number
@@ -228,7 +228,7 @@ export async function getTVSeasonDetails(
 export async function getTVEpisodeDetails(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	append_to_response: string | null = null,
 	tvId: number,
 	seasonNumber: number,
@@ -252,7 +252,7 @@ export async function getTVEpisodeDetails(
 export async function getFromExternalID(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	external_source: string,
 	external_id: string
 ) {
@@ -273,7 +273,7 @@ export async function getCollectionSearch(
 	fetch: any,
 	query: string,
 	include_adult: boolean = false,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	page: number = 1,
 	region: string | null = null
 ) {
@@ -294,7 +294,7 @@ export async function getMovieSearch(
 	fetch: any,
 	query: string,
 	include_adult: boolean = false,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	primary_release_year: number | null = null,
 	page: number = 1,
 	region: string | null = null,
@@ -317,7 +317,7 @@ export async function getMultiSearch(
 	fetch: any,
 	query: string,
 	include_adult: boolean = false,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	page: number = 1
 ) {
 	const params = { query, include_adult, language, page };
@@ -338,7 +338,7 @@ export async function getTVSearch(
 	query: string,
 	first_air_date_year: number | null = null,
 	include_adult: boolean = false,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	page: number = 1,
 	year: number | null = null
 ) {
@@ -372,7 +372,7 @@ export async function getExternalID(
 export async function getCollection(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	collectionId: number
 ) {
 	const params = { language };
@@ -390,7 +390,7 @@ export async function getCollection(
 export async function getCredits(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	mediaId: number,
 	mediaType: string
 ) {
@@ -409,7 +409,7 @@ export async function getCredits(
 export async function getPerson(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-	language: string = 'en-US',
+	language: string = 'fr-FR',
 	append_to_response: string | null = null,
 	personId: number
 ) {

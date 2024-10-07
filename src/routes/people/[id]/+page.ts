@@ -5,7 +5,7 @@ export const load = (async ({ fetch, params }) => {
 	const id = Number(params.id);
 
 	async function getDetails(id: number) {
-		return await getPerson(fetch, 'en-US', 'combined_credits', id);
+		return await getPerson(fetch, 'fr-FR', 'combined_credits', id);
 	}
 
 	return {

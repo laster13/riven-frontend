@@ -50,7 +50,7 @@
             // Mise à jour de l'état du bouton (fin d'exécution)
             dispatch('buttonStateChange', { isSubmitting: false, showSpinner: false });
             dispatch('statusMessageUpdate', { statusMessage });
-
+            dispatch('scriptCompleted');
             eventSource.close();
         });
     }

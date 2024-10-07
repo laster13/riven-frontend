@@ -12,6 +12,7 @@
 	import { Loader2 } from 'lucide-svelte';
 	import RunScript from '../../routes/run-script.svelte'; 
         import { onMount } from 'svelte';
+        import { goto } from '$app/navigation';
 
 	// Initialisation du formulaire et du scriptName
 	export let data: SuperValidated<Infer<MediaServerSettingsSchema>>;
@@ -69,6 +70,15 @@
 		showLogs = event.target.checked;
 	}
 
+        function handleScriptCompleted() {
+            const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
+
+            if (currentPath === '/onboarding/1') {
+                // Redirection vers une nouvelle page uniquement si on est sur /onboarding/1
+                goto('/onboarding/2');
+        }
+    }
+
 </script>
 
 <!-- Formulaire pour soumettre les données -->
@@ -109,4 +119,4 @@
 </form>
 
 <!-- Composant RunScript pour exécuter le script et gérer son état -->
-<RunScript {scriptName} {showLogs} on:buttonStateChange={updateButtonState} on:statusMessageUpdate={updateStatusMessage} />
+<RunScript {scriptName} {showLogs} on:buttonStateChange={updateButtonState} on:statusMessageUpdate={updateStatusMessage} on:scriptCompleted={handleScriptCompleted} />

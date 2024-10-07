@@ -11,14 +11,14 @@ export const load = (async ({ fetch, params, data }) => {
 				// TODO: Remove the ones that are not needed in future
 				return await getMovieDetails(
 					fetch,
-					'en-US',
+					'fr-FR',
 					'credits,external_ids,recommendations,similar,videos,keywords',
 					id
 				);
 			case 'tv':
 				return await getTVDetails(
 					fetch,
-					'en-US',
+					'fr-FR',
 					'credits,external_ids,recommendations,similar,videos,keywords',
 					id
 				);

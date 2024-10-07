@@ -13,7 +13,7 @@
     import { Separator } from '$lib/components/ui/separator';
     import RunScript from '../../routes/run-script.svelte';
     import { onMount } from 'svelte';
- 
+    import { goto } from '$app/navigation';
 
     // Import du schéma des helpers pour la gestion des données
     export let data: SuperValidated<Infer<SeedboxSettingsSchema>>;
@@ -82,6 +82,16 @@
             window.location.href = `${currentUrl}?nocache=${uniqueParam}`;
         }
     });
+
+        function handleScriptCompleted() {
+            const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
+
+            if (currentPath === '/onboarding/2') {
+                // Redirection vers une nouvelle page uniquement si on est sur /onboarding/2
+                goto('/onboarding/3');
+        }
+    }
+
 
 </script>
 
@@ -236,7 +246,7 @@
 
 </form>
 
-<RunScript {scriptName} {showLogs} on:buttonStateChange={updateButtonState} on:statusMessageUpdate={updateStatusMessage} />
+<RunScript {scriptName} {showLogs} on:buttonStateChange={updateButtonState} on:statusMessageUpdate={updateStatusMessage} on:scriptCompleted={handleScriptCompleted} />
 
 <Separator class="mt-4" />
 

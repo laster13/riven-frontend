@@ -5,9 +5,9 @@ export const load = (async ({ fetch, url }) => {
 	const query = url.searchParams.get('query');
 
 	if (query && query.length > 0) {
-		const moviesRes = await getMovieSearch(fetch, query, false, 'en-US', null, 1, null, null);
-		const tvRes = await getTVSearch(fetch, query, null, false, 'en-US', 1, null);
-		const collectionRes = await getCollectionSearch(fetch, query, false, 'en-US', 1, null);
+		const moviesRes = await getMovieSearch(fetch, query, false, 'fr-FR', null, 1, null, null);
+		const tvRes = await getTVSearch(fetch, query, null, false, 'fr-FR', 1, null);
+		const collectionRes = await getCollectionSearch(fetch, query, false, 'fr-FR', 1, null);
 
 		return {
 			movies: moviesRes.results,
