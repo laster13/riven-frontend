@@ -1,35 +1,11 @@
 {
-  "applications": [
-    {
-      "id": "1",
-      "label": "autoindex"
-    },
-    {
-      "id": "3",
-      "label": "bazarr"
-    },
-    {
-      "id": "29",
-      "label": "firefox"
-    }
-  ],
+  "applications": [],
   "dossiers": {
-    "on_item_type": [
-      "autoindex",
-      "bazarr",
-      "firefox"
-    ],
+    "on_item_type": [],
     "authentification": {
-      "authappli": "basique",
-      "autoindex": "basique",
-      "bazarr": "basique",
-      "firefox": "basique"
+      "authappli": "basique"
     },
-    "domaine": {
-      "autoindex": "autoindex",
-      "bazarr": "bazarr",
-      "firefox": "firefox"
-    }
+    "domaine": {}
   },
   "updaters": {
     "plex": {
