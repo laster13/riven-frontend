@@ -43,28 +43,30 @@
 	bind:this={rootElement}
 	class="flex h-svh w-full flex-col overflow-x-hidden p-8 md:px-24 lg:px-32"
 >
-	<div class:opacity-0={!inView} class="flex h-full w-full flex-col items-center justify-center">
-		<div class="slide-up flex items-center justify-center">
-			<Mountain class="h-16 w-16" />
-		</div>
+<div class:opacity-0={!inView} class="flex h-full w-full flex-col items-center justify-center">
+    <div class="slide-up flex items-center justify-center">
+        <Mountain class="h-16 w-16" />
+    </div>
 
-		<!-- TODO: REMOVED FOR SOMETIME -->
-		<!-- {#if data.health.message !== true}
-			<div class="flex flex-col items-center justify-center gap-2 slide-up">
-				<h1 class="text-3xl font-semibold text-center">Riven is initializing...</h1>
-				<Button class="w-full font-semibold" href="/">Go back to home</Button>
-			</div>
-		{:else} -->
-		<h1 class="slide-up text-center text-3xl font-medium">Bienvenue sur SSD!</h1>
-		<p
-			class="slide-up max-w-lg text-center text-base text-muted-foreground md:max-w-2xl md:text-lg"
-		>
-			Avant d'utiliser SSD, il est nécessaire de procéder à son installation.
-		</p>
-		<Button class="slide-up mt-4 w-full font-medium md:max-w-max" href="/onboarding/1">
-			<Rocket class="mr-2 h-4 w-4" />
-			<span>C'est parti</span>
-		</Button>
-		<!-- {/if} -->
-	</div>
+    <h1 class="slide-up text-center text-3xl font-medium">L'installation SSD est maintenant terminée!</h1>
+    <p
+        class="slide-up max-w-lg text-center text-base text-muted-foreground md:max-w-2xl md:text-lg"
+    >
+        Souhaitez vous poursuivre avec l'installation de Riven ?
+    </p>
+
+    <!-- Conteneur des boutons, organisé en ligne avec `flex-row` -->
+    <div class="slide-up mt-4 flex flex-row gap-4">
+        <!-- Bouton "C'est parti" qui redirige vers /onboarding/1 -->
+        <Button class="w-full font-medium md:max-w-max" href="/onboarding/4">
+            <Rocket class="mr-2 h-4 w-4" />
+            <span>C'est parti</span>
+        </Button>
+
+        <!-- Bouton "No merci" qui redirige vers /?onboarding=true -->
+        <Button class="w-full font-medium md:max-w-max" href="/?onboarding=true">
+            <span>Non merci</span>
+        </Button>
+    </div>
+</div>
 </div>
