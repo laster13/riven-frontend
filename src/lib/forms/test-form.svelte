@@ -17,7 +17,7 @@
 	// Initialisation du formulaire et du scriptName
 	export let data: SuperValidated<Infer<MediaServerSettingsSchema>>;
 	export let actionUrl: string = '?/default';
-	export let scriptName: string = 'webui'; // Exemple de valeur statique, peut être modifié dynamiquement.
+	export let scriptName: string = 'requis'; // Exemple de valeur statique, peut être modifié dynamiquement.
 
 	// Débogage initial
 	console.log("Nom du script fourni :", scriptName);

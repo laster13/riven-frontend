@@ -1,17 +1,27 @@
 {
-  "applications": [],
+  "applications": [
+    {
+      "id": "1",
+      "label": "autoindex"
+    }
+  ],
   "dossiers": {
-    "on_item_type": [],
+    "on_item_type": [
+      "autoindex"
+    ],
     "authentification": {
-      "authappli": "basique"
+      "authappli": "basique",
+      "autoindex": "basique"
     },
-    "domaine": {}
+    "domaine": {
+      "autoindex": "autoindex"
+    }
   },
   "updaters": {
     "plex": {
-      "token": "",
-      "login": "",
-      "password": ""
+      "token": "6xhrzrPyMZQn7Kqx3tqV",
+      "login": "laster13012@gmail.com",
+      "password": "mynamizolmA6b5cc8p!?"
     }
   }
 }

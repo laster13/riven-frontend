@@ -25,7 +25,7 @@
 
     export let data: SuperValidated<Infer<ApplicationsSettingsSchema>>;
     export let actionUrl: string = '?/default';
-    export let scriptName: string = 'install';
+    export let scriptName: string = 'appli';
 
     let applications = [];
     let domaine = {};

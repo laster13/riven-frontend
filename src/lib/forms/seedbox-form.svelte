@@ -21,7 +21,7 @@
     export let label = "";
     export let fieldDescription = ""; // Ajout de la description du champ
     export let name;
-    export let scriptName: string = 'appli'; 
+    export let scriptName: string = 'infos'; 
 
     const formDebug: boolean = getContext('formDebug');
 

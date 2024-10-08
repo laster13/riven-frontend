@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 
     const data: any = await getPartialSettings();
     const toPassToSchema = seedboxSettingsToPass(data);
-    const scriptName = 'appli'; 
+    const scriptName = 'infos'; 
 
 
     return {

@@ -10,11 +10,11 @@
     // Définir les sections principales de l'installation
     const settingsItems: NavItem[] = [
 		{
-			name: 'Installation Seedbox',
-			path: '/settings/seedbox'
+			name: 'SSD',
+			path: '/settings/test'
 		},
 		{
-			name: 'Installation Riven',
+			name: 'Riven',
 			path: '/settings/general'
 		}
 
