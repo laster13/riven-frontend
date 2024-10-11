@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 	const data: any = await getPartialSettings();
 	console.log('Données reçues pour le formulaire :', data);
 
-	const scriptName = 'webui'; 
+	const scriptName = 'requis'; 
 
 	return {
 		form: data,

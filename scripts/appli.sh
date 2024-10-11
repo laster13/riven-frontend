@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source /home/laster13/seedbox-compose/profile.sh
+source /home/${USER}/seedbox-compose/profile.sh
 
-json_file="/home/laster13/projet-riven/riven-frontend/static/settings.json"
+json_file="/home/${USER}/projet-riven/riven-frontend/static/settings.json"
 
 
 app_count=$(jq '.applications | length' $json_file)
@@ -13,7 +13,7 @@ if [ "$app_count" -gt 0 ]; then
     auth=$(jq -r --arg label "$line" '.dossiers.authentification[$label] // empty' $json_file)
     domaine=$(jq -r --arg label "$line" '.dossiers.domaine[$label] // ""' $json_file)
 
-    # Si l'utilisateur a déjà sélectionné une authentification (comme "Oauth"), ne pas remplacer par "Basique"
+    # Si l'utilisateur a déjà sélectionné une authentification (comme "oauth"), ne pas remplacer par "Basique"
     if [ -z "$auth" ]; then
         auth="Basique"
     else
@@ -28,22 +28,48 @@ else
 fi
 
 if [[ "${line}" == "plex" ]]; then
-    token=$(jq -r '.updaters.plex.token // empty' $json_file)
-    login=$(jq -r '.updaters.plex.login // empty' $json_file)
-    password=$(jq -r '.updaters.plex.password // empty' $json_file)
+    # Extraire les valeurs JSON
+    token=$(jq -r '.updaters.plex.token // empty' "$json_file")
+    login=$(jq -r '.updaters.plex.login // empty' "$json_file")
+    password=$(jq -r '.updaters.plex.password // empty' "$json_file")
 
-    # Si des valeurs manquent, fournir des valeurs par défaut
-    token="${token:-default-token}"
-    login="${login:-default-login}"
-    password="${password:-default-password}"
+    # Fournir des valeurs par défaut si elles sont manquantes
+    defaults=(
+        "token:default-token"
+        "login:default-login"
+        "password:default-password"
+    )
 
-    echo "Info: Token Plex par défaut utilisé" [ "$token" == "default-token" ] && echo " (Aucune valeur trouvée)"
-    echo "Info: Login Plex par défaut utilisé" [ "$login" == "default-login" ] && echo " (Aucune valeur trouvée)"
-    echo "Info: Password Plex par défaut utilisé" [ "$password" == "default-password" ] && echo " (Aucune valeur trouvée)"
+    # Liste des autres configurations Plex
+    plex_configs=(
+        "open_main_ports:yes"
+        "open_extra_ports:yes"
+        "force_auto_adjust_quality:no"
+        "force_high_output_bitrates:no"
+        "db_cache_size:1000000"
+        "transcodes:/mnt/transcodes"
+    )
 
-    manage_account_yml plex.token "$token"
-    manage_account_yml plex.ident "$login"
-    manage_account_yml plex.sesame "$password"
+    # Gestion des valeurs par défaut pour token, login, password
+    for item in "${defaults[@]}"; do
+        key="${item%%:*}"
+        default_value="${item##*:}"
+
+        value=$(eval echo \$$key)
+        value="${value:-$default_value}"
+
+        echo "Info: ${key^} Plex par défaut utilisé" [ "$value" == "$default_value" ] && echo " (Aucune valeur trouvée)"
+        
+        manage_account_yml "plex.$key" "$value"
+    done
+
+    # Gestion des autres configurations Plex
+    for config in "${plex_configs[@]}"; do
+        key="${config%%:*}"
+        value="${config##*:}"
+
+        manage_account_yml "plex.$key" "$value"
+    done
 fi
 
 manage_account_yml sub.${line}.${line} "$domaine"

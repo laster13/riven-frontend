@@ -352,6 +352,7 @@
     function handleCheckboxChange(event) {
         showLogs = event.target.checked;
     }
+
 </script>
 
 <style>
@@ -464,10 +465,10 @@
 
 <div class="flex flex-col items-start">
     <div class="flex items-center">
-        <label for="showLogs" class="flex items-center">Activer les logs</label>
+        <label for="showLogs" class="flex items-center">Afficher les logs</label>
         <input type="checkbox" bind:checked={showLogs} class="ml-9" id="showLogs" />
     </div>
-    <p class="text-gray-500 text-sm mt-1">Logs en temps réel.</p>
+    <p class="text-gray-500 text-sm mt-1">Logs en temps réel</p>
 </div>
 
 {#if !showLogs}

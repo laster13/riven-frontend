@@ -149,6 +149,8 @@ EOF
   install_base_packages
   # Installation de docker
   install_docker
+  install_environnement
+  update_seedbox_param "installed" 1
   echo -e "\e[33m"$(gettext "Les composants sont maintenants tous installés/réglés, poursuite de l'installation")"\e[0m"
   echo ""
   fi

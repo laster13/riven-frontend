@@ -21,5 +21,5 @@ fi
     launch_service ${line}
     ansible-playbook "${SETTINGS_SOURCE}/includes/config/roles/rclone/tasks/main.yml"
   else
-    source /home/${USER}/projet-riven/riven-frontend/scripts/install.sh ${line}
+    source /home/${USER}/projet-riven/riven-frontend/scripts/appli.sh ${line}
   fi
