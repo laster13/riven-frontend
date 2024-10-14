@@ -47,13 +47,18 @@
     });
 
 // Gérer la soumission du formulaire
-async function handleFormSuccess() {  // Ajout de "async"
-    console.log("Formulaire soumis avec succès.");
+async function handleFormSuccess(event) {
     event.preventDefault();
+    console.log("Formulaire soumis avec succès.");
 
-    // Si le SSD est installé, appeler l'API
-    if (fileExists) {
-        try {
+    // Activer l'état de soumission et afficher le spinner
+    isSubmitting = true;
+    showSpinner = true;
+    statusMessage = "Récupération de la configuration SSDv2...";
+
+    try {
+        // Si le SSD est installé, appeler l'API
+        if (fileExists) {
             console.log("SSD installé, appel de l'API.");
             const response = await fetch('http://localhost:8080/scripts/update-config', {
                 method: 'POST',
@@ -63,27 +68,42 @@ async function handleFormSuccess() {  // Ajout de "async"
             if (response.ok) {
                 const result = await response.json();
                 console.log("Réponse de l'API:", result);
-toast.success('Configuration mise à jour avec succès');
+                toast.success('Configuration mise à jour avec succès');
+                statusMessage = "Mise à jour avec succès.";
 
-// Ajouter un délai de 2 secondes avant d'exécuter handleScriptCompleted
-setTimeout(() => {
-    handleScriptCompleted();
-}, 1000);
-                return; 
+                // Appeler handleScriptCompleted après un délai de 1 seconde
+                setTimeout(() => {
+                    if (typeof handleScriptCompleted === 'function') {
+                        handleScriptCompleted();
+                    } else {
+                        console.error('handleScriptCompleted n\'est pas une fonction');
+                    }
+                }, 1000);
+                statusMessage = "";
             } else {
                 throw new Error('Erreur lors de la mise à jour');
             }
-        } catch (error) {
-            console.error('Erreur lors de l\'appel de l\'API:', error);
-            toast.error('Échec de la mise à jour de la configuration');
-            return;
+        } else {
+            // Cas où le SSD n'est pas installé
+            toast.success('Script déclenché: ' + scriptName);
+            console.log('scriptName:', scriptName);
+
+            // Dispatch d'un événement pour démarrer le script
+            console.log('Dispatching startScript event for:', scriptName);
+            const scriptEvent = new CustomEvent('startScript', { detail: { scriptName } });
+            window.dispatchEvent(scriptEvent);
+
+            statusMessage = "Script déclenché sans SSD.";
         }
+    } catch (error) {
+        console.error('Erreur lors de la soumission:', error);
+        toast.error('Échec de la mise à jour de la configuration');
+        statusMessage = "Échec de la mise à jour.";
+    } finally {
+        // Désactiver le spinner et l'état de soumission
+        isSubmitting = false;
+        showSpinner = false;
     }
-    toast.success('Script déclenché: ' + scriptName);
-    // Dispatch d'un événement pour démarrer le script
-    console.log('Dispatching startScript event for:', scriptName);
-    const scriptEvent = new CustomEvent('startScript', { detail: { scriptName } });
-    window.dispatchEvent(scriptEvent);
 }
 
 	// Fonction pour gérer l'état du bouton via les événements du composant RunScript
@@ -163,7 +183,7 @@ setTimeout(() => {
     <div class="flex w-full justify-between items-center">
         <!-- Affichage du message d'état si présent -->
         {#if statusMessage}
-            <p class="text-gray-500 text-sm blinking-message">{statusMessage}</p>
+            <p class="text-orange-500 text-sm blinking-message">{statusMessage}</p>
         {/if}
 
         <!-- Bouton de soumission avec gestion du spinner -->
