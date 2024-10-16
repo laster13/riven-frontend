@@ -100,7 +100,7 @@
 
 <div class="flex flex-col items-start">
     <div class="flex items-center">
-        <label style="font-size: 14px" for="showLogs" class="flex items-center">Activer les logs</label>
+        <label style="font-size: 14px" for="showLogs" class="flex items-center">Afficher les logs</label>
         <input type="checkbox" bind:checked={showLogs} class="ml-9" id="showLogs" />
     </div>
     <p style="font-size: 13px" class="text-gray-500 text-sm mt-1">Logs en temps réel.</p>
@@ -235,7 +235,7 @@
                     <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                     <p class="text-sm text-gray-500">Soumission en cours...</p>
                 {:else}
-                    Enregistrer les modifications
+                    Sauvegarder
                     <span class="ml-1" class:hidden={$page.url.pathname === '/settings/seedbox'}>
                         et continuer
                     </span>

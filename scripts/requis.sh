@@ -162,7 +162,7 @@ EOF
     manage_account_yml settings.storage "${SETTINGS_STORAGE}"
   fi
 
-  IS_INSTALLED=$(select_seedbox_param "installed")
+echo "Installation SSDv2 terminée avec succès."
 
 exit 0
 

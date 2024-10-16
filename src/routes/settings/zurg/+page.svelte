@@ -6,9 +6,9 @@
 </script>
 
 <div class="flex flex-col">
-	<h2 class="text-xl font-medium md:text-2xl">General Settings</h2>
+	<h2 class="text-xl font-medium md:text-2xl">Paramètres généraux</h2>
 	<p class="text-sm text-muted-foreground md:text-base">
-		Configure global and default settings for Riven.
+		Configuration zurg.
 	</p>
 
 	<ZurgForm data={data.form} actionUrl="/settings/zurg" />

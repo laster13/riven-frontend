@@ -16,9 +16,12 @@
 	import { Loader2, Trash2, Plus } from 'lucide-svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
-
+	import RunScript from '../../routes/run-script.svelte';
+        import { goto } from '$app/navigation';
+ 
 	export let data: SuperValidated<Infer<ZurgSettingsSchema>>;
 	export let actionUrl: string = '?/default';
+	export let scriptName: string = 'zurg';
 
 	const formDebug: boolean = getContext('formDebug');
 
@@ -28,10 +31,33 @@
 
 	const { form: formData, enhance, message, delayed } = form;
 
-	$: if ($message && $page.status === 200) {
-		toast.success($message);
-	} else if ($message) {
-		toast.error($message);
+	let isSubmitting = false;
+	let showSpinner = false;
+	let statusMessage = '';
+        let showLogs = false;
+
+	function handleFormSuccess() {
+		console.log("Formulaire soumis avec succès.");
+		toast.success('Script déclenché: ' + scriptName);
+
+		// Vérification du dispatch de l'événement
+		console.log('Dispatching startScript event for:', scriptName);
+
+		// Envoyer un événement personnalisé à RunScript pour démarrer le script
+		const scriptEvent = new CustomEvent('startScript', { detail: { scriptName } });
+		window.dispatchEvent(scriptEvent); // Envoie l'événement globalement
+	}
+
+	// Fonction pour gérer l'état du bouton via les événements du composant RunScript
+	function updateButtonState(event) {
+		const { isSubmitting: submitting, showSpinner: spinner } = event.detail;
+		isSubmitting = submitting;
+		showSpinner = spinner;
+	}
+
+	// Fonction pour mettre à jour le message d'état du script
+	function updateStatusMessage(event) {
+		statusMessage = event.detail.statusMessage;
 	}
 
 	function addField(name: string) {
@@ -43,9 +69,28 @@
 		// @ts-expect-error eslint-disable-next-line
 		$formData[name] = $formData[name].filter((_, i) => i !== index);
 	}
+
+        function handleScriptCompleted() {
+            const currentPath = $page.url.pathname;
+
+            if (currentPath === '/onboarding/3') {
+                goto('/onboarding/ssd');
+        }
+    }
+
 </script>
 
-<form method="POST" action={actionUrl} use:enhance class="my-8 flex flex-col gap-2">
+<form method="POST" action={actionUrl} use:enhance class="my-8 flex flex-col gap-2" on:submit={handleFormSuccess}>
+
+<div class="flex flex-col items-start">
+    <div class="flex items-center">
+        <label style="font-size: 14px" for="showLogs" class="flex items-center">Afficher les logs</label>
+        <input type="checkbox" bind:checked={showLogs} class="ml-9" id="showLogs" />
+    </div>
+    <p style="font-size: 13px" class="text-gray-500 text-sm mt-1">Logs en temps réel.</p>
+</div>
+
+{#if !showLogs}
 	<TextField {form} name="rclone_path" {formData} />
 	<TextField {form} name="library_path" {formData} />
 	<GroupCheckboxField
@@ -129,21 +174,32 @@
 
 		</div>
 	{/if}
-
+{/if}
 
 	<Separator class="mt-4" />
-	<div class="flex w-full justify-end">
-		<Form.Button disabled={$delayed} type="submit" size="sm" class="w-full lg:max-w-max">
-			{#if $delayed}
-				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-			{/if}
-			Save changes
-			<span class="ml-1" class:hidden={$page.url.pathname === '/settings/zurg'}
-				>and continue</span
-			>
-		</Form.Button>
-	</div>
+    <div class="flex w-full justify-between items-center">
+        {#if statusMessage}
+            <p class="text-orange-500 text-sm blinking-message">{statusMessage}</p>
+        {/if}
+
+        <div class="ml-auto">
+            <Form.Button disabled={isSubmitting} type="submit" size="sm" class="w-full lg:max-w-max">
+                {#if showSpinner}
+                    <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+                    <p class="text-sm text-gray-500">Soumission en cours...</p>
+                {:else}
+                    Sauvegarder
+                    <span class="ml-1" class:hidden={$page.url.pathname === '/settings/zurg'}>
+                        et continuer
+                    </span>
+                {/if}
+            </Form.Button>
+        </div>
+    </div>
 </form>
+
+<RunScript {scriptName} {showLogs} on:buttonStateChange={updateButtonState} on:statusMessageUpdate={updateStatusMessage} on:scriptCompleted={handleScriptCompleted} />
+
 
 {#if formDebug}
 	<SuperDebug data={$formData} />

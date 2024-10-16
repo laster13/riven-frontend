@@ -78,7 +78,7 @@ async function handleFormSuccess(event) {
                     } else {
                         console.error('handleScriptCompleted n\'est pas une fonction');
                     }
-                }, 1000);
+                }, 2000);
                 statusMessage = "";
             } else {
                 throw new Error('Erreur lors de la mise à jour');
@@ -136,15 +136,16 @@ async function handleFormSuccess(event) {
 	}
 
     // Fonction exécutée lorsque le script est terminé
-    function handleScriptCompleted() {
-        checkFileStatus(); // Vérifie à nouveau l'état du fichier après l'exécution du script
-        const currentPath = $page.url.pathname;
+function handleScriptCompleted() {
+    const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
 
-        // Redirige si on est sur le chemin /onboarding/1
-        if (currentPath === '/onboarding/1') {
-            goto('/onboarding/2');
-        }
+    if (currentPath === '/onboarding/2') {
+        // Attendre 2 secondes avant la redirection
+        setTimeout(() => {
+            goto('/onboarding/3');
+        }, 4000);  // 2000 millisecondes = 2 secondes
     }
+}
 
 </script>
 
@@ -193,7 +194,7 @@ async function handleFormSuccess(event) {
                     <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                     <p class="text-sm text-gray-500">Soumission en cours...</p>
                 {:else}
-                    Enregistrer les modifications
+                    Sauvegarder
                     <span class="ml-1" class:hidden={$page.url.pathname === '/settings/test'}>
                         et continuer
                     </span>

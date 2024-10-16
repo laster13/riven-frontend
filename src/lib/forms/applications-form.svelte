@@ -465,7 +465,7 @@
 
 <div class="flex flex-col items-start">
     <div class="flex items-center">
-        <label for="showLogs" class="flex items-center">Afficher les logs</label>
+        <label style="font-size: 14px" for="showLogs" class="flex items-center">Afficher les logs</label>
         <input type="checkbox" bind:checked={showLogs} class="ml-9" id="showLogs" />
     </div>
     <p class="text-gray-500 text-sm mt-1">Logs en temps réel</p>
@@ -713,12 +713,8 @@
                     id="domaine" 
                     placeholder="Sous domaine personnalisé"
                     class="inline-block shadow-sm sm:text-sm border border-gray-300 rounded-md"
-                    style="width: 225px; height: 37px; margin-left: 44px; padding-left: 10px; outline: none;" 
-                    value={formData.domaine[selectedItem.label] || ''} 
-                    on:input={(e) => {
-                        formData.domaine[selectedItem.label] = e.target.value;
-                        console.log(`Domaine mis à jour pour ${selectedItem.label}:`, e.target.value);
-                    }}
+                    style="width: 225px; height: 37px; margin-left: 44px; padding-left: 10px; outline: none;"
+                    bind:value={$formData.domaine[selectedItem.label]}
                 />
             </div>
         {/if}
@@ -833,7 +829,7 @@
                     <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                     <p class="text-sm text-gray-500">Soumission en cours...</p>
                 {:else}
-                    Enregistrer les modifications
+                    Sauvegarder
                     <span class="ml-1" class:hidden={$page.url.pathname === '/settings/applications'}>
                         et continuer
                     </span>

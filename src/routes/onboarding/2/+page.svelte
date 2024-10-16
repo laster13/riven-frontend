@@ -16,7 +16,7 @@
 	<div class="flex w-full max-w-6xl flex-col items-start">
 		<Progress class="mb-2 w-full" max={3} value={$formProgress} />
 		<h1 class="mb-2 text-2xl font-bold md:text-3xl lg:text-4xl">Step 2/3</h1>
-		<p class="text-base md:text-lg">Let's get started by configuring your general settings.</p>
+		<p class="text-base md:text-lg">Configuration des infos, compléter si necessaire puis valider.</p>
 	</div>
 	<div class="mt-4 flex w-full max-w-6xl flex-col">
 		<Separator class="mb-8" />

@@ -6,8 +6,8 @@
 </script>
 
 <div class="flex flex-col">
-    <h2 class="text-xl font-medium md:text-2xl">Applications</h2>
-    <p class="text-sm text-muted-foreground md:text-base">Configuration des Applications</p>
+    <h2 class="text-xl font-medium md:text-2xl">Paramètres Généraux</h2>
+    <p class="text-sm text-muted-foreground md:text-base">Gestion des Applications.</p>
 
     <ApplicationsForm data={data.form} actionUrl="/settings/applications" />
 </div>

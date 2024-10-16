@@ -9,11 +9,11 @@
 
 	const settingsItems: NavItem[] = [
 		{
-			name: 'test',
+			name: 'Prérequis',
 			path: '/settings/test'
 		},
 		{
-			name: 'Installation Seedbox',
+			name: 'Infos compte',
 			path: '/settings/seedbox'
 		},
 		{

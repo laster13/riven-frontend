@@ -27,8 +27,9 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 	const data: any = await getPartialSettings();
 	const toPassToSchema = zurgSettingsToPass(data);
 
+
 	return {
-		form: await superValidate(toPassToSchema, zod(zurgSettingsSchema))
+		form: await superValidate(toPassToSchema, zod(zurgSettingsSchema)),
 	};
 };
 
@@ -60,10 +61,6 @@ export const actions: Actions = {
 			return message(form, 'Unable to save settings. API is down.', {
 				status: 400
 			});
-		}
-
-		if (event.url.searchParams.get('onboarding') === 'true') {
-			redirect(302, '/onboarding/ssd');
 		}
 
 		return message(form, 'Settings saved!');

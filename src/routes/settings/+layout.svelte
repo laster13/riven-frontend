@@ -10,7 +10,7 @@
     // Définir les sections principales de l'installation
     const settingsItems: NavItem[] = [
 		{
-			name: 'SSD',
+			name: 'SSDv2',
 			path: '/settings/test'
 		},
 		{

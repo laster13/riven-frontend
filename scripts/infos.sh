@@ -55,5 +55,45 @@
   manage_account_yml user.groupid "$grpid"
 
 # Installation traefik
-ansible-playbook ${SETTINGS_SOURCE}/includes/dockerapps/traefik.yml
+ansible-playbook ${SETTINGS_SOURCE}/includes/dockerapps/traefik.yml 2>/dev/null
+
+# Obtenir l'IP publique
+ip=$(curl -s ifconfig.me)
+
+# Obtenir le Zone ID via le nom de domaine
+response=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" \
+-H "X-Auth-Email: $email" \
+-H "X-Auth-Key: $cloudflare_api_key" \
+-H "Content-Type: application/json")
+
+# Afficher la réponse brute pour le débogage
+echo "Réponse de l'API pour le zone_id :"
+echo "$response"
+
+# Extraire le zone_id de la réponse
+zone_id=$(echo $response | jq -r '.result[0].id')
+
+# Vérification si le zone_id est valide
+if [ -z "$zone_id" ] || [ "$zone_id" == "null" ]; then
+    echo "Erreur : Impossible de récupérer le zone_id. Vérifiez que le domaine est correct et que l'API Key a les bons droits."
+    exit 1
+fi
+
+echo "Zone ID : $zone_id"
+
+# Ajouter l'enregistrement DNS pour le sous-domaine
+curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records" \
+-H "X-Auth-Email: $email" \
+-H "X-Auth-Key: $cloudflare_api_key" \
+-H "Content-Type: application/json" \
+--data "{
+    \"type\": \"A\",
+    \"name\": \"webui.$domain\",
+    \"content\": \"141.145.207.227\",
+    \"ttl\": 120,
+    \"proxied\": true
+}"
+
+echo "Infos mise à jour avec succès."
+
 

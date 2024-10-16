@@ -26,9 +26,11 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const data: any = await getPartialSettings();
 	const toPassToSchema = zurgSettingsToPass(data);
+        const scriptName = 'zurg';
 
 	return {
-		form: await superValidate(toPassToSchema, zod(zurgSettingsSchema))
+		form: await superValidate(toPassToSchema, zod(zurgSettingsSchema)),
+                scriptName
 	};
 };
 

@@ -15,7 +15,7 @@ if [ "$app_count" -gt 0 ]; then
 
     # Si l'utilisateur a déjà sélectionné une authentification (comme "oauth"), ne pas remplacer par "Basique"
     if [ -z "$auth" ]; then
-        auth="Basique"
+        auth="basique"
     else
         echo "Info: pour $line."
     fi
@@ -30,14 +30,14 @@ fi
 if [[ "${line}" == "plex" ]]; then
     # Extraire les valeurs JSON
     token=$(jq -r '.updaters.plex.token // empty' "$json_file")
-    login=$(jq -r '.updaters.plex.login // empty' "$json_file")
-    password=$(jq -r '.updaters.plex.password // empty' "$json_file")
+    ident=$(jq -r '.updaters.plex.login // empty' "$json_file")
+    sesame=$(jq -r '.updaters.plex.password // empty' "$json_file")
 
     # Fournir des valeurs par défaut si elles sont manquantes
     defaults=(
         "token:default-token"
-        "login:default-login"
-        "password:default-password"
+        "ident:default-ident"
+        "sesame:default-sesame"
     )
 
     # Liste des autres configurations Plex
@@ -76,14 +76,16 @@ manage_account_yml sub.${line}.${line} "$domaine"
 manage_account_yml sub.${line}.auth "$auth"
 
 if [[ -f "${SETTINGS_STORAGE}/vars/${line}.yml" ]]; then
-    ansible-playbook "${SETTINGS_SOURCE}/includes/dockerapps/generique.yml" --extra-vars "@${SETTINGS_STORAGE}/vars/${line}.yml"
+    ansible-playbook "${SETTINGS_SOURCE}/includes/dockerapps/generique.yml" --extra-vars "@${SETTINGS_STORAGE}/vars/${line}.yml" 2>/dev/null
 elif [[ -f "${SETTINGS_SOURCE}/includes/dockerapps/${line}.yml" ]]; then
-    ansible-playbook "${SETTINGS_SOURCE}/includes/dockerapps/${line}.yml"
+    ansible-playbook "${SETTINGS_SOURCE}/includes/dockerapps/${line}.yml" 2>/dev/null
 elif [[ -f "${SETTINGS_SOURCE}/includes/dockerapps/vars/${line}.yml" ]]; then
-    ansible-playbook "${SETTINGS_SOURCE}/includes/dockerapps/generique.yml" --extra-vars "@${SETTINGS_SOURCE}/includes/dockerapps/vars/${line}.yml"
+    ansible-playbook "${SETTINGS_SOURCE}/includes/dockerapps/generique.yml" --extra-vars "@${SETTINGS_SOURCE}/includes/dockerapps/vars/${line}.yml" 2>/dev/null
 else
     log_write "Aucun fichier de configuration trouvé dans les sources, abandon"
     error=1
 fi
+
+echo "Installation de ${line} terminée avec succès."
 
 exit 0
