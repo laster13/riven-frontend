@@ -83,14 +83,16 @@
         }
     });
 
-        function handleScriptCompleted() {
-            const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
+function handleScriptCompleted() {
+    const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
 
-            if (currentPath === '/onboarding/2') {
-                // Redirection vers une nouvelle page uniquement si on est sur /onboarding/2
-                goto('/onboarding/3');
-        }
+    if (currentPath === '/onboarding/2') {
+        // Attendre 2 secondes avant la redirection
+        setTimeout(() => {
+            goto('/onboarding/3');
+        }, 1000);  // 2000 millisecondes = 2 secondes
     }
+}
 
 
 </script>

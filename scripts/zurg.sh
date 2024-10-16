@@ -14,10 +14,6 @@ ZURG_TOKEN=$(jq -r '.downloaders.real_debrid.api_key // empty' "$json_file")
 
 # Téléchargement des informations de la dernière version
 wget -q https://api.github.com/repos/debridmediamanager/zurg-testing/releases -O releases.json
-if [[ $? -ne 0 ]]; then
-    echo "Erreur lors du téléchargement des informations sur les versions."
-    exit 1
-fi
 
 # Versions actuelles et dernières versions
 CURRENT_VERSION=$(get_from_account_yml zurg.version)
@@ -53,17 +49,9 @@ docker system prune -af > /dev/null 2>&1
 # Création du répertoire et téléchargement de Zurg
 mkdir -p "${scripts_dir}" && cd "${scripts_dir}"
 wget -q "https://github.com/debridmediamanager/zurg-testing/releases/download/${ZURG_VERSION}/zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip"
-if [[ $? -ne 0 ]]; then
-    echo "Erreur lors du téléchargement de Zurg."
-    exit 1
-fi
 
 # Décompression de l'archive Zurg
 unzip -q "zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip"
-if [[ $? -ne 0 ]]; then
-    echo "Erreur lors de la décompression de Zurg."
-    exit 1
-fi
 rm "zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip"
 
 # Vérification du token Zurg

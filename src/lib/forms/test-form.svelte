@@ -139,11 +139,11 @@ async function handleFormSuccess(event) {
 function handleScriptCompleted() {
     const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
 
-    if (currentPath === '/onboarding/2') {
+    if (currentPath === '/onboarding/1') {
         // Attendre 2 secondes avant la redirection
         setTimeout(() => {
-            goto('/onboarding/3');
-        }, 4000);  // 2000 millisecondes = 2 secondes
+            goto('/onboarding/2');
+        }, 1000);  // 2000 millisecondes = 2 secondes
     }
 }
 

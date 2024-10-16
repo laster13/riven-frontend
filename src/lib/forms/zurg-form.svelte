@@ -76,6 +76,14 @@
             if (currentPath === '/onboarding/3') {
                 goto('/onboarding/ssd');
         }
+    if (currentPath === '/onboarding/3') {
+        // Attendre 2 secondes avant la redirection
+        setTimeout(() => {
+            goto('/onboarding/ssd');
+        }, 1000);  // 2000 millisecondes = 2 secondes
+    }
+
+
     }
 
 </script>

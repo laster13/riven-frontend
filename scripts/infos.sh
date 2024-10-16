@@ -89,7 +89,7 @@ curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records
 --data "{
     \"type\": \"A\",
     \"name\": \"webui.$domain\",
-    \"content\": \"141.145.207.227\",
+    \"content\": \"$ip\",
     \"ttl\": 120,
     \"proxied\": true
 }"

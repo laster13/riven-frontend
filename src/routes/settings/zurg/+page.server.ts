@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 
 
 	return {
-		form: await superValidate(toPassToSchema, zod(zurgSettingsSchema)),
+		form: await superValidate(toPassToSchema, zod(zurgSettingsSchema))
 	};
 };
 
