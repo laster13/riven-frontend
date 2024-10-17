@@ -9,9 +9,9 @@ app_count=$(jq '.applications | length' $json_file)
 
 if [ "$app_count" -gt 0 ]; then
     line=$1
-
-    auth=$(jq -r --arg label "$line" '.dossiers.authentification[$label] // empty' $json_file)
-    domaine=$(jq -r --arg label "$line" '.dossiers.domaine[$label] // ""' $json_file)
+    
+    auth=$(jq -r ".dossiers.authentification[\"$line\"] // \"empty\"" "$json_file")
+    domaine=$(jq -r ".dossiers.domaine[\"$line\"] // \"\"" "$json_file")
 
     # Si l'utilisateur a déjà sélectionné une authentification (comme "oauth"), ne pas remplacer par "Basique"
     if [ -z "$auth" ]; then
