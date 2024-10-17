@@ -26,6 +26,7 @@
 	// Configuration du formulaire avec validation
 	const form = superForm(data, { validators: zodClient(mediaServerSettingsSchema) });
 	const { form: formData, enhance, message, delayed } = form;
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 	// Variables pour gérer l'état du bouton
 	let isSubmitting = false;
@@ -60,7 +61,7 @@ async function handleFormSuccess(event) {
         // Si le SSD est installé, appeler l'API
         if (fileExists) {
             console.log("SSD installé, appel de l'API.");
-            const response = await fetch('http://localhost:8080/scripts/update-config', {
+            const response = await fetch(`${backendUrl}/scripts/update-config`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -121,7 +122,7 @@ async function handleFormSuccess(event) {
     // Fonction pour vérifier l'existence du fichier ssdb
     async function checkFileStatus() {
         try {
-            const response = await fetch('http://localhost:8080/scripts/check-file');
+            const response = await fetch(`${backendUrl}/scripts/check-file`);
             const result = await response.json();
             fileExists = result.exists;
         } catch (error) {
