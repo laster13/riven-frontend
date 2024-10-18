@@ -9,6 +9,9 @@
     let statusMessage = '';  // Message d'état
     let logs: string[] = [];
     const dispatch = createEventDispatcher(); // Dispatcher pour envoyer l'état du bouton
+    const backendUrl = window.location.protocol === 'https:' 
+    ? import.meta.env.VITE_BACKEND_URL_HTTPS 
+    : import.meta.env.VITE_BACKEND_URL_HTTP;
 
     // Fonction pour exécuter le script et écouter les logs en temps réel
     function runScript() {
@@ -21,8 +24,8 @@
 
         // Construire l'URL en fonction de la présence ou non du label
         const url = label
-            ? `http://localhost:8080/scripts/run/${scriptName}?label=${encodeURIComponent(label)}`
-            : `http://localhost:8080/scripts/run/${scriptName}`;
+            ? `${backendUrl}/scripts/run/${scriptName}?label=${encodeURIComponent(label)}`
+            : `${backendUrl}/scripts/run/${scriptName}`;
         console.log('URL générée :', url);  // Ajouter ce log ici pour vérifier l'URL
 
         const eventSource = new EventSource(url);

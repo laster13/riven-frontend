@@ -270,367 +270,395 @@
     },
     {
       "id": 67,
-      "label": "mediawiki"
+      "label": "mealie"
     },
     {
       "id": 68,
-      "label": "medusa"
+      "label": "mediawiki"
     },
     {
       "id": 69,
-      "label": "mellow"
+      "label": "medusa"
     },
     {
       "id": 70,
-      "label": "metube"
+      "label": "mellow"
     },
     {
       "id": 71,
-      "label": "microbin"
+      "label": "metube"
     },
     {
       "id": 72,
-      "label": "minecraft"
+      "label": "microbin"
     },
     {
       "id": 73,
-      "label": "mkvtoolnix"
+      "label": "minecraft"
     },
     {
       "id": 74,
-      "label": "monicaHQ"
+      "label": "mkvtoolnix"
     },
     {
       "id": 75,
-      "label": "monitorr"
+      "label": "monicaHQ"
     },
     {
       "id": 76,
-      "label": "n8nio"
+      "label": "monitorr"
     },
     {
       "id": 77,
-      "label": "navidrome"
+      "label": "n8nio"
     },
     {
       "id": 78,
-      "label": "netdata"
+      "label": "navidrome"
     },
     {
       "id": 79,
-      "label": "nextcloud"
+      "label": "netdata"
     },
     {
       "id": 80,
-      "label": "nocodb"
+      "label": "nextcloud"
     },
     {
       "id": 81,
-      "label": "nowshowing"
+      "label": "nocodb"
     },
     {
       "id": 82,
-      "label": "ntopng"
+      "label": "nowshowing"
     },
     {
       "id": 83,
-      "label": "nZBHydra"
+      "label": "ntopng"
     },
     {
       "id": 84,
-      "label": "ombi"
+      "label": "nZBHydra"
     },
     {
       "id": 85,
-      "label": "openvpn"
+      "label": "ombi"
     },
     {
       "id": 86,
-      "label": "organizr"
+      "label": "openvpn"
     },
     {
       "id": 87,
-      "label": "overseerr"
+      "label": "organizr"
     },
     {
       "id": 88,
-      "label": "pastebin"
+      "label": "overseerr"
     },
     {
       "id": 89,
-      "label": "paperless"
+      "label": "pastebin"
     },
     {
       "id": 90,
-      "label": "petio"
+      "label": "paperless"
     },
     {
       "id": 91,
-      "label": "picapport"
+      "label": "petio"
     },
     {
       "id": 92,
-      "label": "pingvin"
+      "label": "picapport"
     },
     {
       "id": 93,
-      "label": "piped"
+      "label": "pingvin"
     },
     {
       "id": 94,
-      "label": "piwigo"
+      "label": "piped"
     },
     {
       "id": 95,
-      "label": "plausible"
+      "label": "piwigo"
     },
     {
       "id": 96,
-      "label": "plexAutoLanguages"
+      "label": "plausible"
     },
     {
       "id": 97,
-      "label": "plex"
+      "label": "plexAutoLanguages"
     },
     {
       "id": 98,
-      "label": "portainer"
+      "label": "plex"
     },
     {
       "id": 99,
-      "label": "prowlarr"
+      "label": "portainer"
     },
     {
       "id": 100,
-      "label": "pureftpd"
+      "label": "prowlarr"
     },
     {
       "id": 101,
-      "label": "pyload"
+      "label": "pureftpd"
     },
     {
       "id": 102,
-      "label": "qbittorrent"
+      "label": "pyload"
     },
     {
       "id": 103,
-      "label": "qbitorrentvpn"
+      "label": "qbittorrent"
     },
     {
       "id": 104,
-      "label": "qflood"
+      "label": "qbitorrentvpn"
     },
     {
       "id": 105,
-      "label": "radarr4k"
+      "label": "qflood"
     },
     {
       "id": 106,
-      "label": "radarr"
+      "label": "radarr4k"
     },
     {
       "id": 107,
-      "label": "rdtclient"
+      "label": "radarr"
     },
     {
       "id": 108,
-      "label": "readarr"
+      "label": "rdtclient"
     },
     {
       "id": 109,
-      "label": "recyclarr"
+      "label": "readarr"
     },
     {
       "id": 110,
-      "label": "rflood"
+      "label": "recyclarr"
     },
     {
       "id": 111,
-      "label": "rtorrentvpn"
+      "label": "rflood"
     },
     {
       "id": 112,
-      "label": "rutorrent_2"
+      "label": "rtorrentvpn"
     },
     {
       "id": 113,
-      "label": "rutorrent_3"
+      "label": "rutorrent_2"
     },
     {
       "id": 114,
-      "label": "rutorrent_4"
+      "label": "rutorrent_3"
     },
     {
       "id": 115,
-      "label": "rutorrentcm"
+      "label": "rutorrent_4"
     },
     {
       "id": 116,
-      "label": "rutorrent"
+      "label": "rutorrentcm"
     },
     {
       "id": 117,
-      "label": "sabnzbd"
+      "label": "rutorrent"
     },
     {
       "id": 118,
-      "label": "scrutiny"
+      "label": "sabnzbd"
     },
     {
       "id": 119,
-      "label": "seafile"
+      "label": "scrutiny"
     },
     {
       "id": 120,
-      "label": "sensorr"
+      "label": "seafile"
     },
     {
       "id": 121,
-      "label": "shaarli"
+      "label": "sensorr"
     },
     {
       "id": 122,
-      "label": "sickchill"
+      "label": "shaarli"
     },
     {
       "id": 123,
-      "label": "sickgear"
+      "label": "sickchill"
     },
     {
       "id": 124,
-      "label": "sismicsreader"
+      "label": "sickgear"
     },
     {
       "id": 125,
-      "label": "sonarr4k"
+      "label": "sismicsreader"
     },
     {
       "id": 126,
-      "label": "sonarr"
+      "label": "sonarr4k"
     },
     {
       "id": 127,
-      "label": "speedtest"
+      "label": "sonarr"
     },
     {
       "id": 128,
-      "label": "speedtesttracker"
+      "label": "speedtest"
     },
     {
       "id": 129,
-      "label": "statping"
+      "label": "speedtesttracker"
     },
     {
       "id": 130,
-      "label": "streamfusion"
+      "label": "statping"
     },
     {
       "id": 131,
-      "label": "subsonic"
+      "label": "streamfusion"
     },
     {
       "id": 132,
-      "label": "synclounge"
+      "label": "stremiocatalogs"
     },
     {
       "id": 133,
-      "label": "syncthing"
+      "label": "stremiotrakt"
     },
     {
       "id": 134,
-      "label": "tautulli"
+      "label": "stremiosaga"
     },
     {
       "id": 135,
-      "label": "thelounge"
+      "label": "stremiotmdbdice"
     },
     {
       "id": 136,
-      "label": "transmission"
+      "label": "stremiomanager"
     },
     {
       "id": 137,
-      "label": "transmissionvpn"
+      "label": "subsonic"
     },
     {
       "id": 138,
-      "label": "ttrss"
+      "label": "synclounge"
     },
     {
       "id": 139,
-      "label": "ubooquity"
+      "label": "syncthing"
     },
     {
       "id": 140,
-      "label": "usenet"
+      "label": "tautulli"
     },
     {
       "id": 141,
-      "label": "varken"
+      "label": "thelounge"
     },
     {
       "id": 142,
-      "label": "vaultwarden"
+      "label": "transmission"
     },
     {
       "id": 143,
-      "label": "vikunja"
+      "label": "transmissionvpn"
     },
     {
       "id": 144,
-      "label": "wallos"
+      "label": "ttrss"
     },
     {
       "id": 145,
-      "label": "webdav"
+      "label": "ubooquity"
     },
     {
       "id": 146,
-      "label": "webtop"
+      "label": "usenet"
     },
     {
       "id": 147,
-      "label": "wetty"
+      "label": "varken"
     },
     {
       "id": 148,
-      "label": "wgeasy"
+      "label": "vaultwarden"
     },
     {
       "id": 149,
-      "label": "whisparr"
+      "label": "vikunja"
     },
     {
       "id": 150,
-      "label": "wikijs"
+      "label": "wallos"
     },
     {
       "id": 151,
-      "label": "wireGuardUI"
+      "label": "webdav"
     },
     {
       "id": 152,
-      "label": "wireGuard"
+      "label": "webtop"
     },
     {
       "id": 153,
-      "label": "wizarr"
+      "label": "wetty"
     },
     {
       "id": 154,
-      "label": "wordpress"
+      "label": "wgeasy"
     },
     {
       "id": 155,
-      "label": "xteve"
+      "label": "whisparr"
     },
     {
       "id": 156,
-      "label": "yacht"
+      "label": "wikijs"
     },
     {
       "id": 157,
+      "label": "wireGuardUI"
+    },
+    {
+      "id": 158,
+      "label": "wireGuard"
+    },
+    {
+      "id": 159,
+      "label": "wizarr"
+    },
+    {
+      "id": 160,
+      "label": "wordpress"
+    },
+    {
+      "id": 161,
+      "label": "xteve"
+    },
+    {
+      "id": 162,
+      "label": "yacht"
+    },
+    {
+      "id": 163,
       "label": "yourls"
+    },
+    {
+      "id": 164,
+      "label": "zilean"
     }
   ]
 }

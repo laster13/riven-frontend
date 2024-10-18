@@ -4,29 +4,6 @@ source /home/${USER}/seedbox-compose/profile.sh
 
 json_file="/home/${USER}/projet-riven/riven-frontend/static/settings.json"
 
-
-app_count=$(jq '.applications | length' $json_file)
-
-if [ "$app_count" -gt 0 ]; then
-    line=$1
-    
-    auth=$(jq -r ".dossiers.authentification[\"$line\"] // \"empty\"" "$json_file")
-    domaine=$(jq -r ".dossiers.domaine[\"$line\"] // \"\"" "$json_file")
-
-    # Si l'utilisateur a déjà sélectionné une authentification (comme "oauth"), ne pas remplacer par "Basique"
-    if [ -z "$auth" ]; then
-        auth="basique"
-    else
-        echo "Info: pour $line."
-    fi
-
-    if [ -z "$domaine" ]; then
-        echo "Info: "
-    fi
-else
-    exit 1
-fi
-
 if [[ "${line}" == "plex" ]]; then
     # Extraire les valeurs JSON
     token=$(jq -r '.updaters.plex.token // empty' "$json_file")
@@ -71,6 +48,11 @@ if [[ "${line}" == "plex" ]]; then
         manage_account_yml "plex.$key" "$value"
     done
 fi
+
+    auth=$(jq -r --arg line "$line" '.dossiers.authentification[$line] // "empty"' "$json_file")
+    echo $auth
+    domaine=$(jq -r --arg line "$line" '.dossiers.domaine[$line] // ""' "$json_file")
+    echo $domaine
 
 manage_account_yml sub.${line}.${line} "$domaine"
 manage_account_yml sub.${line}.auth "$auth"

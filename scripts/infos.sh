@@ -55,7 +55,7 @@
   manage_account_yml user.groupid "$grpid"
 
 # Installation traefik
-ansible-playbook ${SETTINGS_SOURCE}/includes/dockerapps/traefik.yml 2>/dev/null
+ansible-playbook ${SETTINGS_SOURCE}/includes/dockerapps/traefik.yml
 
 # Obtenir l'IP publique
 ip=$(curl -s ifconfig.me)

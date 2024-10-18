@@ -7,8 +7,6 @@ json_file="/home/${USER}/projet-riven/riven/data/settings.json"
 scripts_dir="${HOME}/scripts/zurg"
 config_dir="${HOME}/.config/rclone"
 
-sudo rm releases.json 2>/dev/null
-
 # Récupération des variables depuis le fichier JSON
 ZURG_TOKEN=$(jq -r '.downloaders.real_debrid.api_key // empty' "$json_file")
 
@@ -18,7 +16,6 @@ wget -q https://api.github.com/repos/debridmediamanager/zurg-testing/releases -O
 # Versions actuelles et dernières versions
 CURRENT_VERSION=$(get_from_account_yml zurg.version)
 LATEST_VERSION=$(jq -r '.[0].tag_name' releases.json)
-sudo rm releases.json
 
 # Comparaison des versions
 if [[ ${CURRENT_VERSION} == notfound ]] || [[ ${CURRENT_VERSION} != ${LATEST_VERSION} ]]; then
@@ -42,11 +39,12 @@ if [[ ${RCLONE_VERSION} == notfound ]]; then
 fi
 
 # Nettoyage des dossiers et containers Docker existants
-sudo rm -rf "${scripts_dir}" > /dev/null 2>&1
+sudo rm -rf "${scripts_dir}"
 
 # Création du répertoire et téléchargement de Zurg
 mkdir -p "${scripts_dir}" && cd "${scripts_dir}"
 wget -q "https://github.com/debridmediamanager/zurg-testing/releases/download/${ZURG_VERSION}/zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip"
+echo "Téléchargement dans le répertoire : $(pwd)"
 
 # Décompression de l'archive Zurg
 unzip -q "zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip"

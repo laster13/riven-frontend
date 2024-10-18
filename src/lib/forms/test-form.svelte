@@ -24,9 +24,10 @@
 	console.log("Nom du script fourni :", scriptName);
 
 	// Configuration du formulaire avec validation
-	const form = superForm(data, { validators: zodClient(mediaServerSettingsSchema) });
 	const { form: formData, enhance, message, delayed } = form;
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const backendUrl = window.location.protocol === 'https:' 
+        ? import.meta.env.VITE_BACKEND_URL_HTTPS 
+        : import.meta.env.VITE_BACKEND_URL_HTTP;
 
 	// Variables pour gérer l'état du bouton
 	let isSubmitting = false;
@@ -61,25 +62,13 @@ async function handleFormSuccess(event) {
         // Si le SSD est installé, appeler l'API
         if (fileExists) {
             console.log("SSD installé, appel de l'API.");
-            const response = await fetch(`${backendUrl}/scripts/update-config`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
+            const response = await fetch(`${backendUrl}/scripts/update-config`);
             if (response.ok) {
                 const result = await response.json();
                 console.log("Réponse de l'API:", result);
                 toast.success('Configuration mise à jour avec succès');
                 statusMessage = "Mise à jour avec succès.";
 
-                // Appeler handleScriptCompleted après un délai de 1 seconde
-                setTimeout(() => {
-                    if (typeof handleScriptCompleted === 'function') {
-                        handleScriptCompleted();
-                    } else {
-                        console.error('handleScriptCompleted n\'est pas une fonction');
-                    }
-                }, 2000);
                 statusMessage = "";
             } else {
                 throw new Error('Erreur lors de la mise à jour');
