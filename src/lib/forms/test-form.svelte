@@ -1,44 +1,55 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { getContext } from 'svelte';
-	import SuperDebug from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import * as Form from '$lib/components/ui/form';
-	import { mediaServerSettingsSchema, type MediaServerSettingsSchema } from '$lib/forms/helpers';
-	import { toast } from 'svelte-sonner';
-	import { Separator } from '$lib/components/ui/separator';
-	import CheckboxField from './components/checkbox-field.svelte';
-	import { Loader2 } from 'lucide-svelte';
-	import RunScript from '../../routes/run-script.svelte'; 
-        import { onMount } from 'svelte';
-        import { goto } from '$app/navigation';
+    import { page } from '$app/stores';
+    import { getContext } from 'svelte';
+    import SuperDebug from 'sveltekit-superforms';
+    import { zodClient } from 'sveltekit-superforms/adapters';
+    import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+    import * as Form from '$lib/components/ui/form';
+    import { mediaServerSettingsSchema, type MediaServerSettingsSchema } from '$lib/forms/helpers';
+    import { toast } from 'svelte-sonner';
+    import { Separator } from '$lib/components/ui/separator';
+    import CheckboxField from './components/checkbox-field.svelte';
+    import { Loader2 } from 'lucide-svelte';
+    import RunScript from '../../routes/run-script.svelte'; 
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
 
-	// Initialisation du formulaire et du scriptName
-	export let data: SuperValidated<Infer<MediaServerSettingsSchema>>;
-	export let actionUrl: string = '?/default';
-	export let scriptName: string = 'requis';
-        let fileExists: boolean | null = null; // Statut de la seedbox (fichier)
+    // Initialisation du formulaire et du scriptName
+    export let data: SuperValidated<Infer<MediaServerSettingsSchema>>;
+    export let actionUrl: string = '?/default';
+    export let scriptName: string = 'requis';
+    let fileExists: boolean | null = null; // Statut de la seedbox (fichier)
+    let backendUrl;
 
-	// Débogage initial
-	console.log("Nom du script fourni :", scriptName);
+    // Débogage initial
+    console.log("Nom du script fourni :", scriptName);
 
-	// Configuration du formulaire avec validation
-	const { form: formData, enhance, message, delayed } = form;
-        const backendUrl = window.location.protocol === 'https:' 
-        ? import.meta.env.VITE_BACKEND_URL_HTTPS 
-        : import.meta.env.VITE_BACKEND_URL_HTTP;
+    // Configuration du formulaire avec validation
+    const form = superForm(data, { validators: zodClient(mediaServerSettingsSchema) });
+    const { form: formData, enhance, message, delayed } = form;
 
-	// Variables pour gérer l'état du bouton
-	let isSubmitting = false;
-	let showSpinner = false;
-	let statusMessage = '';
-        let showLogs = false;
+    // Détermination du backend URL selon le protocole
+    if (typeof window !== 'undefined') {
+        // Si nous sommes côté client, déterminer le protocole (http ou https)
+        backendUrl = window.location.protocol === 'https:'
+            ? import.meta.env.VITE_BACKEND_URL_HTTPS
+            : import.meta.env.VITE_BACKEND_URL_HTTP;
+    } else {
+        // Si nous sommes côté serveur (SSR), utiliser une valeur par défaut (ou autre logique)
+        backendUrl = import.meta.env.VITE_BACKEND_URL; // Valeur par défaut pour SSR
+    }
 
+    // Variables pour gérer l'état du bouton
+    let isSubmitting = false;
+    let showSpinner = false;
+    let statusMessage = '';
+    let showLogs = false;
+
+    // Vérification de l'état du fichier lors du montage du composant
     onMount(() => {
-        const uniqueParam = new Date().getTime();  // Crée un paramètre unique pour éviter le cache
+        const uniqueParam = new Date().getTime(); // Crée un paramètre unique pour éviter le cache
         const currentUrl = window.location.href;
-        
+
         if (!currentUrl.includes('nocache')) {
             // Redirige l'URL avec un paramètre de cache unique si 'nocache' n'est pas déjà présent
             window.location.href = `${currentUrl}?nocache=${uniqueParam}`;
@@ -48,65 +59,77 @@
         }
     });
 
-// Gérer la soumission du formulaire
-async function handleFormSuccess(event) {
-    event.preventDefault();
-    console.log("Formulaire soumis avec succès.");
+    // Gérer la soumission du formulaire
+    async function handleFormSuccess(event) {
+        event.preventDefault();
+        console.log("Formulaire soumis avec succès.");
 
-    // Activer l'état de soumission et afficher le spinner
-    isSubmitting = true;
-    showSpinner = true;
-    statusMessage = "Récupération de la configuration SSDv2...";
+        // Activer l'état de soumission et afficher le spinner
+        isSubmitting = true;
+        showSpinner = true;
+        statusMessage = "Récupération de la configuration SSDv2...";
 
-    try {
-        // Si le SSD est installé, appeler l'API
-        if (fileExists) {
-            console.log("SSD installé, appel de l'API.");
-            const response = await fetch(`${backendUrl}/scripts/update-config`);
-            if (response.ok) {
-                const result = await response.json();
-                console.log("Réponse de l'API:", result);
-                toast.success('Configuration mise à jour avec succès');
-                statusMessage = "Mise à jour avec succès.";
+        try {
+            // Si le SSD est installé, appeler l'API
+            if (fileExists) {
+                console.log("SSD installé, appel de l'API.");
+                const response = await fetch(`${backendUrl}/scripts/update-config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-                statusMessage = "";
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Réponse de l'API:", result);
+                    toast.success('Configuration mise à jour avec succès');
+                    statusMessage = "Mise à jour avec succès.";
+
+                    // Appeler handleScriptCompleted après un délai de 1 seconde
+                    setTimeout(() => {
+                        if (typeof handleScriptCompleted === 'function') {
+                            handleScriptCompleted();
+                        } else {
+                            console.error('handleScriptCompleted n\'est pas une fonction');
+                        }
+                    }, 2000);
+                    statusMessage = "";
+                } else {
+                    throw new Error('Erreur lors de la mise à jour');
+                }
             } else {
-                throw new Error('Erreur lors de la mise à jour');
+                // Cas où le SSD n'est pas installé
+                toast.success('Script déclenché: ' + scriptName);
+                console.log('scriptName:', scriptName);
+
+                // Dispatch d'un événement pour démarrer le script
+                console.log('Dispatching startScript event for:', scriptName);
+                const scriptEvent = new CustomEvent('startScript', { detail: { scriptName } });
+                window.dispatchEvent(scriptEvent);
+
+                statusMessage = "Script déclenché sans SSD.";
             }
-        } else {
-            // Cas où le SSD n'est pas installé
-            toast.success('Script déclenché: ' + scriptName);
-            console.log('scriptName:', scriptName);
-
-            // Dispatch d'un événement pour démarrer le script
-            console.log('Dispatching startScript event for:', scriptName);
-            const scriptEvent = new CustomEvent('startScript', { detail: { scriptName } });
-            window.dispatchEvent(scriptEvent);
-
-            statusMessage = "Script déclenché sans SSD.";
+        } catch (error) {
+            console.error('Erreur lors de la soumission:', error);
+            toast.error('Échec de la mise à jour de la configuration');
+            statusMessage = "Échec de la mise à jour.";
+        } finally {
+            // Désactiver le spinner et l'état de soumission
+            isSubmitting = false;
+            showSpinner = false;
         }
-    } catch (error) {
-        console.error('Erreur lors de la soumission:', error);
-        toast.error('Échec de la mise à jour de la configuration');
-        statusMessage = "Échec de la mise à jour.";
-    } finally {
-        // Désactiver le spinner et l'état de soumission
-        isSubmitting = false;
-        showSpinner = false;
     }
-}
 
-	// Fonction pour gérer l'état du bouton via les événements du composant RunScript
-	function updateButtonState(event) {
-		const { isSubmitting: submitting, showSpinner: spinner } = event.detail;
-		isSubmitting = submitting;
-		showSpinner = spinner;
-	}
+    // Fonction pour gérer l'état du bouton via les événements du composant RunScript
+    function updateButtonState(event) {
+        const { isSubmitting: submitting, showSpinner: spinner } = event.detail;
+        isSubmitting = submitting;
+        showSpinner = spinner;
+    }
 
-	// Fonction pour mettre à jour le message d'état du script
-	function updateStatusMessage(event) {
-		statusMessage = event.detail.statusMessage;
-	}
+    // Fonction pour mettre à jour le message d'état du script
+    function updateStatusMessage(event) {
+        statusMessage = event.detail.statusMessage;
+    }
 
     // Fonction pour vérifier l'existence du fichier ssdb
     async function checkFileStatus() {
@@ -120,22 +143,22 @@ async function handleFormSuccess(event) {
         }
     }
 
-	// Fonction pour basculer l'état de la case à cocher
-	function handleCheckboxChange(event) {
-		showLogs = event.target.checked;
-	}
+    // Fonction pour basculer l'état de la case à cocher
+    function handleCheckboxChange(event) {
+        showLogs = event.target.checked;
+    }
 
     // Fonction exécutée lorsque le script est terminé
-function handleScriptCompleted() {
-    const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
+    function handleScriptCompleted() {
+        const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
 
-    if (currentPath === '/onboarding/1') {
-        // Attendre 2 secondes avant la redirection
-        setTimeout(() => {
-            goto('/onboarding/2');
-        }, 1000);  // 2000 millisecondes = 2 secondes
+        if (currentPath === '/onboarding/1') {
+            // Attendre 2 secondes avant la redirection
+            setTimeout(() => {
+                goto('/onboarding/2');
+            }, 1000); // 2000 millisecondes = 2 secondes
+        }
     }
-}
 
 </script>
 

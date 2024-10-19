@@ -4,6 +4,14 @@ source /home/${USER}/seedbox-compose/profile.sh
 
 json_file="/home/${USER}/projet-riven/riven-frontend/static/settings.json"
 
+line=$1
+
+  auth=$(jq -r --arg line "$line" '.dossiers.authentification[$line] // "empty"' "$json_file")
+  echo $auth
+  domaine=$(jq -r --arg line "$line" '.dossiers.domaine[$line] // ""' "$json_file")
+  echo $domaine
+
+
 if [[ "${line}" == "plex" ]]; then
     # Extraire les valeurs JSON
     token=$(jq -r '.updaters.plex.token // empty' "$json_file")
@@ -48,11 +56,6 @@ if [[ "${line}" == "plex" ]]; then
         manage_account_yml "plex.$key" "$value"
     done
 fi
-
-    auth=$(jq -r --arg line "$line" '.dossiers.authentification[$line] // "empty"' "$json_file")
-    echo $auth
-    domaine=$(jq -r --arg line "$line" '.dossiers.domaine[$line] // ""' "$json_file")
-    echo $domaine
 
 manage_account_yml sub.${line}.${line} "$domaine"
 manage_account_yml sub.${line}.auth "$auth"

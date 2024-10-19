@@ -8,10 +8,20 @@
 
     let statusMessage = '';  // Message d'état
     let logs: string[] = [];
+    let backendUrl;
+
+    // Détermination du backend URL selon le protocole
+    if (typeof window !== 'undefined') {
+        // Si nous sommes côté client, déterminer le protocole (http ou https)
+        backendUrl = window.location.protocol === 'https:'
+            ? import.meta.env.VITE_BACKEND_URL_HTTPS
+            : import.meta.env.VITE_BACKEND_URL_HTTP;
+    } else {
+        // Si nous sommes côté serveur (SSR), utiliser une valeur par défaut (ou autre logique)
+        backendUrl = import.meta.env.VITE_BACKEND_URL; // Valeur par défaut pour SSR
+    }
+
     const dispatch = createEventDispatcher(); // Dispatcher pour envoyer l'état du bouton
-    const backendUrl = window.location.protocol === 'https:' 
-    ? import.meta.env.VITE_BACKEND_URL_HTTPS 
-    : import.meta.env.VITE_BACKEND_URL_HTTP;
 
     // Fonction pour exécuter le script et écouter les logs en temps réel
     function runScript() {
