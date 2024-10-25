@@ -8,10 +8,10 @@
 
 	export let data: PageData;
 
-	const version = data.settings.data.version; // Backend version
+	const version = data.settings.version; // Backend version
 	const frontendVersion = data.frontendVersion; // Frontend version passed from server
-	const rclone_path = data.settings.data.symlink.rclone_path;
-	const library_path = data.settings.data.symlink.library_path;
+	const rclone_path = data.settings.symlink.rclone_path;
+	const library_path = data.settings.symlink.library_path;
 
 	interface AboutData {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -188,10 +188,6 @@
 		rel="noopener noreferrer"
 		class="my-8"
 	>
-		<img
-			alt="contributors"
-			src="https://contrib.rocks/image?repo=rivenmedia/riven"
-			class="mt-2 max-w-lg"
-		/>
+		<img alt="contributors" src="https://contrib.rocks/image?repo=rivenmedia/riven" class="mt-2" />
 	</a>
 </div>

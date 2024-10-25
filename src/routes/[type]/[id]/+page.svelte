@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { isRivenShow } from '$lib/utils.js';
 	import Header from '$lib/components/header.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
@@ -10,7 +11,9 @@
 		Wrench,
 		RotateCcw,
 		CirclePower,
-		Clipboard
+		Clipboard,
+		Magnet,
+		LoaderCircle
 	} from 'lucide-svelte';
 	import * as Carousel from '$lib/components/ui/carousel/index.js';
 	import { Button } from '$lib/components/ui/button';
@@ -24,10 +27,19 @@
 	import { toast } from 'svelte-sonner';
 	import { goto, invalidateAll } from '$app/navigation';
 	import ItemRequest from '$lib/components/item-request.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import * as Select from '$lib/components/ui/select';
+	import type { Selected } from 'bits-ui';
+	import { ItemsService } from '$lib/client';
 
 	export let data: PageData;
 
 	let productionCompanies = 4;
+	let magnetLink = '';
+	let magnetLoading = false;
+	let isShow = data.riven ? isRivenShow(data.riven) : false;
+	let selectedMagnetItem: Selected<{ id: string; file?: string; folder?: string }>;
+	$: buttonEnabled = magnetLink && !magnetLoading && (isShow ? selectedMagnetItem : true);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function filterSpecial(seasons: any) {
@@ -35,12 +47,14 @@
 		return seasons.filter((season: any) => season.season_number !== 0);
 	}
 
-	async function deleteItem(_id: number) {
-		const response = await fetch(`/api/media/${_id}`, {
-			method: 'DELETE'
+	async function deleteItem(id: number) {
+		const response = await ItemsService.removeItem({
+			query: {
+				ids: id.toString()
+			}
 		});
 
-		if (response.ok) {
+		if (!response.error) {
 			toast.success('Media deleted successfully');
 			goto('/library');
 		} else {
@@ -48,12 +62,14 @@
 		}
 	}
 
-	async function retryItem(_id: number) {
-		const response = await fetch(`/api/media/${_id}/retry`, {
-			method: 'POST'
+	async function retryItem(id: number) {
+		const response = await ItemsService.retryItems({
+			query: {
+				ids: id.toString()
+			}
 		});
 
-		if (response.ok) {
+		if (!response.error) {
 			toast.success('Media retried successfully');
 			invalidateAll();
 		} else {
@@ -61,12 +77,14 @@
 		}
 	}
 
-	async function resetItem(_id: number) {
-		const response = await fetch(`/api/media/${_id}/reset`, {
-			method: 'POST'
+	async function resetItem(id: number) {
+		const response = await ItemsService.resetItems({
+			query: {
+				ids: id.toString()
+			}
 		});
 
-		if (response.ok) {
+		if (!response.error) {
 			toast.success('Media reset successfully');
 			invalidateAll();
 		} else {
@@ -74,13 +92,41 @@
 		}
 	}
 
-	function getTime(time: number) {
+	function getTime(time: string) {
 		const date = new Date(time);
 		return date.toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
 		});
+	}
+
+	async function addMagnetLink(id: string, magnet: string) {
+		if (!magnet) {
+			toast.error('Magnet link cannot be empty');
+			return;
+		}
+		if (isShow && !selectedMagnetItem) {
+			toast.error('Select a season/episode');
+			return;
+		}
+		if (magnetLoading) return;
+		magnetLoading = true;
+		const idToSet = isShow ? selectedMagnetItem.value.id : id;
+		const { error } = await ItemsService.setTorrentRdMagnet({
+			path: {
+				id: parseInt(idToSet)
+			},
+			query: {
+				magnet
+			}
+		});
+		magnetLoading = false;
+		if (error) {
+			toast.error((error as string) ?? 'Unknown error');
+			return;
+		}
+		toast.success('Magnet link added successfully');
 	}
 </script>
 
@@ -102,8 +148,8 @@
 				loading="lazy"
 			/>
 			<div
-				class="absolute bottom-0 left-0 right-0 h-full w-full bg-gradient-to-b from-transparent to-zinc-900/55"
-			></div>
+				class="absolute bottom-0 left-0 right-0 h-full w-full bg-gradient-to-b from-transparent to-slate-900 to-80%"
+			/>
 		</span>
 	</div>
 	<div class="absolute z-[2] mt-32 flex h-full w-full flex-col items-center p-8 md:px-24 lg:px-32">
@@ -124,18 +170,17 @@
 					<h1 class="text-center text-4xl text-zinc-50 md:text-left">
 						{data.details.title || data.details.name || data.details.original_name}
 					</h1>
-					{#if data.db && data.db.last_state}
+					{#if data.riven}
 						<div class="flex items-center justify-center gap-2 md:justify-start">
 							<Badge
 								class={clsx('font-medium', {
-									'bg-green-500': data.db.last_state === 'Completed',
+									'bg-green-500': data.riven.state === 'Completed',
 									'bg-yellow-500':
-										data.db.last_state === 'Downloaded' ||
-										data.db.last_state === 'PartiallyCompleted',
-									'bg-red-500': data.db.last_state === 'Unknown'
+										data.riven.state === 'Downloaded' || data.riven.state === 'PartiallyCompleted',
+									'bg-red-500': data.riven.state === 'Unknown'
 								})}
 							>
-								{statesName[data.db.last_state]}
+								{statesName[data.riven.state]}
 							</Badge>
 						</div>
 					{/if}
@@ -178,7 +223,7 @@
 						{data.details.overview}
 					</div>
 					<div class="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-						{#if data.db}
+						{#if data.riven}
 							<Sheet.Root>
 								<Sheet.Trigger asChild let:builder>
 									<Button
@@ -198,14 +243,77 @@
 										>
 									</Sheet.Header>
 									<Sheet.Description class="mt-2 flex flex-col gap-2">
-										<p>ID: {data.db._id}</p>
-										{#if data.db.requested_by}
-											<p>Requested by: {data.db.requested_by}</p>
+										<p>ID: {data.riven.id}</p>
+										{#if data.riven.requested_by}
+											<p>Requested by: {data.riven.requested_by}</p>
 										{/if}
-										{#if data.db.requested_at}
-											<p>Requested at: {getTime(data.db.requested_at.getTime())}</p>
+										{#if data.riven.requested_at}
+											<p>Requested at: {getTime(data.riven.requested_at)}</p>
 										{/if}
-										<p>Symlinked: {data.db.symlinked}</p>
+										<p>Symlinked: {data.riven.symlinked}</p>
+										{#if data.riven.folder}
+											<p>Folder: {data.riven.folder}</p>
+										{/if}
+										{#if isShow && selectedMagnetItem && selectedMagnetItem.value.file}
+											<p>Selected item file: {selectedMagnetItem.value.file}</p>
+										{:else if isShow && selectedMagnetItem && selectedMagnetItem.value.folder}
+											<p>Selected item folder: {selectedMagnetItem.value.folder}</p>
+										{/if}
+
+										<div class="mt-1"></div>
+
+										{#if isRivenShow(data.riven)}
+											<Select.Root portal={null} bind:selected={selectedMagnetItem}>
+												<Select.Trigger>
+													<Select.Value placeholder="Select a season/episode" />
+												</Select.Trigger>
+												<Select.Content class="max-h-[600px] overflow-y-scroll sm:max-h-[300px]">
+													<Select.Group>
+														{#each data.riven.seasons as season}
+															<Select.Label>Season {season.number}</Select.Label>
+															<Select.Item value={season}>
+																All episodes in season {season.number}
+															</Select.Item>
+															{#each season.episodes as episode}
+																<Select.Item value={episode}>
+																	S{season.number.toString().padStart(2, '0')}E{episode.number
+																		.toString()
+																		.padStart(2, '0')}
+																	{episode.title}
+																</Select.Item>
+															{/each}
+														{/each}
+													</Select.Group>
+												</Select.Content>
+												<Select.Input name="favoriteFruit" />
+											</Select.Root>
+										{/if}
+
+										<Input bind:value={magnetLink} placeholder="Paste in the magnet link" />
+
+										<Tooltip.Root>
+											<Tooltip.Trigger class="mb-2">
+												<Button
+													class="flex w-full items-center gap-1"
+													disabled={!buttonEnabled}
+													on:click={async () => {
+														if (data.riven && magnetLink) {
+															await addMagnetLink(data.riven.id.toString(), magnetLink);
+														}
+													}}
+												>
+													{#if magnetLoading}
+														<LoaderCircle class="size-4 animate-spin" />
+													{:else}
+														<Magnet class="size-4" />
+													{/if}
+													<span>Replace torrent</span>
+												</Button>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												<p>Replaces the current torrent with the magnet link</p>
+											</Tooltip.Content>
+										</Tooltip.Root>
 
 										<Tooltip.Root>
 											<Tooltip.Trigger>
@@ -231,8 +339,8 @@
 															<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 															<AlertDialog.Action
 																on:click={async () => {
-																	if (data.db) {
-																		await retryItem(data.db._id);
+																	if (data.riven) {
+																		await retryItem(data.riven.id);
 																	}
 																}}>Continue</AlertDialog.Action
 															>
@@ -270,8 +378,8 @@
 															<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 															<AlertDialog.Action
 																on:click={async () => {
-																	if (data.db) {
-																		await resetItem(data.db._id);
+																	if (data.riven) {
+																		await resetItem(data.riven.id);
 																	}
 																}}>Continue</AlertDialog.Action
 															>
@@ -288,7 +396,7 @@
 											class="flex w-full items-center gap-1"
 											variant="destructive"
 											on:click={() => {
-												navigator.clipboard.writeText(JSON.stringify(data.db, null, 2));
+												navigator.clipboard.writeText(JSON.stringify(data.riven, null, 2));
 												toast.success('Item data copied to clipboard');
 											}}
 										>
@@ -301,7 +409,7 @@
 						{:else}
 							<ItemRequest data={data.details} type={data.mediaType} />
 						{/if}
-						{#if data.db}
+						{#if data.riven}
 							<Tooltip.Root>
 								<Tooltip.Trigger>
 									<AlertDialog.Root>
@@ -327,8 +435,8 @@
 												<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 												<AlertDialog.Action
 													on:click={async () => {
-														if (data.db) {
-															await deleteItem(data.db._id);
+														if (data.riven) {
+															await deleteItem(data.riven.id);
 														}
 													}}>Continue</AlertDialog.Action
 												>

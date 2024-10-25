@@ -1,32 +1,55 @@
 import type { Handle } from '@sveltejs/kit';
-import { redirect, error } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { env } from '$env/dynamic/private';
-const BACKEND_URL = env.BACKEND_URL || 'http://127.0.0.1:8080';
-import { db } from '$lib/server/db';
+import { client } from '$lib/client/services.gen';
+import { getServerConfig } from '$lib/serverConfig';
 
-const setLocals: Handle = async ({ event, resolve }) => {
-	event.locals.BACKEND_URL = BACKEND_URL;
-	event.locals.db = db;
+const configureClientMiddleware: Handle = async ({ event, resolve }) => {
+	const config = await getServerConfig();
 
-	return resolve(event);
-};
+	if (config) {
+		event.locals.backendUrl = config.backendUrl;
+		event.locals.apiKey = config.apiKey;
+		client.setConfig({
+			baseUrl: config.backendUrl,
+			headers: {
+				'x-api-key': config.apiKey
+			}
+		});
+	}
 
-const onboarding: Handle = async ({ event, resolve }) => {
-	if (!event.url.pathname.startsWith('/onboarding') && event.request.method === 'GET') {
-		const res = await event.fetch(`${BACKEND_URL}/services`);
-		const data = await res.json();
-		if (!data.success || !data.data) {
-			error(500, 'API Error');
-		}
-		const toCheck = ['symlink', 'symlinklibrary'];
-		const allServicesTrue: boolean = toCheck.every((service) => data.data[service] === true);
-		if (!allServicesTrue) {
-			redirect(302, '/onboarding');
+	if (
+		!event.url.pathname.startsWith('/connect') &&
+		!event.url.pathname.startsWith('/api/configure-client') &&
+		event.request.method === 'GET'
+	) {
+		if (!event.locals.backendUrl || !event.locals.apiKey) {
+			throw redirect(307, '/connect');
 		}
 	}
 
 	return resolve(event);
 };
 
-export const handle = sequence(setLocals, onboarding);
+const errorInterceptor: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+
+	client.interceptors.error.use((error: unknown) => {
+		if (
+			error &&
+			typeof error === 'object' &&
+			'detail' in error &&
+			typeof error.detail === 'string'
+		) {
+			if (error.detail === 'Missing or invalid API key') {
+				throw redirect(307, '/connect');
+			}
+			return error.detail;
+		}
+		return undefined;
+	});
+
+	return response;
+};
+
+export const handle = sequence(configureClientMiddleware, errorInterceptor);
