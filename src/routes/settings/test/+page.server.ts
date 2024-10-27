@@ -6,10 +6,10 @@ import { setSettings, saveSettings, loadSettings } from '$lib/forms/helpers.serv
 export const load: PageServerLoad = async ({ fetch, locals }) => {
 	console.log("Début du chargement des paramètres partiels...");
 
-	// Fonction pour obtenir les paramètres directement
+	// Fonction pour obtenir les paramètres directement, utilisant `locals` et `fetch` disponibles
 	async function getPartialSettings() {
 		try {
-			const results = await fetch(`${locals.BACKEND_URL}/settings/get`);
+			const results = await fetch(`${locals.backendUrl}/settings/get`);
 			console.log('Réponse obtenue depuis le backend:', results);
 			return await results.json();
 		} catch (e) {
@@ -73,8 +73,16 @@ export const actions: Actions = {
             console.log('Paramètres sauvegardés et chargés avec succès');
 
         } catch (e) {
-            console.error('Erreur lors de la sauvegarde des paramètres:', e);
-            return message(formObject, 'Unable to save settings. API is down.', { status: 400 });
+            console.error(e);
+            return message(form, 'Unable to save settings. API is down.', {
+                status: 400
+            });
         }
+
+        if (event.url.searchParams.get('onboarding') === 'true') {
+            throw redirect(302, '/onboarding/2');
+        }
+
+        return message(form, 'Settings saved!');
     }
 };

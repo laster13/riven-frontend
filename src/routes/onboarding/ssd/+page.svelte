@@ -58,14 +58,9 @@
     <!-- Conteneur des boutons, organisé en ligne avec `flex-row` -->
     <div class="slide-up mt-4 flex flex-row gap-4">
         <!-- Bouton "C'est parti" qui redirige vers /onboarding/1 -->
-        <Button class="w-full font-medium md:max-w-max" href="/onboarding/4">
+        <Button class="w-full font-medium md:max-w-max" href="/?onboarding=true">
             <Rocket class="mr-2 h-4 w-4" />
             <span>C'est parti</span>
-        </Button>
-
-        <!-- Bouton "No merci" qui redirige vers /?onboarding=true -->
-        <Button class="w-full font-medium md:max-w-max" href="/?onboarding=true">
-            <span>Non merci</span>
         </Button>
     </div>
 </div>

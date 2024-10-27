@@ -6,12 +6,5 @@
       "authappli": "basique"
     },
     "domaine": {}
-  },
-  "updaters": {
-    "plex": {
-      "token": "",
-      "login": "",
-      "password": ""
-    }
   }
 }

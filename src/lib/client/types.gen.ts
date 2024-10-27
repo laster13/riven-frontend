@@ -33,13 +33,28 @@ export type AppModel = {
     database?: DatabaseModel;
     notifications?: NotificationsModel;
     post_processing?: PostProcessing;
+    cloudflare?: CloudflareModel;
+    utilisateur?: UtilisateurModel;
+    dossiers?: DossierModel;
+    media?: MediaModel;
+    applications?: Array<ApplicationModel>;
 };
 
-export type BelongsToCollection = {
-    id: number;
-    name: string;
-    poster_path: (string | null);
-    backdrop_path: (string | null);
+export type ApplicationModel = {
+    id?: number;
+    label?: string;
+};
+
+export type AuthMethodModel = {
+    authMethod?: string;
+    oauth_client?: string;
+    oauth_secret?: string;
+    oauth_mail?: string;
+};
+
+export type CloudflareModel = {
+    cloudflare_login?: string;
+    cloudflare_api_key?: string;
 };
 
 export type CometConfig = {
@@ -71,9 +86,14 @@ export type DatabaseModel = {
     host?: string;
 };
 
-export type Dates = {
-    maximum: string;
-    minimum: string;
+export type DossierModel = {
+    on_item_type?: Array<(string)>;
+    authentification?: {
+        [key: string]: (string);
+    };
+    domaine?: {
+        [key: string]: unknown;
+    };
 };
 
 export type DownloadersModel = {
@@ -90,24 +110,21 @@ export type EmbyLibraryModel = {
     url?: string;
 };
 
+export type EventResponse = {
+    data: {
+        [key: string]: unknown;
+    };
+};
+
 export type EventUpdate = {
     item_id: number;
     emitted_by: string;
     run_at: string;
 };
 
-export type ExternalIDExternalSource = 'imdb_id' | 'facebook_id' | 'instagram_id' | 'tvdb_id' | 'tiktok_id' | 'twitter_id' | 'wikidata_id' | 'youtube_id';
-
-export type Genre = {
-    id: number;
-    name: string;
-};
-
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
-
-export type IncludeAdult = 'true' | 'false';
 
 export type IndexerModel = {
     update_interval?: number;
@@ -161,6 +178,10 @@ export type MdblistModel = {
     lists?: Array<(string | number)>;
 };
 
+export type MediaModel = {
+    on_item_type?: Array<(string)>;
+};
+
 export type MediafusionConfig = {
     enabled?: boolean;
     url?: string;
@@ -171,13 +192,6 @@ export type MediafusionConfig = {
 
 export type MessageResponse = {
     message: string;
-};
-
-export type Network = {
-    id: number;
-    logo_path: (string | null);
-    name: string;
-    origin_country: string;
 };
 
 export type NotificationsModel = {
@@ -223,18 +237,6 @@ export type PlexWatchlistModel = {
 
 export type PostProcessing = {
     subliminal?: SubliminalConfig;
-};
-
-export type ProductionCompany = {
-    id: number;
-    logo_path: (string | null);
-    name: string;
-    origin_country: string;
-};
-
-export type ProductionCountry = {
-    iso_3166_1: string;
-    name: string;
 };
 
 export type ProwlarrConfig = {
@@ -353,6 +355,7 @@ export type ScraperModel = {
     mediafusion?: MediafusionConfig;
     zilean?: ZileanConfig;
     comet?: CometConfig;
+    yggflix?: YggConfig;
 };
 
 export type SetSettings = {
@@ -364,12 +367,6 @@ export type SetTorrentRDResponse = {
     message: string;
     item_id: number;
     torrent_id: string;
-};
-
-export type SpokenLanguage = {
-    english_name: string;
-    iso_639_1: string;
-    name: string;
 };
 
 export type StateResponse = {
@@ -414,238 +411,6 @@ export type SymlinkModel = {
     repair_interval?: number;
 };
 
-export type TmdbCollectionDetails = {
-    adult: boolean;
-    backdrop_path: (string | null);
-    id: number;
-    name: string;
-    overview: string;
-    original_language: string;
-    original_name: string;
-    poster_path: (string | null);
-};
-
-export type TmdbEpisodeDetails = {
-    id: number;
-    name: string;
-    overview: string;
-    media_type: 'tv_episode';
-    vote_average: number;
-    vote_count: number;
-    air_date: string;
-    episode_number: number;
-    episode_type: string;
-    production_code: string;
-    runtime: number;
-    season_number: number;
-    show_id: number;
-    still_path: string;
-    crew: Array<{
-        [key: string]: unknown;
-    }>;
-    guest_stars: Array<{
-        [key: string]: unknown;
-    }>;
-};
-
-export type media_type = 'tv_episode';
-
-export type TmdbEpisodeItem = {
-    id: number;
-    name: string;
-    overview: string;
-    media_type: 'tv_episode';
-    vote_average: number;
-    vote_count: number;
-    air_date: string;
-    episode_number: number;
-    episode_type: string;
-    production_code: string;
-    runtime: number;
-    season_number: number;
-    show_id: number;
-    still_path: string;
-};
-
-export type TmdbFindResults = {
-    movie_results: Array<TmdbItem>;
-    tv_results: Array<TmdbItem>;
-    tv_episode_results: Array<TmdbEpisodeItem>;
-    tv_season_results: Array<TmdbSeasonItem>;
-};
-
-export type TmdbItem = {
-    adult: boolean;
-    backdrop_path: (string | null);
-    id: number;
-    title: string;
-    original_title: string;
-    original_language: string;
-    overview: string;
-    poster_path: (string | null);
-    media_type?: (TmdbMediaType | null);
-    genre_ids: Array<(number)>;
-    popularity: number;
-    release_date: string;
-    video: boolean;
-    vote_average: number;
-    vote_count: number;
-};
-
-export type TmdbMediaType = 'movie' | 'tv' | 'tv_episode' | 'tv_season';
-
-export type TmdbMovieDetails = {
-    adult: boolean;
-    backdrop_path: (string | null);
-    belongs_to_collection: (BelongsToCollection | null);
-    budget: number;
-    genres: Array<Genre>;
-    homepage: (string | null);
-    id: number;
-    imdb_id: (string | null);
-    original_language: string;
-    original_title: string;
-    overview: (string | null);
-    popularity: number;
-    poster_path: (string | null);
-    production_companies: Array<ProductionCompany>;
-    production_countries: Array<ProductionCountry>;
-    release_date: (string | null);
-    revenue: number;
-    runtime: (number | null);
-    spoken_languages: Array<SpokenLanguage>;
-    status: (string | null);
-    tagline: (string | null);
-    title: string;
-    video: boolean;
-    vote_average: number;
-    vote_count: number;
-};
-
-export type TmdbPagedResultsWithDates_TmdbItem_ = {
-    page: number;
-    results: Array<TmdbItem>;
-    total_pages: number;
-    total_results: number;
-    dates: Dates;
-};
-
-export type TmdbPagedResults_TmdbCollectionDetails_ = {
-    page: number;
-    results: Array<TmdbCollectionDetails>;
-    total_pages: number;
-    total_results: number;
-};
-
-export type TmdbPagedResults_TmdbItem_ = {
-    page: number;
-    results: Array<TmdbItem>;
-    total_pages: number;
-    total_results: number;
-};
-
-export type TmdbResponse_TmdbEpisodeDetails_ = {
-    success: boolean;
-    data?: (TmdbEpisodeDetails | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbFindResults_ = {
-    success: boolean;
-    data?: (TmdbFindResults | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbMovieDetails_ = {
-    success: boolean;
-    data?: (TmdbMovieDetails | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbPagedResultsWithDates_TmdbItem__ = {
-    success: boolean;
-    data?: (TmdbPagedResultsWithDates_TmdbItem_ | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbPagedResults_TmdbCollectionDetails__ = {
-    success: boolean;
-    data?: (TmdbPagedResults_TmdbCollectionDetails_ | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbPagedResults_TmdbItem__ = {
-    success: boolean;
-    data?: (TmdbPagedResults_TmdbItem_ | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbSeasonDetails_ = {
-    success: boolean;
-    data?: (TmdbSeasonDetails | null);
-    message?: (string | null);
-};
-
-export type TmdbResponse_TmdbTVDetails_ = {
-    success: boolean;
-    data?: (TmdbTVDetails | null);
-    message?: (string | null);
-};
-
-export type TmdbSeasonDetails = {
-    air_date: string;
-    episodes: Array<TmdbEpisodeDetails>;
-};
-
-export type TmdbSeasonItem = {
-    id: number;
-    name: string;
-    overview: string;
-    poster_path: string;
-    media_type: 'tv_season';
-    vote_average: number;
-    air_date: string;
-    season_number: number;
-    show_id: number;
-    episode_count: number;
-};
-
-export type media_type2 = 'tv_season';
-
-export type TmdbTVDetails = {
-    adult: boolean;
-    backdrop_path: (string | null);
-    episode_run_time: Array<(number)>;
-    first_air_date: string;
-    genres: Array<Genre>;
-    homepage: (string | null);
-    id: number;
-    in_production: boolean;
-    languages: Array<(string)>;
-    last_air_date: (string | null);
-    last_episode_to_air: (TmdbEpisodeItem | null);
-    name: string;
-    next_episode_to_air: (string | null);
-    networks: Array<Network>;
-    number_of_episodes: number;
-    number_of_seasons: number;
-    origin_country: Array<(string)>;
-    original_language: string;
-    original_name: string;
-    overview: (string | null);
-    popularity: number;
-    poster_path: (string | null);
-    production_companies: Array<ProductionCompany>;
-    production_countries: Array<ProductionCountry>;
-    seasons: Array<TmdbSeasonItem>;
-    spoken_languages: Array<(string)>;
-    status: (string | null);
-    tagline: (string | null);
-    type: (string | null);
-    vote_average: number;
-    vote_count: number;
-};
-
 export type TorBoxScraperConfig = {
     enabled?: boolean;
     timeout?: number;
@@ -684,10 +449,6 @@ export type TraktOAuthInitiateResponse = {
     auth_url: string;
 };
 
-export type TrendingType = 'all' | 'movie' | 'tv' | 'person';
-
-export type TrendingWindow = 'day' | 'week';
-
 export type UpdatersModel = {
     updater_interval?: number;
     plex?: PlexLibraryModel;
@@ -695,10 +456,30 @@ export type UpdatersModel = {
     emby?: EmbyLibraryModel;
 };
 
+export type UtilisateurModel = {
+    username?: string;
+    email?: string;
+    domain?: string;
+    password?: string;
+    traefik?: AuthMethodModel;
+    domainperso?: string;
+};
+
 export type ValidationError = {
     loc: Array<(string | number)>;
     msg: string;
     type: string;
+};
+
+/**
+ * Classe pour gérer la configuration de Yggflix.
+ */
+export type YggConfig = {
+    enabled?: boolean;
+    api_url?: string;
+    timeout?: number;
+    ratelimit?: boolean;
+    ygg_passkey?: string;
 };
 
 export type ZileanConfig = {
@@ -961,236 +742,40 @@ export type SetSettingsResponse = (MessageResponse);
 
 export type SetSettingsError = (unknown | HTTPValidationError);
 
-export type GetTrendingData = {
+export type GetEventTypesApiV1StreamEventTypesGetResponse = (unknown);
+
+export type GetEventTypesApiV1StreamEventTypesGetError = (unknown);
+
+export type StreamEventsApiV1StreamEventTypeGetData = {
     path: {
-        type: TrendingType;
-        window: TrendingWindow;
-    };
-    query?: {
-        language?: string;
-        page?: number;
+        event_type: string;
     };
 };
 
-export type GetTrendingResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
+export type StreamEventsApiV1StreamEventTypeGetResponse = (EventResponse);
 
-export type GetTrendingError = (unknown | HTTPValidationError);
+export type StreamEventsApiV1StreamEventTypeGetError = (unknown | HTTPValidationError);
 
-export type GetMoviesNowPlayingData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
+export type CheckFileApiV1ScriptsCheckFileGetResponse = (unknown);
 
-export type GetMoviesNowPlayingResponse = (TmdbResponse_TmdbPagedResultsWithDates_TmdbItem__);
+export type CheckFileApiV1ScriptsCheckFileGetError = (unknown);
 
-export type GetMoviesNowPlayingError = (unknown | HTTPValidationError);
-
-export type GetMoviesPopularData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
-
-export type GetMoviesPopularResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type GetMoviesPopularError = (unknown | HTTPValidationError);
-
-export type GetMoviesTopRatedData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
-
-export type GetMoviesTopRatedResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type GetMoviesTopRatedError = (unknown | HTTPValidationError);
-
-export type GetMoviesUpcomingData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
-
-export type GetMoviesUpcomingResponse = (TmdbResponse_TmdbPagedResultsWithDates_TmdbItem__);
-
-export type GetMoviesUpcomingError = (unknown | HTTPValidationError);
-
-export type GetMovieDetailsData = {
+export type RunScriptApiV1ScriptsRunScriptNameGetData = {
     path: {
-        movie_id: string;
+        script_name: string;
     };
     query?: {
-        append_to_response?: string;
-        language?: string;
+        /**
+         * Label du conteneur
+         */
+        label?: string;
     };
 };
 
-export type GetMovieDetailsResponse = (TmdbResponse_TmdbMovieDetails_);
+export type RunScriptApiV1ScriptsRunScriptNameGetResponse = (unknown);
 
-export type GetMovieDetailsError = (unknown | HTTPValidationError);
+export type RunScriptApiV1ScriptsRunScriptNameGetError = (unknown | HTTPValidationError);
 
-export type GetTvAiringTodayData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
+export type UpdateConfigApiV1ScriptsUpdateConfigPostResponse = (unknown);
 
-export type GetTvAiringTodayResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type GetTvAiringTodayError = (unknown | HTTPValidationError);
-
-export type GetTvOnTheAirData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
-
-export type GetTvOnTheAirResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type GetTvOnTheAirError = (unknown | HTTPValidationError);
-
-export type GetTvPopularData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
-
-export type GetTvPopularResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type GetTvPopularError = (unknown | HTTPValidationError);
-
-export type GetTvTopRatedData = {
-    query?: {
-        language?: string;
-        page?: number;
-    };
-};
-
-export type GetTvTopRatedResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type GetTvTopRatedError = (unknown | HTTPValidationError);
-
-export type GetTvDetailsData = {
-    path: {
-        series_id: string;
-    };
-    query?: {
-        append_to_response?: string;
-        language?: string;
-    };
-};
-
-export type GetTvDetailsResponse = (TmdbResponse_TmdbTVDetails_);
-
-export type GetTvDetailsError = (unknown | HTTPValidationError);
-
-export type GetTvSeasonDetailsData = {
-    path: {
-        season_number: number;
-        series_id: number;
-    };
-    query?: {
-        append_to_response?: string;
-        language?: string;
-    };
-};
-
-export type GetTvSeasonDetailsResponse = (TmdbResponse_TmdbSeasonDetails_);
-
-export type GetTvSeasonDetailsError = (unknown | HTTPValidationError);
-
-export type GetTvEpisodeDetailsData = {
-    path: {
-        episode_number: number;
-        season_number: number;
-        series_id: number;
-    };
-    query?: {
-        append_to_response?: string;
-        language?: string;
-    };
-};
-
-export type GetTvEpisodeDetailsResponse = (TmdbResponse_TmdbEpisodeDetails_);
-
-export type GetTvEpisodeDetailsError = (unknown | HTTPValidationError);
-
-export type SearchCollectionData = {
-    query: {
-        include_adult?: IncludeAdult;
-        language?: string;
-        page?: number;
-        query: string;
-        region?: string;
-    };
-};
-
-export type SearchCollectionResponse = (TmdbResponse_TmdbPagedResults_TmdbCollectionDetails__);
-
-export type SearchCollectionError = (unknown | HTTPValidationError);
-
-export type SearchMovieData = {
-    query: {
-        include_adult?: IncludeAdult;
-        language?: string;
-        page?: number;
-        primary_release_year?: number;
-        query: string;
-        region?: string;
-        year?: number;
-    };
-};
-
-export type SearchMovieResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type SearchMovieError = (unknown | HTTPValidationError);
-
-export type SearchMultiData = {
-    query: {
-        include_adult?: IncludeAdult;
-        language?: string;
-        page?: number;
-        query: string;
-    };
-};
-
-export type SearchMultiResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type SearchMultiError = (unknown | HTTPValidationError);
-
-export type SearchTvData = {
-    query: {
-        first_air_date_year?: number;
-        include_adult?: IncludeAdult;
-        language?: string;
-        page?: number;
-        query: string;
-        year?: number;
-    };
-};
-
-export type SearchTvResponse = (TmdbResponse_TmdbPagedResults_TmdbItem__);
-
-export type SearchTvError = (unknown | HTTPValidationError);
-
-export type GetFromExternalIdData = {
-    path: {
-        external_id: string;
-    };
-    query?: {
-        external_source?: ExternalIDExternalSource;
-        language?: string;
-    };
-};
-
-export type GetFromExternalIdResponse = (TmdbResponse_TmdbFindResults_);
-
-export type GetFromExternalIdError = (unknown | HTTPValidationError);
+export type UpdateConfigApiV1ScriptsUpdateConfigPostError = (unknown);

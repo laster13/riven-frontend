@@ -9,29 +9,24 @@ import {
     seedboxSettingsToSet
 } from '$lib/forms/helpers';
 import { setSettings, saveSettings, loadSettings } from '$lib/forms/helpers.server';
+import { SettingsService } from '$lib/client';
 
-export const load: PageServerLoad = async ({ fetch, locals }) => {
-    async function getPartialSettings() {
-        try {
-            const results = await fetch(
-                `${locals.BACKEND_URL}/settings/get/${seedboxSettingsToGet.join(',')}`
-            );
-            return await results.json();
-        } catch (e) {
-            console.error(e);
-            throw error(503, 'Unable to fetch settings data. API is down.');
-        }
+export const load: PageServerLoad = async () => {
+    try {
+        const { data } = await SettingsService.getSettings({
+            path: {
+                paths: seedboxSettingsToGet.join(',')
+            }
+        });
+        const toPassToSchema = seedboxSettingsToPass(data);
+        console.log('Données après passage dans seedboxSettingsToPass:', toPassToSchema);
+
+        return {
+            form: await superValidate(toPassToSchema, zod(seedboxSettingsSchema)),
+            scriptName: 'infos'  // Ajout de scriptName comme dans l'ancien fichier
+        };
+    } catch (e) {
+        console.error(e);
+        throw error(503, 'Unable to fetch settings data. API is down.');
     }
-
-    const data: any = await getPartialSettings();
-    const toPassToSchema = seedboxSettingsToPass(data);
-    const scriptName = 'infos'; 
-
-
-    return {
-        form: await superValidate(toPassToSchema, zod(seedboxSettingsSchema)),
-	scriptName
-
-    };
 };
-

@@ -73,7 +73,7 @@
             // Si le SSD est installé, appeler l'API
             if (fileExists) {
                 console.log("SSD installé, appel de l'API.");
-                const response = await fetch(`${backendUrl}/scripts/update-config`, {
+                const response = await fetch(`${backendUrl}/api/v1/scripts/update-config`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -134,7 +134,7 @@
     // Fonction pour vérifier l'existence du fichier ssdb
     async function checkFileStatus() {
         try {
-            const response = await fetch(`${backendUrl}/scripts/check-file`);
+            const response = await fetch(`${backendUrl}/api/v1/scripts/check-file`);
             const result = await response.json();
             fileExists = result.exists;
         } catch (error) {
@@ -156,7 +156,7 @@
             // Attendre 2 secondes avant la redirection
             setTimeout(() => {
                 goto('/onboarding/2');
-            }, 1000); // 2000 millisecondes = 2 secondes
+            }, 500);
         }
     }
 
@@ -221,6 +221,7 @@
 <!-- Composant RunScript pour exécuter le script et gérer son état -->
 <RunScript {scriptName} {showLogs} 
     on:buttonStateChange={updateButtonState} 
-    on:statusMessageUpdate={updateStatusMessage} 
+    on:statusMessageUpdate={updateStatusMessage}
     on:scriptCompleted={handleScriptCompleted} 
+
 />

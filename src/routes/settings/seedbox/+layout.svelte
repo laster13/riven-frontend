@@ -17,8 +17,28 @@
 			path: '/settings/seedbox'
 		},
 		{
-			name: 'Installation Zurg',
-			path: '/settings/zurg'
+			name: 'General',
+			path: '/settings/general'
+		},
+		{
+			name: 'Media Server',
+			path: '/settings/mediaserver'
+		},
+		{
+			name: 'Content',
+			path: '/settings/content'
+		},
+		{
+			name: 'Scrapers',
+			path: '/settings/scrapers'
+		},
+		{
+			name: 'Ranking',
+			path: '/settings/ranking'
+		},
+		{
+			name: 'About',
+			path: '/settings/about'
 		},
 		{
 			name: 'Applications',

@@ -34,8 +34,8 @@
 
         // Construire l'URL en fonction de la présence ou non du label
         const url = label
-            ? `${backendUrl}/scripts/run/${scriptName}?label=${encodeURIComponent(label)}`
-            : `${backendUrl}/scripts/run/${scriptName}`;
+            ? `${backendUrl}/api/v1/scripts/run/${scriptName}?label=${encodeURIComponent(label)}`
+            : `${backendUrl}/api/v1/scripts/run/${scriptName}`;
         console.log('URL générée :', url);  // Ajouter ce log ici pour vérifier l'URL
 
         const eventSource = new EventSource(url);

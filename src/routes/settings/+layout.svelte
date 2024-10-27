@@ -12,12 +12,7 @@
 		{
 			name: 'SSDv2',
 			path: '/settings/test'
-		},
-		{
-			name: 'Riven',
-			path: '/settings/general'
 		}
-
 	];
 </script>
 

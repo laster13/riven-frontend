@@ -88,12 +88,9 @@ function handleScriptCompleted() {
 
     if (currentPath === '/onboarding/2') {
         // Attendre 2 secondes avant la redirection
-        setTimeout(() => {
-            goto('/onboarding/3');
-        }, 1000);  // 2000 millisecondes = 2 secondes
+         goto('/onboarding/3');
     }
 }
-
 
 </script>
 

@@ -5,11 +5,9 @@ import { setSettings, saveSettings, loadSettings } from '$lib/forms/helpers.serv
 
 export const load: PageServerLoad = async ({ fetch, locals }) => {
 	console.log("Début du chargement des paramètres partiels...");
-
-	// Fonction pour obtenir les paramètres directement
 	async function getPartialSettings() {
 		try {
-			const results = await fetch(`${locals.BACKEND_URL}/settings/get`);
+			const results = await fetch(`${locals.backendUrl}/settings/get`);
 			console.log('Réponse obtenue depuis le backend:', results);
 			return await results.json();
 		} catch (e) {

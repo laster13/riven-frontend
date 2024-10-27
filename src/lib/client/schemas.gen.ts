@@ -64,7 +64,7 @@ export const AppModelSchema = {
         version: {
             type: 'string',
             title: 'Version',
-            default: '0.15.3'
+            default: '0.16.2'
         },
         api_key: {
             type: 'string',
@@ -271,6 +271,13 @@ export const AppModelSchema = {
                     ratelimit: true,
                     timeout: 30,
                     url: 'http://localhost:8000'
+                },
+                yggflix: {
+                    api_url: 'http://localhost:8081',
+                    enabled: true,
+                    ratelimit: true,
+                    timeout: 30,
+                    ygg_passkey: ''
                 }
             }
         },
@@ -678,48 +685,116 @@ export const AppModelSchema = {
                     }
                 }
             }
+        },
+        cloudflare: {
+            '$ref': '#/components/schemas/CloudflareModel',
+            default: {
+                cloudflare_login: '',
+                cloudflare_api_key: ''
+            }
+        },
+        utilisateur: {
+            '$ref': '#/components/schemas/UtilisateurModel',
+            default: {
+                username: '',
+                email: '',
+                domain: '',
+                password: '',
+                traefik: {
+                    authMethod: 'basique',
+                    oauth_client: '',
+                    oauth_mail: '',
+                    oauth_secret: ''
+                },
+                domainperso: 'traefik'
+            }
+        },
+        dossiers: {
+            '$ref': '#/components/schemas/DossierModel',
+            default: {
+                on_item_type: [],
+                authentification: {},
+                domaine: {}
+            }
+        },
+        media: {
+            '$ref': '#/components/schemas/MediaModel',
+            default: {
+                on_item_type: []
+            }
+        },
+        applications: {
+            items: {
+                '$ref': '#/components/schemas/ApplicationModel'
+            },
+            type: 'array',
+            title: 'Applications',
+            default: []
         }
     },
     type: 'object',
     title: 'AppModel'
 } as const;
 
-export const BelongsToCollectionSchema = {
+export const ApplicationModelSchema = {
     properties: {
         id: {
             type: 'integer',
-            title: 'Id'
+            title: 'Id',
+            default: 1
         },
-        name: {
+        label: {
             type: 'string',
-            title: 'Name'
-        },
-        poster_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Poster Path'
-        },
-        backdrop_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Backdrop Path'
+            title: 'Label',
+            default: ''
         }
     },
     type: 'object',
-    required: ['id', 'name', 'poster_path', 'backdrop_path'],
-    title: 'BelongsToCollection'
+    title: 'ApplicationModel'
+} as const;
+
+export const AuthMethodModelSchema = {
+    properties: {
+        authMethod: {
+            type: 'string',
+            title: 'Authmethod',
+            default: 'basique'
+        },
+        oauth_client: {
+            type: 'string',
+            title: 'Oauth Client',
+            default: ''
+        },
+        oauth_secret: {
+            type: 'string',
+            title: 'Oauth Secret',
+            default: ''
+        },
+        oauth_mail: {
+            type: 'string',
+            title: 'Oauth Mail',
+            default: ''
+        }
+    },
+    type: 'object',
+    title: 'AuthMethodModel'
+} as const;
+
+export const CloudflareModelSchema = {
+    properties: {
+        cloudflare_login: {
+            type: 'string',
+            title: 'Cloudflare Login',
+            default: ''
+        },
+        cloudflare_api_key: {
+            type: 'string',
+            title: 'Cloudflare Api Key',
+            default: ''
+        }
+    },
+    type: 'object',
+    title: 'CloudflareModel'
 } as const;
 
 export const CometConfigSchema = {
@@ -851,22 +926,30 @@ export const DatabaseModelSchema = {
     title: 'DatabaseModel'
 } as const;
 
-export const DatesSchema = {
+export const DossierModelSchema = {
     properties: {
-        maximum: {
-            type: 'string',
-            format: 'date',
-            title: 'Maximum'
+        on_item_type: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'On Item Type',
+            default: []
         },
-        minimum: {
-            type: 'string',
-            format: 'date',
-            title: 'Minimum'
+        authentification: {
+            additionalProperties: {
+                type: 'string'
+            },
+            type: 'object',
+            title: 'Authentification'
+        },
+        domaine: {
+            type: 'object',
+            title: 'Domaine'
         }
     },
     type: 'object',
-    required: ['maximum', 'minimum'],
-    title: 'Dates'
+    title: 'DossierModel'
 } as const;
 
 export const DownloadersModelSchema = {
@@ -936,6 +1019,18 @@ export const EmbyLibraryModelSchema = {
     title: 'EmbyLibraryModel'
 } as const;
 
+export const EventResponseSchema = {
+    properties: {
+        data: {
+            type: 'object',
+            title: 'Data'
+        }
+    },
+    type: 'object',
+    required: ['data'],
+    title: 'EventResponse'
+} as const;
+
 export const EventUpdateSchema = {
     properties: {
         item_id: {
@@ -956,28 +1051,6 @@ export const EventUpdateSchema = {
     title: 'EventUpdate'
 } as const;
 
-export const ExternalIDExternalSourceSchema = {
-    type: 'string',
-    enum: ['imdb_id', 'facebook_id', 'instagram_id', 'tvdb_id', 'tiktok_id', 'twitter_id', 'wikidata_id', 'youtube_id'],
-    title: 'ExternalIDExternalSource'
-} as const;
-
-export const GenreSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name'],
-    title: 'Genre'
-} as const;
-
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -990,12 +1063,6 @@ export const HTTPValidationErrorSchema = {
     },
     type: 'object',
     title: 'HTTPValidationError'
-} as const;
-
-export const IncludeAdultSchema = {
-    type: 'string',
-    enum: ['true', 'false'],
-    title: 'IncludeAdult'
 } as const;
 
 export const IndexerModelSchema = {
@@ -1206,6 +1273,21 @@ export const MdblistModelSchema = {
     title: 'MdblistModel'
 } as const;
 
+export const MediaModelSchema = {
+    properties: {
+        on_item_type: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'On Item Type',
+            default: []
+        }
+    },
+    type: 'object',
+    title: 'MediaModel'
+} as const;
+
 export const MediafusionConfigSchema = {
     properties: {
         enabled: {
@@ -1251,37 +1333,6 @@ export const MessageResponseSchema = {
     type: 'object',
     required: ['message'],
     title: 'MessageResponse'
-} as const;
-
-export const NetworkSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        logo_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Logo Path'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        origin_country: {
-            type: 'string',
-            title: 'Origin Country'
-        }
-    },
-    type: 'object',
-    required: ['id', 'logo_path', 'name', 'origin_country'],
-    title: 'Network'
 } as const;
 
 export const NotificationsModelSchema = {
@@ -1462,53 +1513,6 @@ export const PostProcessingSchema = {
     },
     type: 'object',
     title: 'PostProcessing'
-} as const;
-
-export const ProductionCompanySchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        logo_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Logo Path'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        origin_country: {
-            type: 'string',
-            title: 'Origin Country'
-        }
-    },
-    type: 'object',
-    required: ['id', 'logo_path', 'name', 'origin_country'],
-    title: 'ProductionCompany'
-} as const;
-
-export const ProductionCountrySchema = {
-    properties: {
-        iso_3166_1: {
-            type: 'string',
-            title: 'Iso 3166 1'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['iso_3166_1', 'name'],
-    title: 'ProductionCountry'
 } as const;
 
 export const ProwlarrConfigSchema = {
@@ -2334,6 +2338,16 @@ export const ScraperModelSchema = {
                 timeout: 30,
                 ratelimit: true
             }
+        },
+        yggflix: {
+            '$ref': '#/components/schemas/YggConfig',
+            default: {
+                enabled: true,
+                api_url: 'http://localhost:8081',
+                timeout: 30,
+                ratelimit: true,
+                ygg_passkey: ''
+            }
         }
     },
     type: 'object',
@@ -2373,26 +2387,6 @@ export const SetTorrentRDResponseSchema = {
     type: 'object',
     required: ['message', 'item_id', 'torrent_id'],
     title: 'SetTorrentRDResponse'
-} as const;
-
-export const SpokenLanguageSchema = {
-    properties: {
-        english_name: {
-            type: 'string',
-            title: 'English Name'
-        },
-        iso_639_1: {
-            type: 'string',
-            title: 'Iso 639 1'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        }
-    },
-    type: 'object',
-    required: ['english_name', 'iso_639_1', 'name'],
-    title: 'SpokenLanguage'
 } as const;
 
 export const StateResponseSchema = {
@@ -2541,1176 +2535,6 @@ export const SymlinkModelSchema = {
     title: 'SymlinkModel'
 } as const;
 
-export const TmdbCollectionDetailsSchema = {
-    properties: {
-        adult: {
-            type: 'boolean',
-            title: 'Adult'
-        },
-        backdrop_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Backdrop Path'
-        },
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        overview: {
-            type: 'string',
-            title: 'Overview'
-        },
-        original_language: {
-            type: 'string',
-            title: 'Original Language'
-        },
-        original_name: {
-            type: 'string',
-            title: 'Original Name'
-        },
-        poster_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Poster Path'
-        }
-    },
-    type: 'object',
-    required: ['adult', 'backdrop_path', 'id', 'name', 'overview', 'original_language', 'original_name', 'poster_path'],
-    title: 'TmdbCollectionDetails'
-} as const;
-
-export const TmdbEpisodeDetailsSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        overview: {
-            type: 'string',
-            title: 'Overview'
-        },
-        media_type: {
-            type: 'string',
-            enum: ['tv_episode'],
-            const: 'tv_episode',
-            title: 'Media Type'
-        },
-        vote_average: {
-            type: 'number',
-            title: 'Vote Average'
-        },
-        vote_count: {
-            type: 'integer',
-            title: 'Vote Count'
-        },
-        air_date: {
-            type: 'string',
-            format: 'date',
-            title: 'Air Date'
-        },
-        episode_number: {
-            type: 'integer',
-            title: 'Episode Number'
-        },
-        episode_type: {
-            type: 'string',
-            title: 'Episode Type'
-        },
-        production_code: {
-            type: 'string',
-            title: 'Production Code'
-        },
-        runtime: {
-            type: 'integer',
-            title: 'Runtime'
-        },
-        season_number: {
-            type: 'integer',
-            title: 'Season Number'
-        },
-        show_id: {
-            type: 'integer',
-            title: 'Show Id'
-        },
-        still_path: {
-            type: 'string',
-            title: 'Still Path'
-        },
-        crew: {
-            items: {
-                type: 'object'
-            },
-            type: 'array',
-            title: 'Crew'
-        },
-        guest_stars: {
-            items: {
-                type: 'object'
-            },
-            type: 'array',
-            title: 'Guest Stars'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name', 'overview', 'media_type', 'vote_average', 'vote_count', 'air_date', 'episode_number', 'episode_type', 'production_code', 'runtime', 'season_number', 'show_id', 'still_path', 'crew', 'guest_stars'],
-    title: 'TmdbEpisodeDetails'
-} as const;
-
-export const TmdbEpisodeItemSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        overview: {
-            type: 'string',
-            title: 'Overview'
-        },
-        media_type: {
-            type: 'string',
-            enum: ['tv_episode'],
-            const: 'tv_episode',
-            title: 'Media Type'
-        },
-        vote_average: {
-            type: 'number',
-            title: 'Vote Average'
-        },
-        vote_count: {
-            type: 'integer',
-            title: 'Vote Count'
-        },
-        air_date: {
-            type: 'string',
-            format: 'date',
-            title: 'Air Date'
-        },
-        episode_number: {
-            type: 'integer',
-            title: 'Episode Number'
-        },
-        episode_type: {
-            type: 'string',
-            title: 'Episode Type'
-        },
-        production_code: {
-            type: 'string',
-            title: 'Production Code'
-        },
-        runtime: {
-            type: 'integer',
-            title: 'Runtime'
-        },
-        season_number: {
-            type: 'integer',
-            title: 'Season Number'
-        },
-        show_id: {
-            type: 'integer',
-            title: 'Show Id'
-        },
-        still_path: {
-            type: 'string',
-            title: 'Still Path'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name', 'overview', 'media_type', 'vote_average', 'vote_count', 'air_date', 'episode_number', 'episode_type', 'production_code', 'runtime', 'season_number', 'show_id', 'still_path'],
-    title: 'TmdbEpisodeItem'
-} as const;
-
-export const TmdbFindResultsSchema = {
-    properties: {
-        movie_results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbItem'
-            },
-            type: 'array',
-            title: 'Movie Results'
-        },
-        tv_results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbItem'
-            },
-            type: 'array',
-            title: 'Tv Results'
-        },
-        tv_episode_results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbEpisodeItem'
-            },
-            type: 'array',
-            title: 'Tv Episode Results'
-        },
-        tv_season_results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbSeasonItem'
-            },
-            type: 'array',
-            title: 'Tv Season Results'
-        }
-    },
-    type: 'object',
-    required: ['movie_results', 'tv_results', 'tv_episode_results', 'tv_season_results'],
-    title: 'TmdbFindResults'
-} as const;
-
-export const TmdbItemSchema = {
-    properties: {
-        adult: {
-            type: 'boolean',
-            title: 'Adult'
-        },
-        backdrop_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Backdrop Path'
-        },
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        title: {
-            type: 'string',
-            title: 'Title'
-        },
-        original_title: {
-            type: 'string',
-            title: 'Original Title'
-        },
-        original_language: {
-            type: 'string',
-            title: 'Original Language'
-        },
-        overview: {
-            type: 'string',
-            title: 'Overview'
-        },
-        poster_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Poster Path'
-        },
-        media_type: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbMediaType'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        genre_ids: {
-            items: {
-                type: 'integer'
-            },
-            type: 'array',
-            title: 'Genre Ids'
-        },
-        popularity: {
-            type: 'number',
-            title: 'Popularity'
-        },
-        release_date: {
-            type: 'string',
-            title: 'Release Date'
-        },
-        video: {
-            type: 'boolean',
-            title: 'Video'
-        },
-        vote_average: {
-            type: 'number',
-            title: 'Vote Average'
-        },
-        vote_count: {
-            type: 'integer',
-            title: 'Vote Count'
-        }
-    },
-    type: 'object',
-    required: ['adult', 'backdrop_path', 'id', 'title', 'original_title', 'original_language', 'overview', 'poster_path', 'genre_ids', 'popularity', 'release_date', 'video', 'vote_average', 'vote_count'],
-    title: 'TmdbItem'
-} as const;
-
-export const TmdbMediaTypeSchema = {
-    type: 'string',
-    enum: ['movie', 'tv', 'tv_episode', 'tv_season'],
-    title: 'TmdbMediaType'
-} as const;
-
-export const TmdbMovieDetailsSchema = {
-    properties: {
-        adult: {
-            type: 'boolean',
-            title: 'Adult'
-        },
-        backdrop_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Backdrop Path'
-        },
-        belongs_to_collection: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/BelongsToCollection'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        budget: {
-            type: 'integer',
-            title: 'Budget'
-        },
-        genres: {
-            items: {
-                '$ref': '#/components/schemas/Genre'
-            },
-            type: 'array',
-            title: 'Genres'
-        },
-        homepage: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Homepage'
-        },
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        imdb_id: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Imdb Id'
-        },
-        original_language: {
-            type: 'string',
-            title: 'Original Language'
-        },
-        original_title: {
-            type: 'string',
-            title: 'Original Title'
-        },
-        overview: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Overview'
-        },
-        popularity: {
-            type: 'number',
-            title: 'Popularity'
-        },
-        poster_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Poster Path'
-        },
-        production_companies: {
-            items: {
-                '$ref': '#/components/schemas/ProductionCompany'
-            },
-            type: 'array',
-            title: 'Production Companies'
-        },
-        production_countries: {
-            items: {
-                '$ref': '#/components/schemas/ProductionCountry'
-            },
-            type: 'array',
-            title: 'Production Countries'
-        },
-        release_date: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Release Date'
-        },
-        revenue: {
-            type: 'integer',
-            title: 'Revenue'
-        },
-        runtime: {
-            anyOf: [
-                {
-                    type: 'integer'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Runtime'
-        },
-        spoken_languages: {
-            items: {
-                '$ref': '#/components/schemas/SpokenLanguage'
-            },
-            type: 'array',
-            title: 'Spoken Languages'
-        },
-        status: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Status'
-        },
-        tagline: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Tagline'
-        },
-        title: {
-            type: 'string',
-            title: 'Title'
-        },
-        video: {
-            type: 'boolean',
-            title: 'Video'
-        },
-        vote_average: {
-            type: 'number',
-            title: 'Vote Average'
-        },
-        vote_count: {
-            type: 'integer',
-            title: 'Vote Count'
-        }
-    },
-    type: 'object',
-    required: ['adult', 'backdrop_path', 'belongs_to_collection', 'budget', 'genres', 'homepage', 'id', 'imdb_id', 'original_language', 'original_title', 'overview', 'popularity', 'poster_path', 'production_companies', 'production_countries', 'release_date', 'revenue', 'runtime', 'spoken_languages', 'status', 'tagline', 'title', 'video', 'vote_average', 'vote_count'],
-    title: 'TmdbMovieDetails'
-} as const;
-
-export const TmdbPagedResultsWithDates_TmdbItem_Schema = {
-    properties: {
-        page: {
-            type: 'integer',
-            title: 'Page'
-        },
-        results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbItem'
-            },
-            type: 'array',
-            title: 'Results'
-        },
-        total_pages: {
-            type: 'integer',
-            title: 'Total Pages'
-        },
-        total_results: {
-            type: 'integer',
-            title: 'Total Results'
-        },
-        dates: {
-            '$ref': '#/components/schemas/Dates'
-        }
-    },
-    type: 'object',
-    required: ['page', 'results', 'total_pages', 'total_results', 'dates'],
-    title: 'TmdbPagedResultsWithDates[TmdbItem]'
-} as const;
-
-export const TmdbPagedResults_TmdbCollectionDetails_Schema = {
-    properties: {
-        page: {
-            type: 'integer',
-            title: 'Page'
-        },
-        results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbCollectionDetails'
-            },
-            type: 'array',
-            title: 'Results'
-        },
-        total_pages: {
-            type: 'integer',
-            title: 'Total Pages'
-        },
-        total_results: {
-            type: 'integer',
-            title: 'Total Results'
-        }
-    },
-    type: 'object',
-    required: ['page', 'results', 'total_pages', 'total_results'],
-    title: 'TmdbPagedResults[TmdbCollectionDetails]'
-} as const;
-
-export const TmdbPagedResults_TmdbItem_Schema = {
-    properties: {
-        page: {
-            type: 'integer',
-            title: 'Page'
-        },
-        results: {
-            items: {
-                '$ref': '#/components/schemas/TmdbItem'
-            },
-            type: 'array',
-            title: 'Results'
-        },
-        total_pages: {
-            type: 'integer',
-            title: 'Total Pages'
-        },
-        total_results: {
-            type: 'integer',
-            title: 'Total Results'
-        }
-    },
-    type: 'object',
-    required: ['page', 'results', 'total_pages', 'total_results'],
-    title: 'TmdbPagedResults[TmdbItem]'
-} as const;
-
-export const TmdbResponse_TmdbEpisodeDetails_Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbEpisodeDetails'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbEpisodeDetails]'
-} as const;
-
-export const TmdbResponse_TmdbFindResults_Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbFindResults'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbFindResults]'
-} as const;
-
-export const TmdbResponse_TmdbMovieDetails_Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbMovieDetails'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbMovieDetails]'
-} as const;
-
-export const TmdbResponse_TmdbPagedResultsWithDates_TmdbItem__Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbPagedResultsWithDates_TmdbItem_'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbPagedResultsWithDates[TmdbItem]]'
-} as const;
-
-export const TmdbResponse_TmdbPagedResults_TmdbCollectionDetails__Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbPagedResults_TmdbCollectionDetails_'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbPagedResults[TmdbCollectionDetails]]'
-} as const;
-
-export const TmdbResponse_TmdbPagedResults_TmdbItem__Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbPagedResults_TmdbItem_'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbPagedResults[TmdbItem]]'
-} as const;
-
-export const TmdbResponse_TmdbSeasonDetails_Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbSeasonDetails'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbSeasonDetails]'
-} as const;
-
-export const TmdbResponse_TmdbTVDetails_Schema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        data: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbTVDetails'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        message: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Message'
-        }
-    },
-    type: 'object',
-    required: ['success'],
-    title: 'TmdbResponse[TmdbTVDetails]'
-} as const;
-
-export const TmdbSeasonDetailsSchema = {
-    properties: {
-        air_date: {
-            type: 'string',
-            title: 'Air Date'
-        },
-        episodes: {
-            items: {
-                '$ref': '#/components/schemas/TmdbEpisodeDetails'
-            },
-            type: 'array',
-            title: 'Episodes'
-        }
-    },
-    type: 'object',
-    required: ['air_date', 'episodes'],
-    title: 'TmdbSeasonDetails'
-} as const;
-
-export const TmdbSeasonItemSchema = {
-    properties: {
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        overview: {
-            type: 'string',
-            title: 'Overview'
-        },
-        poster_path: {
-            type: 'string',
-            title: 'Poster Path'
-        },
-        media_type: {
-            type: 'string',
-            enum: ['tv_season'],
-            const: 'tv_season',
-            title: 'Media Type'
-        },
-        vote_average: {
-            type: 'number',
-            title: 'Vote Average'
-        },
-        air_date: {
-            type: 'string',
-            format: 'date',
-            title: 'Air Date'
-        },
-        season_number: {
-            type: 'integer',
-            title: 'Season Number'
-        },
-        show_id: {
-            type: 'integer',
-            title: 'Show Id'
-        },
-        episode_count: {
-            type: 'integer',
-            title: 'Episode Count'
-        }
-    },
-    type: 'object',
-    required: ['id', 'name', 'overview', 'poster_path', 'media_type', 'vote_average', 'air_date', 'season_number', 'show_id', 'episode_count'],
-    title: 'TmdbSeasonItem'
-} as const;
-
-export const TmdbTVDetailsSchema = {
-    properties: {
-        adult: {
-            type: 'boolean',
-            title: 'Adult'
-        },
-        backdrop_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Backdrop Path'
-        },
-        episode_run_time: {
-            items: {
-                type: 'integer'
-            },
-            type: 'array',
-            title: 'Episode Run Time'
-        },
-        first_air_date: {
-            type: 'string',
-            title: 'First Air Date'
-        },
-        genres: {
-            items: {
-                '$ref': '#/components/schemas/Genre'
-            },
-            type: 'array',
-            title: 'Genres'
-        },
-        homepage: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Homepage'
-        },
-        id: {
-            type: 'integer',
-            title: 'Id'
-        },
-        in_production: {
-            type: 'boolean',
-            title: 'In Production'
-        },
-        languages: {
-            items: {
-                type: 'string'
-            },
-            type: 'array',
-            title: 'Languages'
-        },
-        last_air_date: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Last Air Date'
-        },
-        last_episode_to_air: {
-            anyOf: [
-                {
-                    '$ref': '#/components/schemas/TmdbEpisodeItem'
-                },
-                {
-                    type: 'null'
-                }
-            ]
-        },
-        name: {
-            type: 'string',
-            title: 'Name'
-        },
-        next_episode_to_air: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Next Episode To Air'
-        },
-        networks: {
-            items: {
-                '$ref': '#/components/schemas/Network'
-            },
-            type: 'array',
-            title: 'Networks'
-        },
-        number_of_episodes: {
-            type: 'integer',
-            title: 'Number Of Episodes'
-        },
-        number_of_seasons: {
-            type: 'integer',
-            title: 'Number Of Seasons'
-        },
-        origin_country: {
-            items: {
-                type: 'string'
-            },
-            type: 'array',
-            title: 'Origin Country'
-        },
-        original_language: {
-            type: 'string',
-            title: 'Original Language'
-        },
-        original_name: {
-            type: 'string',
-            title: 'Original Name'
-        },
-        overview: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Overview'
-        },
-        popularity: {
-            type: 'number',
-            title: 'Popularity'
-        },
-        poster_path: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Poster Path'
-        },
-        production_companies: {
-            items: {
-                '$ref': '#/components/schemas/ProductionCompany'
-            },
-            type: 'array',
-            title: 'Production Companies'
-        },
-        production_countries: {
-            items: {
-                '$ref': '#/components/schemas/ProductionCountry'
-            },
-            type: 'array',
-            title: 'Production Countries'
-        },
-        seasons: {
-            items: {
-                '$ref': '#/components/schemas/TmdbSeasonItem'
-            },
-            type: 'array',
-            title: 'Seasons'
-        },
-        spoken_languages: {
-            items: {
-                type: 'string'
-            },
-            type: 'array',
-            title: 'Spoken Languages'
-        },
-        status: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Status'
-        },
-        tagline: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Tagline'
-        },
-        type: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Type'
-        },
-        vote_average: {
-            type: 'number',
-            title: 'Vote Average'
-        },
-        vote_count: {
-            type: 'integer',
-            title: 'Vote Count'
-        }
-    },
-    type: 'object',
-    required: ['adult', 'backdrop_path', 'episode_run_time', 'first_air_date', 'genres', 'homepage', 'id', 'in_production', 'languages', 'last_air_date', 'last_episode_to_air', 'name', 'next_episode_to_air', 'networks', 'number_of_episodes', 'number_of_seasons', 'origin_country', 'original_language', 'original_name', 'overview', 'popularity', 'poster_path', 'production_companies', 'production_countries', 'seasons', 'spoken_languages', 'status', 'tagline', 'type', 'vote_average', 'vote_count'],
-    title: 'TmdbTVDetails'
-} as const;
-
 export const TorBoxScraperConfigSchema = {
     properties: {
         enabled: {
@@ -3856,18 +2680,6 @@ export const TraktOAuthInitiateResponseSchema = {
     title: 'TraktOAuthInitiateResponse'
 } as const;
 
-export const TrendingTypeSchema = {
-    type: 'string',
-    enum: ['all', 'movie', 'tv', 'person'],
-    title: 'TrendingType'
-} as const;
-
-export const TrendingWindowSchema = {
-    type: 'string',
-    enum: ['day', 'week'],
-    title: 'TrendingWindow'
-} as const;
-
 export const UpdatersModelSchema = {
     properties: {
         updater_interval: {
@@ -3904,6 +2716,47 @@ export const UpdatersModelSchema = {
     title: 'UpdatersModel'
 } as const;
 
+export const UtilisateurModelSchema = {
+    properties: {
+        username: {
+            type: 'string',
+            title: 'Username',
+            default: ''
+        },
+        email: {
+            type: 'string',
+            title: 'Email',
+            default: ''
+        },
+        domain: {
+            type: 'string',
+            title: 'Domain',
+            default: ''
+        },
+        password: {
+            type: 'string',
+            title: 'Password',
+            default: ''
+        },
+        traefik: {
+            '$ref': '#/components/schemas/AuthMethodModel',
+            default: {
+                authMethod: 'Basique',
+                oauth_client: '',
+                oauth_secret: '',
+                oauth_mail: ''
+            }
+        },
+        domainperso: {
+            type: 'string',
+            title: 'Domainperso',
+            default: 'traefik'
+        }
+    },
+    type: 'object',
+    title: 'UtilisateurModel'
+} as const;
+
 export const ValidationErrorSchema = {
     properties: {
         loc: {
@@ -3932,6 +2785,39 @@ export const ValidationErrorSchema = {
     type: 'object',
     required: ['loc', 'msg', 'type'],
     title: 'ValidationError'
+} as const;
+
+export const YggConfigSchema = {
+    properties: {
+        enabled: {
+            type: 'boolean',
+            title: 'Enabled',
+            default: true
+        },
+        api_url: {
+            type: 'string',
+            title: 'Api Url',
+            default: 'http://localhost:8081'
+        },
+        timeout: {
+            type: 'integer',
+            title: 'Timeout',
+            default: 30
+        },
+        ratelimit: {
+            type: 'boolean',
+            title: 'Ratelimit',
+            default: true
+        },
+        ygg_passkey: {
+            type: 'string',
+            title: 'Ygg Passkey',
+            default: ''
+        }
+    },
+    type: 'object',
+    title: 'YggConfig',
+    description: 'Classe pour gérer la configuration de Yggflix.'
 } as const;
 
 export const ZileanConfigSchema = {

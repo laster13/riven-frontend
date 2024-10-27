@@ -9,6 +9,14 @@
 
 	const settingsItems: NavItem[] = [
 		{
+			name: 'Prérequis',
+			path: '/settings/test'
+		},
+		{
+			name: 'Infos compte',
+			path: '/settings/seedbox'
+		},
+		{
 			name: 'General',
 			path: '/settings/general'
 		},
@@ -31,6 +39,10 @@
 		{
 			name: 'About',
 			path: '/settings/about'
+		},
+		{
+			name: 'Applications',
+			path: '/settings/applications'
 		}
 	];
 </script>
