@@ -3,6 +3,7 @@
 source /home/${USER}/seedbox-compose/profile.sh
 
 json_file="/home/${USER}/projet-riven/riven-frontend/static/settings.json"
+json_file_plex="/home/${USER}/projet-riven/riven/data/settings.json"
 
 line=$1
 
@@ -14,9 +15,9 @@ line=$1
 
 if [[ "${line}" == "plex" ]]; then
     # Extraire les valeurs JSON
-    token=$(jq -r '.updaters.plex.token // empty' "$json_file")
-    ident=$(jq -r '.updaters.plex.login // empty' "$json_file")
-    sesame=$(jq -r '.updaters.plex.password // empty' "$json_file")
+    token=$(jq -r '.updaters.plex.token // empty' "$json_file_plex")
+    ident=$(jq -r '.updaters.plex.login // empty' "$json_file_plex")
+    sesame=$(jq -r '.updaters.plex.password // empty' "$json_file_plex")
 
     # Fournir des valeurs par défaut si elles sont manquantes
     defaults=(

@@ -48,45 +48,7 @@
 
     const { form: formData, enhance, message, delayed } = form;
     formData.domaine = typeof formData.domaine === 'object' && !Array.isArray(formData.domaine) ? formData.domaine : {};
-    formData.plex_token = formData.plex_token || '';
 
-    let ongoingAuth: boolean = false;
-    let clientIdentifier: string;
-    let plexId: string;
-    let plexCode: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let pollingInterval: any;
-
-    const APP_NAME = 'SSD'; // Utilisation d'une constante pour appName
-
-    function genClientIdentifier() {
-        clientIdentifier = uuidv4();
-        return clientIdentifier;
-    }
-
-    async function genPlexPin() {
-        const response = await fetch('https://plex.tv/api/v2/pins?strong=true', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'X-Plex-Product': APP_NAME,
-                code: plexCode,
-                'X-Plex-Client-Identifier': genClientIdentifier()
-            }
-        });
-
-        return await response.json();
-    }
-
-    onMount(() => {
-        const uniqueParam = new Date().getTime();  // Crée un paramètre unique basé sur l'heure
-        const currentUrl = window.location.href;
-        
-        if (!currentUrl.includes('nocache')) {
-            window.location.href = `${currentUrl}?nocache=${uniqueParam}`;
-        }
-    });
 
     function resetForm() {
         formData.update(() => ({
@@ -111,63 +73,11 @@
         });
     }
 
-    async function pollPlexPin() {
-        const response = await fetch(`https://plex.tv/api/v2/pins/${plexId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'X-Plex-Product': APP_NAME,
-                'X-Plex-Client-Identifier': clientIdentifier
-            }
-        });
-
-        const json = await response.json();
-        if ('errors' in json) {
-            toast.error(json.errors[0].message);
-            ongoingAuth = false;
-            clearInterval(pollingInterval);
-        }
-
-        if (json.authToken) {
-            formData.plex_token = json.authToken;
-            $formData.plex_token = json.authToken; // Synchronisation avec le store
-            clearInterval(pollingInterval);
-            ongoingAuth = false;
-        }
-    }
-
-    async function startLogin(): Promise<void> {
-        ongoingAuth = true;
-        try {
-            const pin = await genPlexPin();
-            if ('errors' in pin) {
-                toast.error(pin.errors[0].message);
-                ongoingAuth = false;
-                return;
-            }
-            plexId = pin.id;
-            plexCode = pin.code;
-
-            window.open(
-                `https://app.plex.tv/auth#?clientID=${clientIdentifier}&code=${plexCode}&context%5Bdevice%5D%5Bproduct%5D=${APP_NAME}`
-            );
-
-            pollingInterval = setInterval(pollPlexPin, 2000);
-        } catch (e) {
-            toast.error('An error occurred while trying to authenticate with Plex');
-            alert(e);
-            ongoingAuth = false;
-        }
-    }
-
     const handleSubmit = (event) => {
         event.preventDefault();
 
         console.log("===== Début de la fonction handleSubmit =====");
         formData.domaine = typeof formData.domaine === 'string' ? JSON.parse(formData.domaine) : formData.domaine || {};
-        formData.plex_token = formData.plex_token?.trim() || 'default-plex-token';
-
         console.log("FormData complet prêt pour soumission :", formData);
 
         const isSuccess = true; // Supposons que la soumission réussit
@@ -719,100 +629,7 @@
             </div>
         {/if}
     </div>
-
-    {#if selectedItem?.label === 'plex'}
-
-    <div class="mt-4">
-        <!-- Champ pour Plex Login -->
-        <Form.Field {form} name="plex_login">
-            <Form.Control>
-                <div class="flex items-center" transition:slide>
-                    <label for="plex_login" class="text-sm font-medium" style="width: 150px;">
-                        Plex Login
-                        <span class="block text-sm text-gray-500">Entrez votre login Plex</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="plex_login" 
-                        placeholder="Login Plex"
-                        class="inline-block shadow-sm sm:text-sm border border-gray-300 rounded-md"
-                        style="width: 225px; height: 37px; margin-left: 44px; padding-left: 10px; outline: none;" 
-                        value={$formData.plex_login || ''} 
-                        on:input={(e) => {
-                            $formData.plex_login = e.target.value;
-                            console.log(`Plex login mis à jour:`, e.target.value);
-                        }}
-                    />
-                </div>
-            </Form.Control>
-        </Form.Field>
-    </div>
-
-    <div class="mt-4">
-        <!-- Champ pour Plex Password -->
-        <Form.Field {form} name="plex_password">
-            <Form.Control>
-                <div class="flex items-center" transition:slide>
-                    <label for="plex_password" class="text-sm font-medium" style="width: 150px;">
-                        Plex Password
-                        <span class="block text-sm text-gray-500">Mot de passe Plex</span>
-                    </label>
-                    <input 
-                        type="password" 
-                        id="plex_password" 
-                        placeholder="Password Plex"
-                        class="inline-block shadow-sm sm:text-sm border border-gray-300 rounded-md"
-                        style="width: 225px; height: 37px; margin-left: 44px; padding-left: 10px; outline: none;" 
-                        value={$formData.plex_password || ''} 
-                        on:input={(e) => {
-                            $formData.plex_password = e.target.value;
-                            console.log(`Plex password mis à jour:`, e.target.value);
-                        }}
-                    />
-                </div>
-            </Form.Control>
-        </Form.Field>
-    </div>
-        <div transition:slide>
-            <Form.Field {form} name="plex_token">
-                <Form.Control>
-                    <div class="mb-2 flex max-w-6xl flex-col items-start gap-1 md:flex-row md:gap-4">
-                        <div class="flex w-full min-w-48 flex-col items-start gap-2 md:w-48">
-                            <Form.Label>Plex Token</Form.Label>
-                            <p class="text-xs text-muted-foreground">Création Plex token</p>
-                        </div>
-                        <input type="hidden" name="plex_token" id="plex_token" value={$formData.plex_token} />
-                        <Button 
-                            type="button" 
-                            disabled={ongoingAuth} 
-                            variant="outline" 
-                            size="sm" 
-                            class="w-auto ml-0" 
-                            style="margin-left: -16px; width: 226px; border: 1px solid #ccc; border-radius: 5px;" 
-                            on:click={async () => {
-                                await startLogin();
-                            }}
-                        >
-                            {#if ongoingAuth}
-                                <Loader2 class="mr-2 h-4 w-4 animate-spin" />
-                            {/if}
-                            {#if $formData.plex_token.length > 0}
-                                <p class="w-full text-left">
-                                    Réauthentification
-                                    <span class="ml-1">({$formData.plex_token.slice(0, 5)}...)</span>
-                                </p>
-                            {:else}
-                                <p class="w-full text-left">Authentication avec Plex</p>
-                            {/if}
-                        </Button>
-                    </div>
-                </Form.Control>
-            </Form.Field>
-        </div>
-    {/if}
 {/if}
-
-
 
     <input type="hidden" name="domaine" value={JSON.stringify(formData.domaine)} />
     <input type="hidden" name="selectedItemId" value={selectedItem?.id} />

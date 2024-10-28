@@ -1,83 +1,6 @@
 import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import { z } from 'zod';
 
-
-// General Settings Zurg -----------------------------------------------------------------------------------
-// Zurg Settings Schema -----------------------------------------------------------------------------------
-
-// Clés à récupérer depuis l'API
-export const zurgSettingsToGet: string[] = ['downloaders', 'media', 'symlink'];
-
-// Définition du schéma avec des valeurs par défaut
-export const zurgSettingsSchema = z.object({
-    library_path: z.string().min(1, "Library path is required").default(''),
-    rclone_path: z.string().min(1, "Rclone path is required").default(''),
-    realdebrid_enabled: z.boolean().default(false),
-    realdebrid_api_key: z.string().optional().default(''),
-    alldebrid_enabled: z.boolean().default(false),
-    alldebrid_api_key: z.string().optional().default(''),
-    media_enabled: z.boolean().default(false),
-    media_on_item_type: z.array(z.string()).optional().default([])
-});
-
-export type ZurgSettingsSchema = typeof zurgSettingsSchema;
-
-// Fonction pour convertir les données récupérées en un format conforme au schéma
-// en vérifiant que chaque donnée attendue existe bien avant de l'utiliser
-export function zurgSettingsToPass(data: any) {
-    // Vérifier la présence des objets requis dans data
-    if (!data || !data.symlink || !data.downloaders || !data.media) {
-        console.error("Données symlink, downloaders ou media manquantes :", data);
-        return {}; // Retourner un objet vide en cas de données manquantes
-    }
-
-    // Extraction des données avec valeurs par défaut en cas de données manquantes
-    return {
-        library_path: data.symlink.library_path || '',
-        rclone_path: data.symlink.rclone_path || '',
-        realdebrid_enabled: data.downloaders.real_debrid?.enabled || false,
-        realdebrid_api_key: data.downloaders.real_debrid?.api_key || '',
-        alldebrid_enabled: data.downloaders.all_debrid?.enabled || false,
-        alldebrid_api_key: data.downloaders.all_debrid?.api_key || '',
-        media_enabled: data.media.enabled || false,
-        media_on_item_type: data.media.on_item_type || []
-    };
-}
-
-// Fonction pour adapter les données du formulaire avant de les envoyer à l'API
-export function zurgSettingsToSet(form: SuperValidated<Infer<ZurgSettingsSchema>>) {
-    return [
-        {
-            key: 'symlink',
-            value: {
-                library_path: form.data.library_path,
-                rclone_path: form.data.rclone_path
-            }
-        },
-        {
-            key: 'downloaders',
-            value: {
-                real_debrid: {
-                    enabled: form.data.realdebrid_enabled,
-                    api_key: form.data.realdebrid_api_key
-                },
-                all_debrid: {
-                    enabled: form.data.alldebrid_enabled,
-                    api_key: form.data.alldebrid_api_key
-                }
-            }
-        },
-        {
-            key: 'media',
-            value: {
-                enabled: form.data.media_enabled,
-                on_item_type: form.data.media_on_item_type
-            }
-        }
-    ];
-}
-
-
 // Application Settings Schema -----------------------------------------------------------------------------------
 
 // Liste des paramètres à récupérer depuis l'API
@@ -468,6 +391,8 @@ export const mediaServerSettingsSchema = z.object({
 	update_interval: z.coerce.number().gte(0).int().optional().default(120),
 	plex_enabled: z.boolean().default(false),
 	plex_token: z.string().optional().default(''),
+	plex_login: z.string().optional().default(''),
+	plex_password: z.string().optional().default(''),
 	plex_url: z.string().optional().default('')
 });
 export type MediaServerSettingsSchema = typeof mediaServerSettingsSchema;
@@ -478,6 +403,8 @@ export function mediaServerSettingsToPass(data: any) {
 		update_interval: data.updaters.update_interval,
 		plex_token: data.updaters.plex.token,
 		plex_url: data.updaters.plex.url,
+		plex_login: data.updaters.plex.login,
+		plex_password: data.updaters.plex.password,
 		plex_enabled: data.updaters.plex.enabled
 	};
 }
@@ -491,6 +418,8 @@ export function mediaServerSettingsToSet(form: SuperValidated<Infer<MediaServerS
 				plex: {
 					enabled: form.data.plex_enabled,
 					token: form.data.plex_token,
+					login: form.data.plex_login,
+					password: form.data.plex_password,
 					url: form.data.plex_url
 				}
 			}
