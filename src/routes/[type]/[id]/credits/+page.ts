@@ -6,15 +6,15 @@ export const load = (async ({ fetch, params }) => {
 	const mediaType = params.type;
 
 	async function getDetails(id: number, mediaType: string) {
-		return await getCredits(fetch, 'en-US', id, mediaType);
+		return await getCredits(fetch, 'fr-FR', id, mediaType);
 	}
 
 	async function getMedia(id: number, mediaType: string) {
 		switch (mediaType) {
 			case 'movie':
-				return await getMovieDetails(fetch, 'en-US', '', id);
+				return await getMovieDetails(fetch, 'fr-FR', '', id);
 			case 'tv':
-				return await getTVDetails(fetch, 'en-US', '', id);
+				return await getTVDetails(fetch, 'fr-FR', '', id);
 		}
 	}
 

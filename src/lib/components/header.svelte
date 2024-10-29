@@ -13,23 +13,23 @@
 
 	const navItems: NavItem[] = [
 		{
-			name: 'Home',
+			name: 'Accueil',
 			path: '/'
 		},
 		{
-			name: 'Browse',
+			name: 'Parcourir',
 			path: '/browse'
 		},
 		{
-			name: 'Summary',
+			name: 'Synthèse',
 			path: '/summary'
 		},
 		{
-			name: 'Library',
+			name: 'Bibliothèque',
 			path: '/library'
 		},
 		{
-			name: 'Settings',
+			name: 'Paramètres',
 			path: '/settings'
 		}
 	];

@@ -325,7 +325,7 @@
 															variant="destructive"
 														>
 															<RotateCcw class="size-4" />
-															<span>Retry</span>
+															<span>Réessayer</span>
 														</Button>
 													</AlertDialog.Trigger>
 													<AlertDialog.Content>
@@ -342,7 +342,7 @@
 																	if (data.riven) {
 																		await retryItem(data.riven.id);
 																	}
-																}}>Continue</AlertDialog.Action
+																}}>Continuer</AlertDialog.Action
 															>
 														</AlertDialog.Footer>
 													</AlertDialog.Content>
@@ -375,7 +375,7 @@
 															</AlertDialog.Description>
 														</AlertDialog.Header>
 														<AlertDialog.Footer>
-															<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+															<AlertDialog.Cancel>Quitter</AlertDialog.Cancel>
 															<AlertDialog.Action
 																on:click={async () => {
 																	if (data.riven) {
@@ -432,13 +432,13 @@
 												</AlertDialog.Description>
 											</AlertDialog.Header>
 											<AlertDialog.Footer>
-												<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+												<AlertDialog.Cancel>Quitter</AlertDialog.Cancel>
 												<AlertDialog.Action
 													on:click={async () => {
 														if (data.riven) {
 															await deleteItem(data.riven.id);
 														}
-													}}>Continue</AlertDialog.Action
+													}}>Continuer</AlertDialog.Action
 												>
 											</AlertDialog.Footer>
 										</AlertDialog.Content>
@@ -474,7 +474,7 @@
 								<Button
 									href="/collection/{data.details.belongs_to_collection.id}"
 									variant="link"
-									class="text-zinc-200">View Collection</Button
+									class="text-zinc-200">Voir Collection</Button
 								>
 							</div>
 						</div>
@@ -585,7 +585,7 @@
 									'items-start': data.details.production_countries.length > 1
 								})}
 							>
-								<h2 class="text-zinc-100">Countries</h2>
+								<h2 class="text-zinc-100">Pays</h2>
 								<span class="flex flex-col items-end">
 									<ul class="mb-2 space-y-1 text-right text-sm text-zinc-300">
 										{#each data.details.production_countries as country}
@@ -624,8 +624,8 @@
 											class="text-zinc-200"
 										>
 											{productionCompanies < data.details.production_companies.length
-												? 'View All'
-												: 'View Less'}
+												? 'Voir tout'
+												: 'Voir moins'}
 										</Button>
 									{/if}
 								</span>
@@ -683,7 +683,7 @@
 						class="mt-4 h-full overflow-hidden"
 					>
 						<div class="mb-2 flex items-center justify-between">
-							<h3 class="text-2xl text-zinc-100">Related Videos</h3>
+							<h3 class="text-2xl text-zinc-100">Bandes-annonces</h3>
 							<div class="flex items-center gap-1 text-zinc-900 dark:text-zinc-100">
 								<Carousel.Previous class="static mt-8 h-8 w-8 rounded-md" />
 								<Carousel.Next class="static mt-8 h-8 w-8 rounded-md" />
@@ -715,7 +715,7 @@
 
 				{#if data.details.similar && data.details.similar.results.length > 0}
 					<MediaTmdbCarousel
-						name="Similar titles"
+						name="Titres Similaires"
 						results={data.details.similar.results}
 						mediaType={data.mediaType}
 					/>

@@ -45,7 +45,7 @@
 
 			<div class="mt-4 grid grid-cols-2 gap-4">
 				{#if data.details.homepage}
-					<div>Website</div>
+					<div>Site web</div>
 					<div>
 						<a href={data.details.homepage} target="_blank" rel="noopener noreferrer">
 							{data.details.homepage}
@@ -53,19 +53,19 @@
 					</div>
 				{/if}
 				{#if data.details.birthday}
-					<div>Birthday</div>
+					<div>Anniversaire</div>
 					<div>
 						<p>{data.details.birthday}</p>
 					</div>
 				{/if}
 				{#if data.details.deathday}
-					<div>Deathday</div>
+					<div>Date de décès</div>
 					<div>
 						<p>{data.details.deathday}</p>
 					</div>
 				{/if}
 				{#if data.details.place_of_birth}
-					<div>Place of Birth</div>
+					<div>Lieu de naissance</div>
 					<div>
 						<p>{data.details.place_of_birth}</p>
 					</div>
@@ -73,7 +73,7 @@
 			</div>
 
 			<div class="mt-8">
-				<h3>Biography</h3>
+				<h3>Biographie</h3>
 				<p>{data.details.biography}</p>
 			</div>
 		</div>

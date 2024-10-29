@@ -66,7 +66,7 @@
 					e.stopPropagation();
 				}}
 				variant="outline"
-				builders={[builder]}>Request</Button
+				builders={[builder]}>Demander</Button
 			>
 		</AlertDialog.Trigger>
 		<AlertDialog.Content>
@@ -76,11 +76,11 @@
 				>
 			</AlertDialog.Header>
 			<AlertDialog.Footer>
-				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+				<AlertDialog.Cancel>Quitter</AlertDialog.Cancel>
 				<AlertDialog.Action
 					on:click={async () => {
 						await requestItem(data.id);
-					}}>Continue</AlertDialog.Action
+					}}>Continuer</AlertDialog.Action
 				>
 			</AlertDialog.Footer>
 		</AlertDialog.Content>

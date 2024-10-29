@@ -17,22 +17,22 @@
 
 	const statsData: { title: string; value: number; refTo: string }[] = [
 		{
-			title: 'Total Items',
+			title: 'Total Medias',
 			value: data.stats?.total_items || 0,
 			refTo: '/library'
 		},
 		{
-			title: 'Total Movies',
+			title: 'Total Films',
 			value: data.stats?.total_movies || 0,
 			refTo: '/library?types=movie'
 		},
 		{
-			title: 'Total Shows',
+			title: 'Total Séries',
 			value: data.stats?.total_shows || 0,
 			refTo: '/library?types=show'
 		},
 		{
-			title: 'Incomplete Items',
+			title: 'Medias incomplets',
 			value: data.stats?.incomplete_items || 0,
 			refTo:
 				'/library?states=Unknown%2CRequested%2CIndexed%2CScraped%2CDownloaded%2CSymlinked%2CFailed%2CPartiallyCompleted'
@@ -102,19 +102,19 @@
 
 	const servicesStatus: ServiceStatus[] = [
 		{
-			name: 'Core services',
+			name: 'Services principaux',
 			services: coreServicesStatus
 		},
 		{
-			name: 'Downloader services',
+			name: 'Services de téléchargement',
 			services: downloaderServicesStatus
 		},
 		{
-			name: 'Content services',
+			name: 'Services de contenu',
 			services: contentServicesStatus
 		},
 		{
-			name: 'Scraping services',
+			name: 'Services de scraping',
 			services: scrapingServicesStatus
 		}
 	];
@@ -147,14 +147,14 @@
 					{:else}
 						<p class="text-lg lg:text-3xl">{stat.value}</p>
 					{/if}
-					<a href={stat.refTo} class="text-sm text-muted-foreground"> See items </a>
+					<a href={stat.refTo} class="text-sm text-muted-foreground"> Voir les Medias </a>
 				</Card.Content>
 			</Card.Root>
 		{/each}
 	</div>
 
 	<h2 class="mt-12 text-xl md:text-2xl">Services</h2>
-	<p class="text-sm text-muted-foreground lg:text-base">Tells the current status of the services</p>
+	<p class="text-sm text-muted-foreground lg:text-base">Indique l'état actuel des services</p>
 	<div class="mt-4 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 		{#each servicesStatus as service}
 			<Card.Root>
@@ -178,13 +178,13 @@
 		{/each}
 	</div>
 
-	<h2 class="mt-12 text-xl md:text-2xl">States</h2>
+	<h2 class="mt-12 text-xl md:text-2xl">Etat</h2>
 	<p class="text-sm text-muted-foreground lg:text-base">
-		Tells the current state of the items in the library
+		Indique l'état actuel des éléments dans la bibliothèque
 	</p>
 	<Dialog.Root>
 		<Dialog.Trigger class="flex w-full max-w-max items-start text-muted-foreground underline">
-			Know more about states
+			En savoir plus sur les états
 		</Dialog.Trigger>
 		<Dialog.Content>
 			<Dialog.Header>
@@ -219,7 +219,7 @@
 					<Card.Content>
 						<p class="text-lg lg:text-3xl">{data.stats.states[state]}</p>
 						<a href={`/library?states=${state}`} class="text-sm text-muted-foreground">
-							See items
+							Voir les Medias
 						</a>
 					</Card.Content>
 				</Card.Root>

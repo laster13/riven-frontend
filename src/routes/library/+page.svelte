@@ -113,12 +113,12 @@
 				multiple={true}
 			>
 				<Select.Trigger class="w-full lg:max-w-32">
-					<Select.Value placeholder="Select type(s)" />
+					<Select.Value placeholder="Sélection catégorie(s)" />
 				</Select.Trigger>
 
 				<Select.Content>
-					<Select.Item value="movie" label="movie">Movie</Select.Item>
-					<Select.Item value="show" label="show">Show</Select.Item>
+					<Select.Item value="movie" label="movie">Film</Select.Item>
+					<Select.Item value="show" label="show">Série</Select.Item>
 					<Select.Item value="anime" label="anime">Anime</Select.Item>
 				</Select.Content>
 			</Select.Root>
@@ -137,7 +137,7 @@
 				multiple={true}
 			>
 				<Select.Trigger class="w-full lg:max-w-36">
-					<Select.Value placeholder="Select state(s)" />
+					<Select.Value placeholder="Sélection état(s)" />
 				</Select.Trigger>
 
 				<Select.Content>
@@ -150,7 +150,7 @@
 			<Input
 				type="text"
 				id="query"
-				placeholder="Search"
+				placeholder="Rechercher"
 				class="w-full lg:w-80"
 				bind:value={$query}
 			/>
@@ -165,7 +165,7 @@
 
 		<div class="flex flex-col gap-2 lg:flex-row">
 			<Button type="button" variant="secondary" class="w-full lg:max-w-max" on:click={submitQueries}
-				>Search</Button
+				>Rechercher</Button
 			>
 		</div>
 	</div>

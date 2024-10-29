@@ -35,7 +35,7 @@
 			autofocus
 			type="text"
 			id="query"
-			placeholder="Search for your movie/series/anime/collections here"
+			placeholder="Recherchez votre film/série/anime/collection ici"
 			bind:value={query}
 			on:input={fetchedResults}
 		/>
