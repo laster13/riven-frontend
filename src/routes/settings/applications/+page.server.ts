@@ -28,20 +28,26 @@ export const load: PageServerLoad = async () => {
         // Récupération des paramètres depuis l'API
         const response = await SettingsService.getSettings({
             path: {
-                paths: ['dossiers', 'applications']  // Utilise uniquement dossiers et applications
+                paths: ['dossiers', 'applications', 'symlink', 'downloaders', 'scraping']
             }
         });
 
         const data = response?.data ?? {};
         console.log('Données récupérées depuis l\'API :', data);
 
-        // Initialiser les sections critiques pour éviter les erreurs de structure
+        const realdebridPath = data.downloaders.real_debrid?.api_key || '';
+        const alldebridPath = data.downloaders.all_debrid?.api_key || '';
+        const zileanPath = data.scraping.zilean?.url || '';
+        const yggflixPath = data.scraping.yggflix?.ygg_passkey || '';
+        const tmdbPath = data.scraping.yggflix?.tmdb_api_key || '';
+        const secretPath = data.scraping.yggflix?.secret_api_key || '';
+
+        // Préparer les autres sections pour éviter les erreurs de structure
         const toPassToSchema = applicationsSettingsToPass({
             ...data,
             dossiers: data.dossiers || { on_item_type: [], authentification: {}, domaine: {} }
         });
 
-        // Données par défaut pour les différentes sections
         let settingsData = [];
         let authentificationData = {};
         let domaineData = {};
@@ -57,7 +63,7 @@ export const load: PageServerLoad = async () => {
 
             // Assurer que "authappli" est bien définie dans authentification
             if (!authentificationData.authappli) {
-                authentificationData.authappli = 'basique'; // Valeur par défaut
+                authentificationData.authappli = 'basique';
             }
 
             console.log('--- Données récupérées depuis settings.json :', jsonData);
@@ -84,7 +90,13 @@ export const load: PageServerLoad = async () => {
             ...toPassToSchema,
             dossiers_on_item_type: settingsData,
             authentification: authentificationData,
-            domaine: domaineData
+            domaine: domaineData,
+            realdebrid_api_key: realdebridPath,
+            alldebrid_api_key: alldebridPath,
+            zilean_url: zileanPath, 
+            yggflix_ygg_passkey: yggflixPath, 
+            yggflix_tmdb_api_key: tmdbPath,
+            yggflix_secret_api_key: secretPath,
         };
 
         console.log('--- Données initiales pour le formulaire :', initialFormData);
@@ -123,7 +135,6 @@ async function generateJsonFromSource() {
         return [];
     }
 }
-
 // Action pour gérer la soumission du formulaire
 export const actions: Actions = {
     default: async (event) => {

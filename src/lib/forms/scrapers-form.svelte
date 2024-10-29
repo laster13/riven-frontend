@@ -54,42 +54,26 @@
 		name="after_2"
 		{formData}
 		stepValue={0.01}
-		fieldDescription="Time to wait after 2 failed attempts in hours"
+		fieldDescription="Temps d'attente après 2 tentatives échouées, en heures"
 	/>
 	<NumberField
 		{form}
 		name="after_5"
 		{formData}
 		stepValue={0.01}
-		fieldDescription="Time to wait after 5 failed attempts in hours"
+		fieldDescription="Temps d'attente après 5 tentatives échouées, en heures"
 	/>
 	<NumberField
 		{form}
 		name="after_10"
 		{formData}
 		stepValue={0.01}
-		fieldDescription="Time to wait after 10 failed attempts in hours"
+		fieldDescription="Temps d'attente après 10 tentatives échouées, en heures"
 	/>
 
-	<GroupCheckboxField fieldTitle="Scrapers" fieldDescription="Enable the scrapers you want to use">
-		<CheckboxField {form} name="torrentio_enabled" label="Torrentio" {formData} isForGroup={true} />
-		<CheckboxField
-			{form}
-			name="knightcrawler_enabled"
-			label="Knightcrawler"
-			{formData}
-			isForGroup={true}
-		/>
-		<CheckboxField {form} name="annatar_enabled" label="Annatar" {formData} isForGroup={true} />
-		<CheckboxField {form} name="orionoid_enabled" label="Orionoid" {formData} isForGroup={true} />
+	<GroupCheckboxField fieldTitle="Scrapers" fieldDescription="Activez les scrapers que vous souhaitez utiliser">
+		<CheckboxField {form} name="yggflix_enabled" label="Yggflix" {formData} isForGroup={true} />
 		<CheckboxField {form} name="jackett_enabled" label="Jackett" {formData} isForGroup={true} />
-		<CheckboxField
-			{form}
-			name="mediafusion_enabled"
-			label="Mediafusion"
-			{formData}
-			isForGroup={true}
-		/>
 		<CheckboxField {form} name="prowlarr_enabled" label="Prowlarr" {formData} isForGroup={true} />
 		<CheckboxField
 			{form}
@@ -117,95 +101,12 @@
 				name="torrentio_timeout"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
 		<div transition:slide>
 			<CheckboxField {form} name="torrentio_ratelimit" {formData} />
-		</div>
-	{/if}
-
-	{#if $formData.knightcrawler_enabled}
-		<div transition:slide>
-			<TextField {form} name="knightcrawler_url" {formData} />
-		</div>
-		<div transition:slide>
-			<TextField {form} name="knightcrawler_filter" {formData} />
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="knightcrawler_timeout"
-				{formData}
-				stepValue={1}
-				fieldDescription="in seconds"
-			/>
-		</div>
-
-		<div transition:slide>
-			<CheckboxField {form} name="knightcrawler_ratelimit" {formData} />
-		</div>
-	{/if}
-
-	{#if $formData.annatar_enabled}
-		<div transition:slide>
-			<TextField {form} name="annatar_url" {formData} />
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="annatar_limit"
-				{formData}
-				stepValue={1}
-				fieldDescription="Search results limit"
-			/>
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="annatar_timeout"
-				{formData}
-				stepValue={1}
-				fieldDescription="Timeout in seconds"
-			/>
-		</div>
-
-		<div transition:slide>
-			<CheckboxField {form} name="annatar_ratelimit" {formData} />
-		</div>
-	{/if}
-
-	{#if $formData.orionoid_enabled}
-		<div transition:slide>
-			<TextField {form} name="orionoid_api_key" {formData} isProtected={true} />
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="orionoid_limitcount"
-				{formData}
-				stepValue={1}
-				fieldDescription="Search results limit"
-			/>
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="orionoid_timeout"
-				{formData}
-				stepValue={1}
-				fieldDescription="in seconds"
-			/>
-		</div>
-
-		<div transition:slide>
-			<CheckboxField {form} name="orionoid_ratelimit" {formData} />
 		</div>
 	{/if}
 
@@ -224,7 +125,7 @@
 				name="jackett_timeout"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
@@ -233,72 +134,6 @@
 		</div>
 	{/if}
 
-	{#if $formData.mediafusion_enabled}
-		<div transition:slide>
-			<TextField {form} name="mediafusion_url" {formData} />
-		</div>
-
-		<div transition:slide>
-			<ArrayField {form} name="mediafusion_catalogs" {formData}>
-				{#each $formData.mediafusion_catalogs as _, i}
-					<Form.ElementField {form} name="mediafusion_catalogs[{i}]">
-						<Form.Control let:attrs>
-							<div class="flex items-center gap-2">
-								<Input
-									type="text"
-									spellcheck="false"
-									autocomplete="false"
-									{...attrs}
-									bind:value={$formData.mediafusion_catalogs[i]}
-								/>
-
-								<div class="flex items-center gap-2">
-									<Form.Button
-										type="button"
-										size="sm"
-										variant="destructive"
-										on:click={() => {
-											removeField('mediafusion_catalogs', i);
-										}}
-									>
-										<Trash2 class="h-4 w-4" />
-									</Form.Button>
-								</div>
-							</div>
-						</Form.Control>
-					</Form.ElementField>
-				{/each}
-
-				<div class="flex w-full items-center justify-between gap-2">
-					<p class="text-sm text-muted-foreground">Add catalogs</p>
-					<Form.Button
-						type="button"
-						size="sm"
-						variant="outline"
-						on:click={() => {
-							addField('mediafusion_catalogs');
-						}}
-					>
-						<Plus class="h-4 w-4" />
-					</Form.Button>
-				</div>
-			</ArrayField>
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="mediafusion_timeout"
-				{formData}
-				stepValue={1}
-				fieldDescription="in seconds"
-			/>
-		</div>
-
-		<div transition:slide>
-			<CheckboxField {form} name="mediafusion_ratelimit" {formData} />
-		</div>
-	{/if}
 
 	{#if $formData.prowlarr_enabled}
 		<div transition:slide>
@@ -315,7 +150,7 @@
 				name="prowlarr_timeout"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
@@ -326,7 +161,7 @@
 				label="Prowlarr Limiter"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
@@ -342,7 +177,7 @@
 				name="torbox_scraper_timeout"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
@@ -362,7 +197,7 @@
 				name="zilean_timeout"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
@@ -429,12 +264,35 @@
 				name="comet_timeout"
 				{formData}
 				stepValue={1}
-				fieldDescription="in seconds"
+				fieldDescription="en secondes"
 			/>
 		</div>
 
 		<div transition:slide>
 			<CheckboxField {form} name="comet_ratelimit" {formData} />
+		</div>
+	{/if}
+
+	{#if $formData.yggflix_enabled}
+		<div transition:slide>
+			<TextField {form} name="yggflix_api_url" {formData} />
+			<TextField {form} name="yggflix_ygg_passkey" {formData}  />
+			<TextField {form} name="yggflix_tmdb_api_key" fieldDescription="Pour Stream-fusion" {formData} />
+			<TextField {form} name="yggflix_secret_api_key" fieldDescription="Pour Stream-fusion" {formData} />
+		</div>
+
+		<div transition:slide>
+			<NumberField
+				{form}
+				name="yggflix_timeout"
+				{formData}
+				stepValue={1}
+				fieldDescription="en secondes"
+			/>
+		</div>
+
+		<div transition:slide>
+			<CheckboxField {form} name="yggflix_ratelimit" {formData} />
 		</div>
 	{/if}
 

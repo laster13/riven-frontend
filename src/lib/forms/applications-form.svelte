@@ -55,9 +55,6 @@
             dossiers_on_item_type: [],
             authentification: { authappli: "basique" },
             domaine: {},
-            plex_token: "",
-            plex_login: "",
-            plex_password: ""
         }));
 
         resetCombobox();
@@ -380,6 +377,18 @@
     </div>
     <p class="text-gray-500 text-sm mt-1">Logs en temps réel</p>
 </div>
+
+{#if selectedItem?.label === 'streamfusion'}
+<div transition:slide>
+	<TextField {form} name="yggflix_secret_api_key" {formData} />
+	<TextField {form} name="realdebrid_api_key" {formData} isProtected={true} />
+	<TextField {form} name="alldebrid_api_key" {formData} isProtected={true} />
+	<TextField {form} name="zilean_url" {formData} />
+	<TextField {form} name="yggflix_ygg_passkey" {formData} isProtected={true} />
+	<TextField {form} name="yggflix_tmdb_api_key" {formData} />
+</div>
+{/if}
+
 
 {#if !showLogs}
     <!-- Boutons radio pour choisir la méthode d'authentification -->

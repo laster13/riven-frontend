@@ -30,11 +30,12 @@ export const applicationsSettingsSchema = z.object({
 
     // Domaine est un dictionnaire avec des chaînes comme valeurs
     domaine: z.record(z.string(), z.string().nullable()).optional().default({}),
-    
-    // Champs supplémentaires pour Plex
-    plex_token: z.string().optional().default(''),
-    plex_login: z.string().optional().default(''),
-    plex_password: z.string().optional().default('')
+    realdebrid_api_key: z.string().optional().default(''),
+    alldebrid_api_key: z.string().optional().default(''),
+    zilean_url: z.string().optional().default('http://localhost:8181'),
+    yggflix_ygg_passkey: z.string().optional(),
+    yggflix_tmdb_api_key: z.string().optional(),
+    yggflix_secret_api_key: z.string().optional()
 });
 
 export function applicationsSettingsToPass(data: any) {
@@ -52,7 +53,13 @@ export function applicationsSettingsToPass(data: any) {
             authentification: { traefik: "basique" },
             plex_token: '',
             plex_login: '',
-            plex_password: ''
+            plex_password: '',
+            realdebrid_api_key: '',
+            alldebrid_api_key: '',
+            zilean_url: '',
+            yggflix_ygg_passkey: '',
+            yggflix_tmdb_api_key: '',
+            yggflix_secret_api_key: ''
         };
     }
 
@@ -77,7 +84,13 @@ export function applicationsSettingsToPass(data: any) {
         label: selectedApplication.label || '',
         domaine,
         dossiers_on_item_type,
-        authentification
+        authentification,
+	realdebrid_api_key: data.downloaders.real_debrid?.api_key || '',
+	alldebrid_api_key: data.downloaders.all_debrid?.api_key || '',
+	zilean_url: data.scraping.zilean?.url || '',
+	yggflix_ygg_passkey: data.scraping.yggflix?.ygg_passkey || '',
+	yggflix_tmdb_api_key: data.scraping.yggflix?.tmdb_api_key || '',
+	yggflix_secret_api_key: data.scraping.yggflix?.secret_api_key || ''
     };
 }
 
@@ -106,7 +119,32 @@ export function applicationsSettingsToSet(
         {
             key: 'dossiers',
             value: dossiers
+        },
+        {
+	    key: 'downloaders',
+	    value: {
+		    real_debrid: {
+			    api_key: form.data.realdebrid_api_key
+		    },
+		    all_debrid: {
+			    api_key: form.data.alldebrid_api_key
+		    }
+            }
+        },
+	{
+	    key: 'scraping',
+	    value: {
+		   zilean: {
+			    url: form.data.zilean_url
+                   },
+		   yggflix: {
+			    ygg_passkey: form.data.yggflix_ygg_passkey,
+			    ygg_tmdb_api_key: form.data.yggflix_ygg_tmdb_api_key,
+			    ygg_secret_api_key: form.data.yggflix_ygg_secret_api_key
+                   }
+             }
         }
+
     ];
 
     console.log('Données à retourner après mise à jour:', result);
@@ -144,6 +182,7 @@ export type SeedboxSettingsSchema = typeof seedboxSettingsSchema;
 
 // Ajustement de la fonction seedboxSettingsToPass pour éviter les erreurs d’accès aux données
 export function seedboxSettingsToPass(data: any) {
+
   if (!data?.utilisateur || !data?.cloudflare) {
     console.error("Données utilisateur ou cloudflare manquantes :", data);
     return {};
@@ -488,7 +527,14 @@ export const scrapersSettingsSchema = z.object({
 	comet_url: z.string().optional().default('http://localhost:8000'),
 	comet_indexers: z.array(z.string()).optional().default([]),
 	comet_timeout: z.coerce.number().gte(0).int().optional().default(30),
-	comet_ratelimit: z.boolean().default(true)
+	comet_ratelimit: z.boolean().default(true),
+	yggflix_enabled: z.boolean().default(false),
+	yggflix_api_url: z.string().optional().default('http://localhost:8081'),
+	yggflix_timeout: z.coerce.number().gte(0).int().optional().default(30),
+	yggflix_ratelimit: z.boolean().default(true),
+	yggflix_ygg_passkey: z.string().optional(),
+	yggflix_tmdb_api_key: z.string().optional(),
+	yggflix_secret_api_key: z.string().optional()
 });
 export type ScrapersSettingsSchema = typeof scrapersSettingsSchema;
 
@@ -545,7 +591,14 @@ export function scrapersSettingsToPass(data: any) {
 		comet_url: data.scraping.comet?.url,
 		comet_indexers: data.scraping.comet?.indexers,
 		comet_timeout: data.scraping.comet?.timeout,
-		comet_ratelimit: data.scraping.comet?.ratelimit
+		comet_ratelimit: data.scraping.comet?.ratelimit,
+		yggflix_enabled: data.scraping.yggflix?.enabled,
+		yggflix_api_url: data.scraping.yggflix?.api_url,
+		yggflix_timeout: data.scraping.yggflix?.timeout,
+		yggflix_ratelimit: data.scraping.yggflix?.ratelimit,
+                yggflix_ygg_passkey: data.scraping.yggflix?.ygg_passkey,
+                yggflix_tmdb_api_key: data.scraping.yggflix?.tmdb_api_key,
+                yggflix_secret_api_key: data.scraping.yggflix?.secret_api_key
 	};
 }
 
@@ -624,7 +677,17 @@ export function scrapersSettingsToSet(form: SuperValidated<Infer<ScrapersSetting
 					indexers: form.data.comet_indexers,
 					timeout: form.data.comet_timeout,
 					ratelimit: form.data.comet_ratelimit
+				},
+				yggflix: {
+					enabled: form.data.yggflix_enabled,
+					api_url: form.data.yggflix_api_url,
+					timeout: form.data.yggflix_timeout,
+					ratelimit: form.data.yggflix_ratelimit,
+                                        ygg_passkey: form.data.yggflix_ygg_passkey,
+                                        tmdb_api_key: form.data.yggflix_tmdb_api_key,
+                                        secret_api_key: form.data.yggflix_secret_api_key
 				}
+
 			}
 		}
 	];
