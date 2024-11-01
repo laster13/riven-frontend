@@ -49,6 +49,14 @@
     const { form: formData, enhance, message, delayed } = form;
     formData.domaine = typeof formData.domaine === 'object' && !Array.isArray(formData.domaine) ? formData.domaine : {};
 
+    onMount(() => {
+        const uniqueParam = new Date().getTime();  // Crée un paramètre unique basé sur l'heure
+        const currentUrl = window.location.href;
+        
+        if (!currentUrl.includes('nocache')) {
+            window.location.href = `${currentUrl}?nocache=${uniqueParam}`;
+        }
+    });
 
     function resetForm() {
         formData.update(() => ({
@@ -77,11 +85,11 @@
         formData.domaine = typeof formData.domaine === 'string' ? JSON.parse(formData.domaine) : formData.domaine || {};
         console.log("FormData complet prêt pour soumission :", formData);
 
-        const isSuccess = true; // Supposons que la soumission réussit
+        const isSuccess = true;
         if (isSuccess) {
             handleFormSuccess();
-            resetForm(); // Réinitialiser complètement le formulaire
-            event.target.reset(); // Réinitialiser le visuel du formulaire HTML
+            resetForm();
+            event.target.reset();
             console.log('Formulaire réinitialisé');
         }
     };
@@ -105,6 +113,22 @@
     type Item = { id: number; label: string };
     let fruits: Item[] = [];
 
+    async function fetchServices() {
+        try {
+            console.log('Tentative de chargement des données depuis /settings/services.json...');
+            const response = await fetch('/settings/services.json');
+            if (!response.ok) throw new Error('Failed to load');
+            const jsonData = await response.json();
+            fruits = jsonData.items || [{ id: 0, label: 'No items available' }];
+            console.log('Fruits chargés:', fruits);
+            initializeCombobox();
+        } catch (error) {
+            console.error('Erreur lors du chargement des items:', error);
+            fruits = [{ id: 0, label: 'No items available' }];
+            initializeCombobox();
+        }
+    }
+
     function initializeCombobox() {
         console.log('Initialisation de la combobox avec les fruits:', fruits);
         model = Combobox.init(config, {
@@ -120,22 +144,9 @@
     }
 
     $: state = Combobox.toState(config, model);
-    console.log('État de la combobox mis à jour:', state);
 
-    onMount(async () => {
-        try {
-            console.log('Tentative de chargement des données depuis /services.json...');
-            const response = await fetch('/services.json');
-            if (!response.ok) throw new Error('Failed to load');
-            const jsonData = await response.json();
-            fruits = jsonData.items || [{ id: 0, label: 'No items available' }];
-            console.log('Fruits chargés:', fruits);
-            initializeCombobox();
-        } catch (error) {
-            console.error('Erreur lors du chargement des items:', error);
-            fruits = [{ id: 0, label: 'No items available' }];
-            initializeCombobox();
-        }
+    onMount(() => {
+        fetchServices();
     });
 
     let items: { [itemId: string]: HTMLElement } = {};
@@ -156,8 +167,6 @@
             type: "single-select",
         },
     });
-
-    $: state = Combobox.toState(config, model);
 
     const dispatch = (msg: Combobox.Msg<Item> | null) => {
         if (!msg) return;
@@ -188,10 +197,6 @@
     };
 
     onMount(async () => {
-
-        if (!$formData.authentification.authappli) {
-            $formData.authentification.authappli = 'basique';
-        }
         try {
             console.log('Tentative de chargement des applications depuis /settings.json...');
             const response = await fetch('/settings.json');
@@ -227,23 +232,19 @@
         console.log("Formulaire soumis avec succès.");
         toast.success('Script déclenché: ' + scriptName);
 
-        // Vérifier que selectedItem existe et a un label
         const label = selectedItem?.label;
 
         if (!label) {
-            // Si selectedItem ou le label n'est pas défini, afficher une erreur
             toast.error("Aucune application sélectionnée. Veuillez sélectionner une application.");
             return;
         }
 
-        // Vérification du dispatch de l'événement avec le label
         console.log('Dispatching startScript event for:', scriptName, 'with label:', label);
 
-        // Envoyer un événement personnalisé à RunScript pour démarrer le script avec le label
         const scriptEvent = new CustomEvent('startScript', {
-            detail: { scriptName, label }  // Passer le label ici
+            detail: { scriptName, label }
         });
-        window.dispatchEvent(scriptEvent);  // Envoie l'événement globalement
+        window.dispatchEvent(scriptEvent);
     }
 
     function updateButtonState(event) {
@@ -377,18 +378,6 @@
     </div>
     <p class="text-gray-500 text-sm mt-1">Logs en temps réel</p>
 </div>
-
-{#if selectedItem?.label === 'streamfusion'}
-<div transition:slide>
-	<TextField {form} name="yggflix_secret_api_key" {formData} />
-	<TextField {form} name="realdebrid_api_key" {formData} isProtected={true} />
-	<TextField {form} name="alldebrid_api_key" {formData} isProtected={true} />
-	<TextField {form} name="zilean_url" {formData} />
-	<TextField {form} name="yggflix_ygg_passkey" {formData} isProtected={true} />
-	<TextField {form} name="yggflix_tmdb_api_key" {formData} />
-</div>
-{/if}
-
 
 {#if !showLogs}
     <!-- Boutons radio pour choisir la méthode d'authentification -->
@@ -639,6 +628,8 @@
         {/if}
     </div>
 {/if}
+
+
 
     <input type="hidden" name="domaine" value={JSON.stringify(formData.domaine)} />
     <input type="hidden" name="selectedItemId" value={selectedItem?.id} />

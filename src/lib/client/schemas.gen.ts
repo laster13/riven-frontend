@@ -112,6 +112,8 @@ export const AppModelSchema = {
                 updater_interval: 120,
                 plex: {
                     enabled: false,
+                    login: '',
+                    password: '',
                     token: '',
                     url: 'http://localhost:32400'
                 },
@@ -274,9 +276,11 @@ export const AppModelSchema = {
                 },
                 yggflix: {
                     api_url: 'http://localhost:8081',
-                    enabled: true,
+                    enabled: false,
                     ratelimit: true,
+                    secret_api_key: '',
                     timeout: 30,
+                    tmdb_api_key: '',
                     ygg_passkey: ''
                 }
             }
@@ -1454,6 +1458,16 @@ export const PlexLibraryModelSchema = {
             title: 'Token',
             default: ''
         },
+        login: {
+            type: 'string',
+            title: 'Login',
+            default: ''
+        },
+        password: {
+            type: 'string',
+            title: 'Password',
+            default: ''
+        },
         url: {
             type: 'string',
             title: 'Url',
@@ -2342,11 +2356,13 @@ export const ScraperModelSchema = {
         yggflix: {
             '$ref': '#/components/schemas/YggConfig',
             default: {
-                enabled: true,
+                enabled: false,
                 api_url: 'http://localhost:8081',
                 timeout: 30,
                 ratelimit: true,
-                ygg_passkey: ''
+                ygg_passkey: '',
+                tmdb_api_key: '',
+                secret_api_key: ''
             }
         }
     },
@@ -2692,6 +2708,8 @@ export const UpdatersModelSchema = {
             default: {
                 enabled: false,
                 token: '',
+                login: '',
+                password: '',
                 url: 'http://localhost:32400'
             }
         },
@@ -2741,7 +2759,7 @@ export const UtilisateurModelSchema = {
         traefik: {
             '$ref': '#/components/schemas/AuthMethodModel',
             default: {
-                authMethod: 'Basique',
+                authMethod: 'basique',
                 oauth_client: '',
                 oauth_secret: '',
                 oauth_mail: ''
@@ -2792,7 +2810,7 @@ export const YggConfigSchema = {
         enabled: {
             type: 'boolean',
             title: 'Enabled',
-            default: true
+            default: false
         },
         api_url: {
             type: 'string',
@@ -2813,11 +2831,20 @@ export const YggConfigSchema = {
             type: 'string',
             title: 'Ygg Passkey',
             default: ''
+        },
+        tmdb_api_key: {
+            type: 'string',
+            title: 'Tmdb Api Key',
+            default: ''
+        },
+        secret_api_key: {
+            type: 'string',
+            title: 'Secret Api Key',
+            default: ''
         }
     },
     type: 'object',
-    title: 'YggConfig',
-    description: 'Classe pour gérer la configuration de Yggflix.'
+    title: 'YggConfig'
 } as const;
 
 export const ZileanConfigSchema = {

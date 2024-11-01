@@ -1,5 +1,5 @@
-import { type SuperValidated, type Infer } from 'sveltekit-superforms';
 import { z } from 'zod';
+import type { SuperValidated } from 'sveltekit-superforms';
 
 // Application Settings Schema -----------------------------------------------------------------------------------
 
@@ -30,12 +30,6 @@ export const applicationsSettingsSchema = z.object({
 
     // Domaine est un dictionnaire avec des chaînes comme valeurs
     domaine: z.record(z.string(), z.string().nullable()).optional().default({}),
-    realdebrid_api_key: z.string().optional().default(''),
-    alldebrid_api_key: z.string().optional().default(''),
-    zilean_url: z.string().optional().default('http://localhost:8181'),
-    yggflix_ygg_passkey: z.string().optional(),
-    yggflix_tmdb_api_key: z.string().optional(),
-    yggflix_secret_api_key: z.string().optional()
 });
 
 export function applicationsSettingsToPass(data: any) {
@@ -51,15 +45,6 @@ export function applicationsSettingsToPass(data: any) {
             domaine: {},
             dossiers_on_item_type: [],
             authentification: { traefik: "basique" },
-            plex_token: '',
-            plex_login: '',
-            plex_password: '',
-            realdebrid_api_key: '',
-            alldebrid_api_key: '',
-            zilean_url: '',
-            yggflix_ygg_passkey: '',
-            yggflix_tmdb_api_key: '',
-            yggflix_secret_api_key: ''
         };
     }
 
@@ -84,13 +69,7 @@ export function applicationsSettingsToPass(data: any) {
         label: selectedApplication.label || '',
         domaine,
         dossiers_on_item_type,
-        authentification,
-	realdebrid_api_key: data.downloaders.real_debrid?.api_key || '',
-	alldebrid_api_key: data.downloaders.all_debrid?.api_key || '',
-	zilean_url: data.scraping.zilean?.url || '',
-	yggflix_ygg_passkey: data.scraping.yggflix?.ygg_passkey || '',
-	yggflix_tmdb_api_key: data.scraping.yggflix?.tmdb_api_key || '',
-	yggflix_secret_api_key: data.scraping.yggflix?.secret_api_key || ''
+        authentification
     };
 }
 
@@ -119,37 +98,13 @@ export function applicationsSettingsToSet(
         {
             key: 'dossiers',
             value: dossiers
-        },
-        {
-	    key: 'downloaders',
-	    value: {
-		    real_debrid: {
-			    api_key: form.data.realdebrid_api_key
-		    },
-		    all_debrid: {
-			    api_key: form.data.alldebrid_api_key
-		    }
-            }
-        },
-	{
-	    key: 'scraping',
-	    value: {
-		   zilean: {
-			    url: form.data.zilean_url
-                   },
-		   yggflix: {
-			    ygg_passkey: form.data.yggflix_ygg_passkey,
-			    ygg_tmdb_api_key: form.data.yggflix_ygg_tmdb_api_key,
-			    ygg_secret_api_key: form.data.yggflix_ygg_secret_api_key
-                   }
-             }
         }
-
     ];
 
     console.log('Données à retourner après mise à jour:', result);
     return result;
 }
+
 
 // seedbox Settings -----------------------------------------------------------------------------------
 // Les clés que nous allons récupérer depuis l'API

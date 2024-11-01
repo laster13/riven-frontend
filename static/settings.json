@@ -1,27 +1,10 @@
 {
-  "applications": [
-    {
-      "id": "1",
-      "label": "autoindex"
-    },
-    {
-      "id": "3",
-      "label": "bazarr"
-    }
-  ],
+  "applications": [],
   "dossiers": {
-    "on_item_type": [
-      "autoindex",
-      "bazarr"
-    ],
+    "on_item_type": [],
     "authentification": {
-      "authappli": "basique",
-      "autoindex": "basique",
-      "bazarr": "basique"
+      "authappli": "basique"
     },
-    "domaine": {
-      "autoindex": "autoindex",
-      "bazarr": "bazarr"
-    }
+    "domaine": {}
   }
 }

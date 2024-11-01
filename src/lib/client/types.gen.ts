@@ -226,6 +226,8 @@ export type OverseerrModel = {
 export type PlexLibraryModel = {
     enabled?: boolean;
     token?: string;
+    login?: string;
+    password?: string;
     url?: string;
 };
 
@@ -471,15 +473,14 @@ export type ValidationError = {
     type: string;
 };
 
-/**
- * Classe pour gérer la configuration de Yggflix.
- */
 export type YggConfig = {
     enabled?: boolean;
     api_url?: string;
     timeout?: number;
     ratelimit?: boolean;
     ygg_passkey?: string;
+    tmdb_api_key?: string;
+    secret_api_key?: string;
 };
 
 export type ZileanConfig = {
