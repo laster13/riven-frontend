@@ -27,5 +27,9 @@ vite.config.ts.timestamp-*
 /.vs
 /package-lock.json
 .vscode
+<<<<<<< HEAD
 server-config.json
+>>>>>>> upstream/main
+=======
+/config
 >>>>>>> upstream/main

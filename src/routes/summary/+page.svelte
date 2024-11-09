@@ -19,23 +19,23 @@
 		{
 			title: 'Total Medias',
 			value: data.stats?.total_items || 0,
-			refTo: '/library'
+			refTo: '/browse'
 		},
 		{
 			title: 'Total Films',
 			value: data.stats?.total_movies || 0,
-			refTo: '/library?types=movie'
+			refTo: '/browse?type=movie'
 		},
 		{
 			title: 'Total Séries',
 			value: data.stats?.total_shows || 0,
-			refTo: '/library?types=show'
+			refTo: '/browse?type=show'
 		},
 		{
 			title: 'Medias incomplets',
 			value: data.stats?.incomplete_items || 0,
 			refTo:
-				'/library?states=Unknown%2CRequested%2CIndexed%2CScraped%2CDownloaded%2CSymlinked%2CFailed%2CPartiallyCompleted'
+				'/browse?state=Unknown%2CRequested%2CIndexed%2CScraped%2CDownloaded%2CSymlinked%2CFailed%2CPartiallyCompleted'
 		}
 	];
 
@@ -218,9 +218,13 @@
 					</Card.Header>
 					<Card.Content>
 						<p class="text-lg lg:text-3xl">{data.stats.states[state]}</p>
+<<<<<<< HEAD
 						<a href={`/library?states=${state}`} class="text-sm text-muted-foreground">
 							Voir les Medias
 						</a>
+=======
+						<a href={`/browse?state=${state}`} class="text-sm text-muted-foreground"> See items </a>
+>>>>>>> upstream/main
 					</Card.Content>
 				</Card.Root>
 			{/each}

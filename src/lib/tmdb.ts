@@ -1,3 +1,5 @@
+import type { TMDBSearchResponse } from './types';
+
 const TMDB_READ_ACCESS_TOKEN: string =
 	'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNTkxMmVmOWFhM2IxNzg2Zjk3ZTE1NWY1YmQ3ZjY1MSIsInN1YiI6IjY1M2NjNWUyZTg5NGE2MDBmZjE2N2FmYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xrIXsMFJpI1o1j5g2QpQcFP1X3AfRjFA5FlBFO5Naw8';
 const HEADERS: Record<string, string> = {
@@ -113,7 +115,7 @@ export async function getMovieDetails(
 	fetch: any,
 	language: string = 'fr-FR',
 	append_to_response: string | null = null,
-	movieId: number
+	movieId: string
 ) {
 	const params = { language, append_to_response };
 	const queryString = dictToQueryString(params);
@@ -188,7 +190,7 @@ export async function getTVDetails(
 	fetch: any,
 	language: string = 'fr-FR',
 	append_to_response: string | null = null,
-	tvId: number
+	tvId: string
 ) {
 	const params = { language, append_to_response };
 	const queryString = dictToQueryString(params);
@@ -207,7 +209,7 @@ export async function getTVSeasonDetails(
 	fetch: any,
 	language: string = 'fr-FR',
 	append_to_response: string | null = null,
-	tvId: number,
+	tvId: string,
 	seasonNumber: number
 ) {
 	const params = { language, append_to_response };
@@ -299,7 +301,7 @@ export async function getMovieSearch(
 	page: number = 1,
 	region: string | null = null,
 	year: number | null = null
-) {
+): Promise<TMDBSearchResponse> {
 	const params = { query, include_adult, language, primary_release_year, page, region, year };
 	const queryString = dictToQueryString(params);
 
@@ -319,7 +321,7 @@ export async function getMultiSearch(
 	include_adult: boolean = false,
 	language: string = 'fr-FR',
 	page: number = 1
-) {
+): Promise<TMDBSearchResponse> {
 	const params = { query, include_adult, language, page };
 	const queryString = dictToQueryString(params);
 
@@ -390,8 +392,13 @@ export async function getCollection(
 export async function getCredits(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
+<<<<<<< HEAD
 	language: string = 'fr-FR',
 	mediaId: number,
+=======
+	language: string = 'en-US',
+	mediaId: string,
+>>>>>>> upstream/main
 	mediaType: string
 ) {
 	const params = { language };

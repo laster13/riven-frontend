@@ -7,18 +7,11 @@ export type AllDebridModel = {
     proxy_url?: string;
 };
 
-export type AnnatarConfig = {
-    enabled?: boolean;
-    url?: string;
-    limit?: number;
-    timeout?: number;
-    ratelimit?: boolean;
-};
-
 export type AppModel = {
     version?: string;
     api_key?: string;
     debug?: boolean;
+    debug_database?: boolean;
     log?: boolean;
     force_refresh?: boolean;
     map_metadata?: boolean;
@@ -40,6 +33,7 @@ export type AppModel = {
     applications?: Array<ApplicationModel>;
 };
 
+<<<<<<< HEAD
 export type ApplicationModel = {
     id?: number;
     label?: string;
@@ -57,12 +51,41 @@ export type CloudflareModel = {
     cloudflare_api_key?: string;
 };
 
+=======
+>>>>>>> upstream/main
 export type CometConfig = {
     enabled?: boolean;
     url?: string;
     indexers?: Array<(string)>;
     timeout?: number;
     ratelimit?: boolean;
+};
+
+/**
+ * Root model for container mapping file IDs to file information.
+ *
+ * Example:
+ * {
+ * "4": {
+ * "filename": "show.s01e01.mkv",
+ * "filesize": 30791392598
+ * },
+ * "5": {
+ * "filename": "show.s01e02.mkv",
+ * "filesize": 25573181861
+ * }
+ * }
+ */
+export type Container = {
+    [key: string]: ContainerFile;
+};
+
+/**
+ * Individual file entry in a container
+ */
+export type ContainerFile = {
+    filename: string;
+    filesize?: (number | null);
 };
 
 export type ContentModel = {
@@ -86,6 +109,7 @@ export type DatabaseModel = {
     host?: string;
 };
 
+<<<<<<< HEAD
 export type DossierModel = {
     on_item_type?: Array<(string)>;
     authentification?: {
@@ -96,9 +120,15 @@ export type DossierModel = {
     };
 };
 
+=======
+>>>>>>> upstream/main
 export type DownloadersModel = {
     video_extensions?: Array<(string)>;
     prefer_speed_over_quality?: boolean;
+    movie_filesize_mb_min?: number;
+    movie_filesize_mb_max?: number;
+    episode_filesize_mb_min?: number;
+    episode_filesize_mb_max?: number;
     real_debrid?: RealDebridModel;
     all_debrid?: AllDebridModel;
     torbox?: TorboxModel;
@@ -223,6 +253,56 @@ export type OverseerrModel = {
     use_webhook?: boolean;
 };
 
+/**
+ * Parsed data model for a torrent title.
+ */
+export type ParsedData = {
+    raw_title: string;
+    parsed_title?: string;
+    normalized_title?: string;
+    trash?: boolean;
+    year?: (number | null);
+    resolution?: string;
+    seasons?: Array<(number)>;
+    episodes?: Array<(number)>;
+    complete?: boolean;
+    volumes?: Array<(number)>;
+    languages?: Array<(string)>;
+    quality?: (string | null);
+    hdr?: Array<(string)>;
+    codec?: (string | null);
+    audio?: Array<(string)>;
+    channels?: Array<(string)>;
+    dubbed?: boolean;
+    subbed?: boolean;
+    date?: (string | null);
+    group?: (string | null);
+    edition?: (string | null);
+    bit_depth?: (string | null);
+    bitrate?: (string | null);
+    network?: (string | null);
+    extended?: boolean;
+    converted?: boolean;
+    hardcoded?: boolean;
+    region?: (string | null);
+    ppv?: boolean;
+    site?: (string | null);
+    size?: (string | null);
+    proper?: boolean;
+    repack?: boolean;
+    retail?: boolean;
+    upscaled?: boolean;
+    remastered?: boolean;
+    unrated?: boolean;
+    documentary?: boolean;
+    episode_code?: (string | null);
+    country?: (string | null);
+    container?: (string | null);
+    extension?: (string | null);
+    extras?: Array<(string)>;
+    torrent?: boolean;
+};
+
 export type PlexLibraryModel = {
     enabled?: boolean;
     token?: string;
@@ -249,21 +329,6 @@ export type ProwlarrConfig = {
     ratelimit?: boolean;
     limiter_seconds?: number;
 };
-
-export type RDTorrent = {
-    id: string;
-    hash: string;
-    filename: string;
-    bytes: number;
-    status: RDTorrentStatus;
-    added: string;
-    links: Array<(string)>;
-    ended?: (string | null);
-    speed?: (number | null);
-    seeders?: (number | null);
-};
-
-export type RDTorrentStatus = 'magnet_error' | 'magnet_conversion' | 'waiting_files_selection' | 'downloading' | 'downloaded' | 'error' | 'seeding' | 'dead' | 'uploading' | 'compressing';
 
 export type RDUser = {
     id: number;
@@ -317,17 +382,17 @@ export type RealDebridModel = {
 
 export type RemoveResponse = {
     message: string;
-    ids: Array<(number)>;
+    ids: Array<(string)>;
 };
 
 export type ResetResponse = {
     message: string;
-    ids: Array<(number)>;
+    ids: Array<(string)>;
 };
 
 export type RetryResponse = {
     message: string;
-    ids: Array<(number)>;
+    ids: Array<(string)>;
 };
 
 export type RootResponse = {
@@ -335,10 +400,11 @@ export type RootResponse = {
     version: string;
 };
 
-export type ScrapedTorrent = {
-    rank: number;
-    raw_title: string;
-    infohash: string;
+export type ScrapeItemResponse = {
+    message: string;
+    streams: {
+        [key: string]: Stream;
+    };
 };
 
 export type ScraperModel = {
@@ -352,7 +418,6 @@ export type ScraperModel = {
     jackett?: JackettConfig;
     prowlarr?: ProwlarrConfig;
     orionoid?: OrionoidConfig;
-    annatar?: AnnatarConfig;
     torbox_scraper?: TorBoxScraperConfig;
     mediafusion?: MediafusionConfig;
     zilean?: ZileanConfig;
@@ -360,17 +425,58 @@ export type ScraperModel = {
     yggflix?: YggConfig;
 };
 
+export type SelectFilesResponse = {
+    message: string;
+    download_type: 'cached' | 'uncached';
+};
+
+export type download_type = 'cached' | 'uncached';
+
+export type SessionResponse = {
+    message: string;
+};
+
 export type SetSettings = {
     key: string;
     value: unknown;
 };
 
-export type SetTorrentRDResponse = {
-    message: string;
-    item_id: number;
-    torrent_id: string;
+/**
+ * Root model for show file data that maps seasons to episodes to file data.
+ *
+ * Example:
+ * {
+ * 1: {  # Season 1
+ * 1: {"filename": "path/to/s01e01.mkv"},  # Episode 1
+ * 2: {"filename": "path/to/s01e02.mkv"}   # Episode 2
+ * },
+ * 2: {  # Season 2
+ * 1: {"filename": "path/to/s02e01.mkv"}   # Episode 1
+ * }
+ * }
+ */
+export type ShowFileData = {
+    [key: string]: {
+        [key: string]: ContainerFile;
+    };
 };
 
+<<<<<<< HEAD
+=======
+export type StartSessionResponse = {
+    message: string;
+    session_id: string;
+    torrent_id: string;
+    torrent_info: {
+        [key: string]: unknown;
+    };
+    containers: (Array<{
+    [key: string]: unknown;
+}> | null);
+    expires_at: string;
+};
+
+>>>>>>> upstream/main
 export type StateResponse = {
     success: boolean;
     states: Array<(string)>;
@@ -395,6 +501,16 @@ export type StatsResponse = {
     states: {
         [key: string]: (number);
     };
+};
+
+export type Stream = {
+    infohash: string;
+    raw_title: string;
+    parsed_title: string;
+    parsed_data: ParsedData;
+    rank: number;
+    lev_ratio: number;
+    is_cached: boolean;
 };
 
 export type SubliminalConfig = {
@@ -445,12 +561,31 @@ export type TraktModel = {
     trending_count?: number;
     fetch_popular?: boolean;
     popular_count?: number;
+    fetch_most_watched?: boolean;
+    most_watched_period?: string;
+    most_watched_count?: number;
+    oauth?: TraktOauthModel;
 };
 
 export type TraktOAuthInitiateResponse = {
     auth_url: string;
 };
 
+<<<<<<< HEAD
+=======
+export type TraktOauthModel = {
+    oauth_client_id?: string;
+    oauth_client_secret?: string;
+    oauth_redirect_uri?: string;
+    access_token?: string;
+    refresh_token?: string;
+};
+
+export type UpdateAttributesResponse = {
+    message: string;
+};
+
+>>>>>>> upstream/main
 export type UpdatersModel = {
     updater_interval?: number;
     plex?: PlexLibraryModel;
@@ -458,6 +593,7 @@ export type UpdatersModel = {
     emby?: EmbyLibraryModel;
 };
 
+<<<<<<< HEAD
 export type UtilisateurModel = {
     username?: string;
     email?: string;
@@ -465,6 +601,14 @@ export type UtilisateurModel = {
     password?: string;
     traefik?: AuthMethodModel;
     domainperso?: string;
+=======
+export type UploadLogsResponse = {
+    success: boolean;
+    /**
+     * URL to the uploaded log file. 50M Filesize limit. 180 day retention.
+     */
+    url: string;
+>>>>>>> upstream/main
 };
 
 export type ValidationError = {
@@ -553,6 +697,10 @@ export type MountResponse = ({
 
 export type MountError = (unknown);
 
+export type UploadLogsResponse2 = (UploadLogsResponse);
+
+export type UploadLogsError = (unknown);
+
 export type OverseerrApiV1WebhookOverseerrPostResponse = ({
     [key: string]: unknown;
 });
@@ -592,7 +740,7 @@ export type AddItemsError = (unknown | HTTPValidationError);
 
 export type GetItemData = {
     path: {
-        id: number;
+        id: string;
     };
     query?: {
         use_tmdb_id?: (boolean | null);
@@ -647,53 +795,100 @@ export type RemoveItemResponse = (RemoveResponse);
 
 export type RemoveItemError = (unknown | HTTPValidationError);
 
-export type SetTorrentRdMagnetData = {
+export type GetItemStreamsApiV1ItemsItemIdStreamsGetData = {
     path: {
-        id: number;
+        item_id: string;
     };
+};
+
+export type GetItemStreamsApiV1ItemsItemIdStreamsGetResponse = (unknown);
+
+export type GetItemStreamsApiV1ItemsItemIdStreamsGetError = (unknown | HTTPValidationError);
+
+export type BlacklistStreamApiV1ItemsItemIdStreamsStreamIdBlacklistPostData = {
+    path: {
+        item_id: string;
+        stream_id: number;
+    };
+};
+
+export type BlacklistStreamApiV1ItemsItemIdStreamsStreamIdBlacklistPostResponse = (unknown);
+
+export type BlacklistStreamApiV1ItemsItemIdStreamsStreamIdBlacklistPostError = (unknown | HTTPValidationError);
+
+export type UnblacklistStreamApiV1ItemsItemIdStreamsStreamIdUnblacklistPostData = {
+    path: {
+        item_id: string;
+        stream_id: number;
+    };
+};
+
+export type UnblacklistStreamApiV1ItemsItemIdStreamsStreamIdUnblacklistPostResponse = (unknown);
+
+export type UnblacklistStreamApiV1ItemsItemIdStreamsStreamIdUnblacklistPostError = (unknown | HTTPValidationError);
+
+export type ScrapeItemData = {
+    path: {
+        id: string;
+    };
+};
+
+export type ScrapeItemResponse2 = (ScrapeItemResponse);
+
+export type ScrapeItemError = (HTTPValidationError);
+
+export type StartManualSessionApiV1ScrapeScrapeStartSessionPostData = {
     query: {
+        item_id: string;
         magnet: string;
     };
 };
 
-export type SetTorrentRdMagnetResponse = (SetTorrentRDResponse);
+export type StartManualSessionApiV1ScrapeScrapeStartSessionPostResponse = (StartSessionResponse);
 
-export type SetTorrentRdMagnetError = (unknown | HTTPValidationError);
+export type StartManualSessionApiV1ScrapeScrapeStartSessionPostError = (HTTPValidationError);
 
-export type SetTorrentRdApiV1ItemsIdSetTorrentRdPostData = {
+export type ManualSelectData = {
+    body: Container;
     path: {
-        id: number;
-    };
-    query: {
-        torrent_id: string;
+        session_id: unknown;
     };
 };
 
-export type SetTorrentRdApiV1ItemsIdSetTorrentRdPostResponse = (SetTorrentRDResponse);
+export type ManualSelectResponse = (SelectFilesResponse);
 
-export type SetTorrentRdApiV1ItemsIdSetTorrentRdPostError = (unknown | HTTPValidationError);
+export type ManualSelectError = (HTTPValidationError);
 
-export type ScrapeData = {
-    query: {
-        episode?: number;
-        imdb_id: string;
-        season?: number;
+export type ManualUpdateAttributesData = {
+    body: (ContainerFile | ShowFileData);
+    path: {
+        session_id: unknown;
     };
 };
 
-export type ScrapeResponse = (Array<ScrapedTorrent>);
+export type ManualUpdateAttributesResponse = (UpdateAttributesResponse);
 
-export type ScrapeError = (HTTPValidationError);
+export type ManualUpdateAttributesError = (HTTPValidationError);
 
-export type GetRdTorrentsData = {
-    query?: {
-        limit?: number;
+export type AbortManualSessionApiV1ScrapeScrapeAbortSessionSessionIdPostData = {
+    path: {
+        session_id: string;
     };
 };
 
-export type GetRdTorrentsResponse = (Array<RDTorrent>);
+export type AbortManualSessionApiV1ScrapeScrapeAbortSessionSessionIdPostResponse = (SessionResponse);
 
-export type GetRdTorrentsError = (HTTPValidationError);
+export type AbortManualSessionApiV1ScrapeScrapeAbortSessionSessionIdPostError = (HTTPValidationError);
+
+export type CompleteManualSessionData = {
+    path: {
+        session_id: string;
+    };
+};
+
+export type CompleteManualSessionResponse = (SessionResponse);
+
+export type CompleteManualSessionError = (HTTPValidationError);
 
 export type GetSettingsSchemaResponse = ({
     [key: string]: unknown;
@@ -755,6 +950,7 @@ export type StreamEventsApiV1StreamEventTypeGetData = {
 
 export type StreamEventsApiV1StreamEventTypeGetResponse = (EventResponse);
 
+<<<<<<< HEAD
 export type StreamEventsApiV1StreamEventTypeGetError = (unknown | HTTPValidationError);
 
 export type CheckFileApiV1ScriptsCheckFileGetResponse = (unknown);
@@ -780,3 +976,6 @@ export type RunScriptApiV1ScriptsRunScriptNameGetError = (unknown | HTTPValidati
 export type UpdateConfigApiV1ScriptsUpdateConfigPostResponse = (unknown);
 
 export type UpdateConfigApiV1ScriptsUpdateConfigPostError = (unknown);
+=======
+export type StreamEventsApiV1StreamEventTypeGetError = (unknown | HTTPValidationError);
+>>>>>>> upstream/main

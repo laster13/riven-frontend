@@ -86,30 +86,6 @@
 		<CheckboxField {form} name="comet_enabled" label="Comet" {formData} isForGroup={true} />
 	</GroupCheckboxField>
 
-	{#if $formData.torrentio_enabled}
-		<div transition:slide>
-			<TextField {form} name="torrentio_url" {formData} />
-		</div>
-
-		<div transition:slide>
-			<TextField {form} name="torrentio_filter" {formData} />
-		</div>
-
-		<div transition:slide>
-			<NumberField
-				{form}
-				name="torrentio_timeout"
-				{formData}
-				stepValue={1}
-				fieldDescription="en secondes"
-			/>
-		</div>
-
-		<div transition:slide>
-			<CheckboxField {form} name="torrentio_ratelimit" {formData} />
-		</div>
-	{/if}
-
 	{#if $formData.jackett_enabled}
 		<div transition:slide>
 			<TextField {form} name="jackett_url" {formData} />

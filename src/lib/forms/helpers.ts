@@ -217,6 +217,10 @@ export const generalSettingsSchema = z.object({
 	separate_anime_dirs: z.boolean().default(false),
 	repair_symlinks: z.boolean().default(false),
 	repair_interval: z.coerce.number().gte(0).int().optional().default(6),
+	movie_filesize_mb_min: z.coerce.number().gte(0).int().optional().default(0),
+	movie_filesize_mb_max: z.coerce.number().gte(-1).int().optional().default(-1),
+	episode_filesize_mb_min: z.coerce.number().gte(0).int().optional().default(0),
+	episode_filesize_mb_max: z.coerce.number().gte(-1).int().optional().default(-1),
 	realdebrid_enabled: z.boolean().default(false),
 	realdebrid_api_key: z.string().optional().default(''),
 	realdebrid_proxy_enabled: z.boolean().default(false),
@@ -257,6 +261,10 @@ export function generalSettingsToPass(data: any) {
 		separate_anime_dirs: data.symlink.separate_anime_dirs,
 		repair_symlinks: data.symlink.repair_symlinks,
 		repair_interval: data.symlink.repair_interval,
+		movie_filesize_mb_min: data.downloaders.movie_filesize_mb_min,
+		movie_filesize_mb_max: data.downloaders.movie_filesize_mb_max,
+		episode_filesize_mb_min: data.downloaders.episode_filesize_mb_min,
+		episode_filesize_mb_max: data.downloaders.episode_filesize,
 		realdebrid_enabled: data.downloaders.real_debrid.enabled,
 		realdebrid_api_key: data.downloaders.real_debrid?.api_key,
 		realdebrid_proxy_enabled: data.downloaders.real_debrid?.proxy_enabled,
@@ -313,6 +321,10 @@ export function generalSettingsToSet(form: SuperValidated<Infer<GeneralSettingsS
 		{
 			key: 'downloaders',
 			value: {
+				movie_filesize_mb_min: form.data.movie_filesize_mb_min,
+				movie_filesize_mb_max: form.data.movie_filesize_mb_max,
+				episode_filesize_mb_min: form.data.episode_filesize_mb_min,
+				episode_filesize_mb_max: form.data.episode_filesize_mb_max,
 				real_debrid: {
 					enabled: form.data.realdebrid_enabled,
 					api_key: form.data.realdebrid_api_key,
@@ -445,11 +457,6 @@ export const scrapersSettingsSchema = z.object({
 		.string()
 		.optional()
 		.default('sort=qualitysize%7Cqualityfilter=480p,scr,cam,unknown'),
-	annatar_enabled: z.boolean().default(false),
-	annatar_url: z.string().optional().default('https://annatar.elfhosted.com'),
-	annatar_timeout: z.coerce.number().gte(0).int().optional().default(10),
-	annatar_ratelimit: z.boolean().default(true),
-	annatar_limit: z.coerce.number().gte(0).int().optional().default(2000),
 	orionoid_enabled: z.boolean().default(false),
 	orionoid_api_key: z.string().optional().default(''),
 	orionoid_timeout: z.coerce.number().gte(0).int().optional().default(10),
@@ -509,11 +516,6 @@ export function scrapersSettingsToPass(data: any) {
 		knightcrawler_filter: data.scraping.knightcrawler?.filter,
 		knightcrawler_timeout: data.scraping.knightcrawler?.timeout,
 		knightcrawler_ratelimit: data.scraping.knightcrawler?.ratelimit,
-		annatar_url: data.scraping.annatar?.url,
-		annatar_enabled: data.scraping.annatar.enabled,
-		annatar_limit: data.scraping.annatar?.limit,
-		annatar_timeout: data.scraping.annatar?.timeout,
-		annatar_ratelimit: data.scraping.annatar?.ratelimit,
 		orionoid_enabled: data.scraping.orionoid.enabled,
 		orionoid_api_key: data.scraping.orionoid?.api_key,
 		orionoid_limitcount: data.scraping.orionoid?.limitcount,
@@ -578,13 +580,6 @@ export function scrapersSettingsToSet(form: SuperValidated<Infer<ScrapersSetting
 					filter: form.data.knightcrawler_filter,
 					timeout: form.data.knightcrawler_timeout,
 					ratelimit: form.data.knightcrawler_ratelimit
-				},
-				annatar: {
-					enabled: form.data.annatar_enabled,
-					url: form.data.annatar_url,
-					limit: form.data.annatar_limit,
-					timeout: form.data.annatar_timeout,
-					ratelimit: form.data.annatar_ratelimit
 				},
 				orionoid: {
 					enabled: form.data.orionoid_enabled,
