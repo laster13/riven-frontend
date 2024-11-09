@@ -21,16 +21,12 @@
 			path: '/'
 		},
 		{
-			name: 'Parcourir',
+			name: 'Medias',
 			path: '/browse'
 		},
 		{
 			name: 'Synthèse',
 			path: '/summary'
-		},
-		{
-			name: 'Bibliothèque',
-			path: '/library'
 		},
 		{
 			name: 'Paramètres',

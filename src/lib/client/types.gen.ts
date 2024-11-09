@@ -33,7 +33,6 @@ export type AppModel = {
     applications?: Array<ApplicationModel>;
 };
 
-<<<<<<< HEAD
 export type ApplicationModel = {
     id?: number;
     label?: string;
@@ -51,8 +50,6 @@ export type CloudflareModel = {
     cloudflare_api_key?: string;
 };
 
-=======
->>>>>>> upstream/main
 export type CometConfig = {
     enabled?: boolean;
     url?: string;
@@ -109,7 +106,6 @@ export type DatabaseModel = {
     host?: string;
 };
 
-<<<<<<< HEAD
 export type DossierModel = {
     on_item_type?: Array<(string)>;
     authentification?: {
@@ -120,8 +116,6 @@ export type DossierModel = {
     };
 };
 
-=======
->>>>>>> upstream/main
 export type DownloadersModel = {
     video_extensions?: Array<(string)>;
     prefer_speed_over_quality?: boolean;
@@ -144,12 +138,6 @@ export type EventResponse = {
     data: {
         [key: string]: unknown;
     };
-};
-
-export type EventUpdate = {
-    item_id: number;
-    emitted_by: string;
-    run_at: string;
 };
 
 export type HTTPValidationError = {
@@ -461,8 +449,6 @@ export type ShowFileData = {
     };
 };
 
-<<<<<<< HEAD
-=======
 export type StartSessionResponse = {
     message: string;
     session_id: string;
@@ -476,7 +462,6 @@ export type StartSessionResponse = {
     expires_at: string;
 };
 
->>>>>>> upstream/main
 export type StateResponse = {
     success: boolean;
     states: Array<(string)>;
@@ -531,6 +516,7 @@ export type SymlinkModel = {
 
 export type TorBoxScraperConfig = {
     enabled?: boolean;
+    api_key?: string;
     timeout?: number;
 };
 
@@ -571,8 +557,6 @@ export type TraktOAuthInitiateResponse = {
     auth_url: string;
 };
 
-<<<<<<< HEAD
-=======
 export type TraktOauthModel = {
     oauth_client_id?: string;
     oauth_client_secret?: string;
@@ -585,7 +569,6 @@ export type UpdateAttributesResponse = {
     message: string;
 };
 
->>>>>>> upstream/main
 export type UpdatersModel = {
     updater_interval?: number;
     plex?: PlexLibraryModel;
@@ -593,7 +576,14 @@ export type UpdatersModel = {
     emby?: EmbyLibraryModel;
 };
 
-<<<<<<< HEAD
+export type UploadLogsResponse = {
+    success: boolean;
+    /**
+     * URL to the uploaded log file. 50M Filesize limit. 180 day retention.
+     */
+    url: string;
+};
+
 export type UtilisateurModel = {
     username?: string;
     email?: string;
@@ -601,14 +591,6 @@ export type UtilisateurModel = {
     password?: string;
     traefik?: AuthMethodModel;
     domainperso?: string;
-=======
-export type UploadLogsResponse = {
-    success: boolean;
-    /**
-     * URL to the uploaded log file. 50M Filesize limit. 180 day retention.
-     */
-    url: string;
->>>>>>> upstream/main
 };
 
 export type ValidationError = {
@@ -686,7 +668,7 @@ export type LogsResponse = (string);
 export type LogsError = (unknown);
 
 export type EventsResponse = ({
-    [key: string]: Array<EventUpdate>;
+    [key: string]: Array<(string)>;
 });
 
 export type EventsError = (unknown);
@@ -950,7 +932,6 @@ export type StreamEventsApiV1StreamEventTypeGetData = {
 
 export type StreamEventsApiV1StreamEventTypeGetResponse = (EventResponse);
 
-<<<<<<< HEAD
 export type StreamEventsApiV1StreamEventTypeGetError = (unknown | HTTPValidationError);
 
 export type CheckFileApiV1ScriptsCheckFileGetResponse = (unknown);
@@ -976,6 +957,3 @@ export type RunScriptApiV1ScriptsRunScriptNameGetError = (unknown | HTTPValidati
 export type UpdateConfigApiV1ScriptsUpdateConfigPostResponse = (unknown);
 
 export type UpdateConfigApiV1ScriptsUpdateConfigPostError = (unknown);
-=======
-export type StreamEventsApiV1StreamEventTypeGetError = (unknown | HTTPValidationError);
->>>>>>> upstream/main

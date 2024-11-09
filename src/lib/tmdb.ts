@@ -392,13 +392,8 @@ export async function getCollection(
 export async function getCredits(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	fetch: any,
-<<<<<<< HEAD
 	language: string = 'fr-FR',
 	mediaId: number,
-=======
-	language: string = 'en-US',
-	mediaId: string,
->>>>>>> upstream/main
 	mediaType: string
 ) {
 	const params = { language };

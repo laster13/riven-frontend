@@ -218,13 +218,9 @@
 					</Card.Header>
 					<Card.Content>
 						<p class="text-lg lg:text-3xl">{data.stats.states[state]}</p>
-<<<<<<< HEAD
 						<a href={`/library?states=${state}`} class="text-sm text-muted-foreground">
 							Voir les Medias
 						</a>
-=======
-						<a href={`/browse?state=${state}`} class="text-sm text-muted-foreground"> See items </a>
->>>>>>> upstream/main
 					</Card.Content>
 				</Card.Root>
 			{/each}

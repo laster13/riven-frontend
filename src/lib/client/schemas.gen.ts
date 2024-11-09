@@ -32,11 +32,7 @@ export const AppModelSchema = {
         version: {
             type: 'string',
             title: 'Version',
-<<<<<<< HEAD
-            default: '0.16.2'
-=======
             default: '0.18.0'
->>>>>>> upstream/main
         },
         api_key: {
             type: 'string',
@@ -235,6 +231,7 @@ export const AppModelSchema = {
                     timeout: 30
                 },
                 torbox_scraper: {
+                    api_key: '',
                     enabled: false,
                     timeout: 30
                 },
@@ -249,7 +246,7 @@ export const AppModelSchema = {
                     enabled: false,
                     ratelimit: true,
                     timeout: 30,
-                    url: 'http://localhost:8181'
+                    url: 'http://localhost:8081'
                 },
                 comet: {
                     enabled: false,
@@ -724,7 +721,6 @@ export const AppModelSchema = {
     title: 'AppModel'
 } as const;
 
-<<<<<<< HEAD
 export const ApplicationModelSchema = {
     properties: {
         id: {
@@ -786,8 +782,6 @@ export const CloudflareModelSchema = {
     title: 'CloudflareModel'
 } as const;
 
-=======
->>>>>>> upstream/main
 export const CometConfigSchema = {
     properties: {
         enabled: {
@@ -972,7 +966,6 @@ export const DatabaseModelSchema = {
     title: 'DatabaseModel'
 } as const;
 
-<<<<<<< HEAD
 export const DossierModelSchema = {
     properties: {
         on_item_type: {
@@ -999,8 +992,6 @@ export const DossierModelSchema = {
     title: 'DossierModel'
 } as const;
 
-=======
->>>>>>> upstream/main
 export const DownloadersModelSchema = {
     properties: {
         video_extensions: {
@@ -1098,26 +1089,6 @@ export const EventResponseSchema = {
     type: 'object',
     required: ['data'],
     title: 'EventResponse'
-} as const;
-
-export const EventUpdateSchema = {
-    properties: {
-        item_id: {
-            type: 'integer',
-            title: 'Item Id'
-        },
-        emitted_by: {
-            type: 'string',
-            title: 'Emitted By'
-        },
-        run_at: {
-            type: 'string',
-            title: 'Run At'
-        }
-    },
-    type: 'object',
-    required: ['item_id', 'emitted_by', 'run_at'],
-    title: 'EventUpdate'
 } as const;
 
 export const HTTPValidationErrorSchema = {
@@ -2644,6 +2615,7 @@ export const ScraperModelSchema = {
             '$ref': '#/components/schemas/TorBoxScraperConfig',
             default: {
                 enabled: false,
+                api_key: '',
                 timeout: 30
             }
         },
@@ -2661,7 +2633,7 @@ export const ScraperModelSchema = {
             '$ref': '#/components/schemas/ZileanConfig',
             default: {
                 enabled: false,
-                url: 'http://localhost:8181',
+                url: 'http://localhost:8081',
                 timeout: 30,
                 ratelimit: true
             }
@@ -2798,13 +2770,8 @@ export const StartSessionResponseSchema = {
         }
     },
     type: 'object',
-<<<<<<< HEAD
-    required: ['message', 'item_id', 'torrent_id'],
-    title: 'SetTorrentRDResponse'
-=======
     required: ['message', 'session_id', 'torrent_id', 'torrent_info', 'containers', 'expires_at'],
     title: 'StartSessionResponse'
->>>>>>> upstream/main
 } as const;
 
 export const StateResponseSchema = {
@@ -2995,6 +2962,11 @@ export const TorBoxScraperConfigSchema = {
             title: 'Enabled',
             default: false
         },
+        api_key: {
+            type: 'string',
+            title: 'Api Key',
+            default: ''
+        },
         timeout: {
             type: 'integer',
             title: 'Timeout',
@@ -3158,8 +3130,6 @@ export const TraktOAuthInitiateResponseSchema = {
     title: 'TraktOAuthInitiateResponse'
 } as const;
 
-<<<<<<< HEAD
-=======
 export const TraktOauthModelSchema = {
     properties: {
         oauth_client_id: {
@@ -3204,7 +3174,6 @@ export const UpdateAttributesResponseSchema = {
     title: 'UpdateAttributesResponse'
 } as const;
 
->>>>>>> upstream/main
 export const UpdatersModelSchema = {
     properties: {
         updater_interval: {
@@ -3243,7 +3212,26 @@ export const UpdatersModelSchema = {
     title: 'UpdatersModel'
 } as const;
 
-<<<<<<< HEAD
+export const UploadLogsResponseSchema = {
+    properties: {
+        success: {
+            type: 'boolean',
+            title: 'Success'
+        },
+        url: {
+            type: 'string',
+            maxLength: 2083,
+            minLength: 1,
+            format: 'uri',
+            title: 'Url',
+            description: 'URL to the uploaded log file. 50M Filesize limit. 180 day retention.'
+        }
+    },
+    type: 'object',
+    required: ['success', 'url'],
+    title: 'UploadLogsResponse'
+} as const;
+
 export const UtilisateurModelSchema = {
     properties: {
         username: {
@@ -3283,26 +3271,6 @@ export const UtilisateurModelSchema = {
     },
     type: 'object',
     title: 'UtilisateurModel'
-=======
-export const UploadLogsResponseSchema = {
-    properties: {
-        success: {
-            type: 'boolean',
-            title: 'Success'
-        },
-        url: {
-            type: 'string',
-            maxLength: 2083,
-            minLength: 1,
-            format: 'uri',
-            title: 'Url',
-            description: 'URL to the uploaded log file. 50M Filesize limit. 180 day retention.'
-        }
-    },
-    type: 'object',
-    required: ['success', 'url'],
-    title: 'UploadLogsResponse'
->>>>>>> upstream/main
 } as const;
 
 export const ValidationErrorSchema = {
@@ -3387,7 +3355,7 @@ export const ZileanConfigSchema = {
         url: {
             type: 'string',
             title: 'Url',
-            default: 'http://localhost:8181'
+            default: 'http://localhost:8081'
         },
         timeout: {
             type: 'integer',
