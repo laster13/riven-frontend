@@ -117,64 +117,41 @@ export const seedboxSettingsSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters long"),
   cloudflare_login: z.string().min(1, "Login is required"),
   cloudflare_api_key: z.string().min(1, "API key is required"),
-  traefik: z
-    .object({
-      authMethod: z.enum(['basique', 'oauth', 'authelia', 'aucune']),
-      oauth_client: z.string().default(''),
-      oauth_secret: z.string().default(''),
-      oauth_mail: z.string().default(''),
-    })
-    .default({
-      authMethod: 'basique',
-      oauth_client: '',
-      oauth_secret: '',
-      oauth_mail: '',
-    }),
-  domainperso: z.string().optional().default("traefik"),
+  oauth_enabled: z.boolean().default(false),
+  oauth_client: z.string().default(''),  // OAuth Client
+  oauth_secret: z.string().default(''),  // OAuth Secret
+  oauth_mail: z.string().default(''),    // OAuth Mail
+  zurg_enabled: z.boolean().default(false),
+  zurg_token: z.string().default(''),  // OAuth Secret
 });
 
 export type SeedboxSettingsSchema = typeof seedboxSettingsSchema;
 
 // Ajustement de la fonction seedboxSettingsToPass pour éviter les erreurs d’accès aux données
 export function seedboxSettingsToPass(data: any) {
-
   if (!data?.utilisateur || !data?.cloudflare) {
     console.error("Données utilisateur ou cloudflare manquantes :", data);
     return {};
   }
-
-  const traefik = data.utilisateur.traefik || {};
 
   return {
     username: data.utilisateur.username || '',
     email: data.utilisateur.email || '',
     domain: data.utilisateur.domain || '',
     password: data.utilisateur.password || '',
-    domainperso: data.utilisateur.domainperso || 'traefik',
     cloudflare_login: data.cloudflare.cloudflare_login || '',
     cloudflare_api_key: data.cloudflare.cloudflare_api_key || '',
-    traefik: {
-      authMethod: "basique", // Toujours "basique" par défaut
-      oauth_client: traefik.oauth_client || '',
-      oauth_secret: traefik.oauth_secret || '',
-      oauth_mail: traefik.oauth_mail || '',
-    },
+    oauth_enabled: data.utilisateur.oauth_enabled,
+    oauth_client: data.utilisateur.oauth_client || '',
+    oauth_secret: data.utilisateur.oauth_secret || '',
+    oauth_mail: data.utilisateur.oauth_mail || '',
+    zurg_enabled: data.utilisateur.zurg_enabled,
+    zurg_token: data.utilisateur.zurg_token || '',
   };
 }
 
 // Fonction pour préparer les données du formulaire en vue de leur enregistrement
 export function seedboxSettingsToSet(form: SuperValidated<Infer<SeedboxSettingsSchema>>) {
-  const authMethod = form.data.traefik?.authMethod;
-
-  const traefikData = {
-    authMethod: authMethod,
-    ...(authMethod === 'oauth' && {
-      oauth_client: form.data.traefik.oauth_client,
-      oauth_secret: form.data.traefik.oauth_secret,
-      oauth_mail: form.data.traefik.oauth_mail,
-    }),
-  };
-
   return [
     {
       key: 'utilisateur',
@@ -183,8 +160,12 @@ export function seedboxSettingsToSet(form: SuperValidated<Infer<SeedboxSettingsS
         domain: form.data.domain,
         email: form.data.email,
         password: form.data.password,
-        traefik: traefikData,
-        domainperso: form.data.domainperso,
+        oauth_enabled: form.data.oauth_enabled,
+        oauth_client: form.data.oauth_client,
+        oauth_secret: form.data.oauth_secret,
+        oauth_mail: form.data.oauth_mail,
+        zurg_enabled: form.data.zurg_enabled,
+        zurg_token: form.data.zurg_token,
       },
     },
     {
@@ -196,7 +177,6 @@ export function seedboxSettingsToSet(form: SuperValidated<Infer<SeedboxSettingsS
     },
   ];
 }
-
 // General Settings -----------------------------------------------------------------------------------
 export const generalSettingsToGet: string[] = [
 	'debug',

@@ -685,13 +685,12 @@ export const AppModelSchema = {
                 email: '',
                 domain: '',
                 password: '',
-                traefik: {
-                    authMethod: 'basique',
-                    oauth_client: '',
-                    oauth_mail: '',
-                    oauth_secret: ''
-                },
-                domainperso: 'traefik'
+                oauth_enabled: false,
+                oauth_client: '',
+                oauth_secret: '',
+                oauth_mail: '',
+                zurg_enabled: false,
+                zurg_token: ''
             }
         },
         dossiers: {
@@ -736,33 +735,6 @@ export const ApplicationModelSchema = {
     },
     type: 'object',
     title: 'ApplicationModel'
-} as const;
-
-export const AuthMethodModelSchema = {
-    properties: {
-        authMethod: {
-            type: 'string',
-            title: 'Authmethod',
-            default: 'basique'
-        },
-        oauth_client: {
-            type: 'string',
-            title: 'Oauth Client',
-            default: ''
-        },
-        oauth_secret: {
-            type: 'string',
-            title: 'Oauth Secret',
-            default: ''
-        },
-        oauth_mail: {
-            type: 'string',
-            title: 'Oauth Mail',
-            default: ''
-        }
-    },
-    type: 'object',
-    title: 'AuthMethodModel'
 } as const;
 
 export const CloudflareModelSchema = {
@@ -3254,19 +3226,35 @@ export const UtilisateurModelSchema = {
             title: 'Password',
             default: ''
         },
-        traefik: {
-            '$ref': '#/components/schemas/AuthMethodModel',
-            default: {
-                authMethod: 'basique',
-                oauth_client: '',
-                oauth_secret: '',
-                oauth_mail: ''
-            }
+        oauth_enabled: {
+            type: 'boolean',
+            title: 'Oauth Enabled',
+            default: false
         },
-        domainperso: {
+        oauth_client: {
             type: 'string',
-            title: 'Domainperso',
-            default: 'traefik'
+            title: 'Oauth Client',
+            default: ''
+        },
+        oauth_secret: {
+            type: 'string',
+            title: 'Oauth Secret',
+            default: ''
+        },
+        oauth_mail: {
+            type: 'string',
+            title: 'Oauth Mail',
+            default: ''
+        },
+        zurg_enabled: {
+            type: 'boolean',
+            title: 'Zurg Enabled',
+            default: false
+        },
+        zurg_token: {
+            type: 'string',
+            title: 'Zurg Token',
+            default: ''
         }
     },
     type: 'object',

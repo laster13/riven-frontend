@@ -71,7 +71,7 @@
 		fieldDescription="Temps d'attente après 10 tentatives échouées, en heures"
 	/>
 
-	<GroupCheckboxField fieldTitle="Scrapers" fieldDescription="Activez les scrapers que vous souhaitez utiliser">
+	<GroupCheckboxField fieldTitle="Scrapers" fieldDescription="Installer streamfusion pour utiliser Yggflix -> Menu applications">
 		<CheckboxField {form} name="yggflix_enabled" label="Yggflix" {formData} isForGroup={true} />
 		<CheckboxField {form} name="jackett_enabled" label="Jackett" {formData} isForGroup={true} />
 		<CheckboxField {form} name="prowlarr_enabled" label="Prowlarr" {formData} isForGroup={true} />
@@ -252,8 +252,17 @@
 	{#if $formData.yggflix_enabled}
 		<div transition:slide>
 			<TextField {form} name="yggflix_api_url" {formData} />
+		</div>
+
+		<div transition:slide>
 			<TextField {form} name="yggflix_ygg_passkey" {formData}  />
+		</div>
+
+		<div transition:slide>
 			<TextField {form} name="yggflix_tmdb_api_key" fieldDescription="Pour Stream-fusion" {formData} />
+		</div>
+
+		<div transition:slide>
 			<TextField {form} name="yggflix_secret_api_key" fieldDescription="Pour Stream-fusion" {formData} />
 		</div>
 

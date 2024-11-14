@@ -10,3 +10,10 @@ client.interceptors.error.use((error: unknown) => {
 	}
 	return undefined;
 });
+
+export function handleError(error: unknown) {
+	if (error && typeof error === 'object' && 'detail' in error && typeof error.detail === 'string') {
+		return error.detail;
+	}
+	return undefined;
+}

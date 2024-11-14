@@ -14,6 +14,8 @@
     import RunScript from '../../routes/run-script.svelte';
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
+    import CheckboxField from './components/checkbox-field.svelte';
+
 
     // Import du schéma des helpers pour la gestion des données
     export let data: SuperValidated<Infer<SeedboxSettingsSchema>>;
@@ -40,18 +42,6 @@
 
 	// Gérer la soumission du formulaire
 	function handleFormSuccess() {
-		console.log("Formulaire soumis avec succès :", $formData.traefik);
-
-		if ($formData.traefik.authMethod === "oauth") {
-			console.log("Oauth Client:", $formData.traefik.oauth_client);
-			console.log("Oauth Secret:", $formData.traefik.oauth_secret);
-			console.log("Oauth Mail:", $formData.traefik.oauth_mail);
-			
-			if (!$formData.traefik.oauth_client || !$formData.traefik.oauth_secret || !$formData.traefik.oauth_mail) {
-				alert("Veuillez remplir tous les champs OAuth.");
-				return;
-			}
-		}
 		console.log("Formulaire soumis avec succès.");
 		toast.success('Script déclenché: ' + scriptName);
 
@@ -74,6 +64,7 @@
 	function updateStatusMessage(event) {
 		statusMessage = event.detail.statusMessage;
 	}
+
     onMount(() => {
         const uniqueParam = new Date().getTime();  // Crée un paramètre unique basé sur l'heure
         const currentUrl = window.location.href;
@@ -106,120 +97,69 @@ function handleScriptCompleted() {
 </div>
 
 {#if !showLogs}
-    <!-- Champs de texte gérés par le schéma dans helpers -->
-    <TextField {form} name="username" label="Username" {formData} />
-    <TextField {form} name="email" label="Email" {formData} />
-    <TextField {form} name="domain" label="Domaine" {formData} />
-    <TextField {form} name="password" label="Password" {formData} />
-    <TextField {form} name="cloudflare_login" label="Cloudflare Mail" {formData} />
-    <TextField {form} name="cloudflare_api_key" label="Cloudflare Api" {formData} />
-
-<!-- Boutons radio pour choisir la méthode d'authentification -->
-<div class="flex items-center gap-4">
-    <label class="text-sm" for="auth-basique">Authentification Traefik</label>
-    <div class="flex gap-10 ml-20">
-        <label class="flex items-center gap-2 text-sm" for="auth-basique">
-            <input 
-                id="auth-basique"
-                type="radio" 
-                bind:group={$formData.traefik.authMethod} 
-                value="basique" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>basique</span>
-        </label>
-        <label class="flex items-center gap-2 text-sm" for="auth-oauth">
-            <input 
-                id="auth-oauth"
-                type="radio" 
-                bind:group={$formData.traefik.authMethod} 
-                value="oauth" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>Oauth</span>
-        </label>
-        <label class="flex items-center gap-2 text-sm" for="auth-authelia">
-            <input 
-                id="auth-authelia"
-                type="radio" 
-                bind:group={$formData.traefik.authMethod} 
-                value="authelia" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>authelia</span>
-        </label>
-        <label class="flex items-center gap-2 text-sm" for="auth-aucune">
-            <input 
-                id="auth-aucune"
-                type="radio" 
-                bind:group={$formData.traefik.authMethod} 
-                value="aucune" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>aucune</span>
-        </label>
+    <div transition:slide>
+        <TextField {form} name="username" label="Username" {formData} />
     </div>
-</div>
 
-<!-- Champs spécifiques pour OAuth -->
-{#if $formData.traefik.authMethod === "oauth"}
-    <div transition:slide style="margin-top: 20px;">
-<div style="display: flex; align-items: center; margin-bottom: 8px;">
-    <label for="oauth_client" style="font-size: 14px; margin-right: 110px; min-width: 100px;">oauth Client</label>
-    <input
-        id="oauth_client"
-        type="text"
-        name="traefik.oauth_client"
-        bind:value={$formData.traefik.oauth_client}
-        placeholder="Oauth Client"
-        style="flex-basis: 400px; padding: 8px; font-size: 14px; border-radius: 8px; border: 1px solid #ccc; outline: none;"
-    />
-</div>
-
-<div style="display: flex; align-items: center; margin-bottom: 8px;">
-    <label for="oauth_secret" style="font-size: 14px; margin-right: 110px; min-width: 100px;">oauth Secret</label>
-    <input
-        id="oauth_secret"
-        type="text"
-        name="traefik.oauth_secret"
-        bind:value={$formData.traefik.oauth_secret}
-        placeholder="Oauth Secret"
-        style="flex-basis: 400px; padding: 8px; font-size: 14px; border-radius: 8px; border: 1px solid #ccc; outline: none;"
-    />
-</div>
-
-<div style="display: flex; align-items: center; margin-bottom: 8px;">
-    <label for="oauth_mail" style="font-size: 14px; margin-right: 110px; min-width: 100px;">oauth Mail</label>
-    <input
-        id="oauth_mail"
-        type="email"
-        name="traefik.oauth_mail"
-        bind:value={$formData.traefik.oauth_mail}
-        placeholder="Oauth Mail"
-        style="flex-basis: 400px; padding: 8px; font-size: 14px; border-radius: 8px; border: 0.75px solid #ccc; outline: none;"
-    />
-</div>
+    <div transition:slide>
+        <TextField {form} name="email" label="Email" {formData} />
     </div>
-{/if}
 
-    <div class="form-group">
-        <label for={name} class="text-sm">{label}</label>
-        
-        <!-- Description du champ -->
-        {#if fieldDescription}
-            <p class="text-gray-500 text-xs">{fieldDescription}</p>
+    <div transition:slide>
+        <TextField {form} name="domain" label="Domaine" {formData} />
+    </div>
+
+    <div transition:slide>
+        <TextField {form} name="password" label="Password" {formData} />
+    </div>
+
+    <div transition:slide>
+        <TextField {form} name="cloudflare_login" label="Cloudflare Mail" {formData} />
+    </div>
+
+    <div transition:slide>
+        <TextField {form} name="cloudflare_api_key" label="Cloudflare API" {formData} />
+    </div>
+
+    <div transition:slide>
+        <CheckboxField {form} name="oauth_enabled" label="Oauth" {formData} />
+    </div>
+
+        {#if $formData.oauth_enabled}
+            <div transition:slide>
+                <TextField {form} name="oauth_client" label="Oauth Client" {formData} />
+            </div>
+
+            <div transition:slide>
+                <TextField {form} name="oauth_secret" label="Oauth Secret" {formData} />
+            </div>
+
+            <div transition:slide>
+                <TextField {form} name="oauth_mail" label="Oauth Mail" {formData} />
+            </div>
         {/if}
+
+    <div transition:slide>
+        <CheckboxField {form} name="zurg_enabled" label="Zurg" fieldDescription="Version Public" {formData} />
     </div>
 
-    <TextField 
-        {form} 
-        name="domainperso" 
-        label="Sous domaine Personnalisé"
-        value="traefik"
-        {formData} 
-        fieldDescription="Par default traefik" 
-    />
+        {#if $formData.zurg_enabled}
+            <div transition:slide>
+                <TextField {form} name="zurg_token" label="Zurg Token" fieldDescription="Version Sponsor" {formData} />
+            </div>
+        {/if}
 
+        <Separator class="mt-4" />
+
+        <!-- Exemple de groupe de champs avec description -->
+        <div class="form-group">
+            <label for={name} class="text-sm">{label}</label>
+
+            <!-- Description du champ, affichée si présente -->
+            {#if fieldDescription}
+                <p class="text-gray-500 text-xs">{fieldDescription}</p>
+            {/if}
+        </div>
 {/if}
 
     <!-- Bouton de soumission -->
@@ -242,12 +182,9 @@ function handleScriptCompleted() {
             </Form.Button>
         </div>
     </div>
-
 </form>
 
 <RunScript {scriptName} {showLogs} on:buttonStateChange={updateButtonState} on:statusMessageUpdate={updateStatusMessage} on:scriptCompleted={handleScriptCompleted} />
-
-<Separator class="mt-4" />
 
 {#if formDebug}
 	<SuperDebug data={$formData} />

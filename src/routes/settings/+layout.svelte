@@ -10,10 +10,42 @@
     // Définir les sections principales de l'installation
     const settingsItems: NavItem[] = [
 		{
-			name: 'SSDv2',
+			name: 'Prérequis',
 			path: '/settings/test'
-		}
-	];
+		},
+		{
+			name: 'Profil & Outils',
+			path: '/settings/seedbox'
+		},
+		{
+			name: 'General',
+			path: '/settings/general'
+		},
+		{
+			name: 'Media Server',
+			path: '/settings/mediaserver'
+		},
+		{
+			name: 'Content',
+			path: '/settings/content'
+		},
+		{
+			name: 'Scrapers',
+			path: '/settings/scrapers'
+		},
+		{
+			name: 'Ranking',
+			path: '/settings/ranking'
+		},
+		{
+			name: 'About',
+			path: '/settings/about'
+		},
+		{
+			name: 'Applications',
+			path: '/settings/applications'
+		}		
+        ];
 </script>
 
 <svelte:head>

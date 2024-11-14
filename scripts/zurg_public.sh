@@ -1,19 +1,18 @@
 #!/bin/bash
 
-  source /home/${USER}/seedbox-compose/profile.sh
+source /home/${USER}/seedbox-compose/profile.sh
 
-  # Obtenir la version Zurg et Rclone depuis le fichier de configuration
-  ARCHITECTURE=$(dpkg --print-architecture)
-  RCLONE_VERSION=$(get_from_account_yml rclone.architecture)
-  ZURG_VERSION=$(get_from_account_yml zurg.version)
-  ZURG_SPONSOR=$(get_from_account_yml zurg.sponsor)
-
-  sudo rm -rf $HOME/scripts/zurg*/
+sudo rm -rf $HOME/scripts/zurg*/
 
 function install_zurg() {
   update_release_zurg
 
   # Déterminer l'architecture système
+  ARCHITECTURE=$(dpkg --print-architecture)
+
+  # Obtenir la version Zurg et Rclone depuis le fichier de configuration
+  RCLONE_VERSION=$(get_from_account_yml rclone.architecture)
+  ZURG_VERSION=$(get_from_account_yml zurg.version)
 
   # Créer le répertoire de configuration si nécessaire
   create_dir "${HOME}/.config/rclone"
@@ -27,19 +26,18 @@ function install_zurg() {
   docker system prune -af > /dev/null 2>&1
 
   # Installer GitHub CLI si nécessaire
-  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-  sudo apt update 2>/dev/null
-  sudo apt install gh -y 2>/dev/null
+  if ! command -v gh &> /dev/null; then
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt update 2>/dev/null
+    sudo apt install gh -y 2>/dev/null
+  fi
 
-  # Authentification avec GitHub
-  echo "$ZURG_SPONSOR" | gh auth login --with-token
-
-  # Obtenir le nom exact de l'asset pour l'architecture
-  ASSET_NAME=$(gh release view "$ZURG_VERSION" --repo debridmediamanager/zurg --json assets --jq ".assets[] | select(.name | test(\"linux-${ARCHITECTURE}\")) | .name") 
+  # Obtenir le nom exact de l'asset pour le format de l'architecture et version
+  ASSET_NAME=$(gh release view "$ZURG_VERSION" --repo debridmediamanager/zurg-testing --json assets --jq ".assets[] | select(.name | test(\"zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip\")) | .name")
 
   if [[ -z "$ASSET_NAME" ]]; then
-    echo "Erreur : Aucun asset trouvé pour l'architecture ${ARCHITECTURE}."
+    echo "Erreur : Aucun asset trouvé pour ${ZURG_VERSION} et l'architecture ${ARCHITECTURE}."
     exit 1
   fi
 
@@ -47,7 +45,7 @@ function install_zurg() {
   mkdir -p "${HOME}/scripts/zurg" && cd "${HOME}/scripts/zurg"
 
   # Télécharger et extraire l'asset
-  gh release download "$ZURG_VERSION" --repo debridmediamanager/zurg --pattern "$ASSET_NAME" 2>/dev/null
+  gh release download "$ZURG_VERSION" --repo debridmediamanager/zurg-testing --pattern "$ASSET_NAME" 2>/dev/null
   unzip "$ASSET_NAME" -d "${HOME}/scripts/zurg" > /dev/null 2>&1
   rm "$ASSET_NAME" 2>/dev/null
 
@@ -61,7 +59,7 @@ function install_zurg() {
 
 function update_release_zurg() {
   # Télécharger les informations sur les releases depuis GitHub
-  wget --header="Authorization: token $ZURG_SPONSOR" -O releases.json https://api.github.com/repos/debridmediamanager/zurg/releases 2>/dev/null
+  wget -O releases.json https://api.github.com/repos/debridmediamanager/zurg-testing/releases 2>/dev/null
 
   # Récupérer la dernière version
   CURRENT_VERSION=$(get_from_account_yml zurg.version)

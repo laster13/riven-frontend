@@ -127,7 +127,11 @@
 	{#if $formData.plex_enabled}
 		<div transition:slide>
 			<TextField {form} name="plex_url" {formData} label="Plex URL" />
+		</div>
+		<div transition:slide>
 			<TextField {form} name="plex_login" {formData} label="Plex LOGIN" />
+		</div>
+		<div transition:slide>
 			<TextField {form} name="plex_password" {formData} label="Plex PASSWORD" />
 		</div>
 

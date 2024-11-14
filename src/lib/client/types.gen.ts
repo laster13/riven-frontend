@@ -38,13 +38,6 @@ export type ApplicationModel = {
     label?: string;
 };
 
-export type AuthMethodModel = {
-    authMethod?: string;
-    oauth_client?: string;
-    oauth_secret?: string;
-    oauth_mail?: string;
-};
-
 export type CloudflareModel = {
     cloudflare_login?: string;
     cloudflare_api_key?: string;
@@ -589,8 +582,12 @@ export type UtilisateurModel = {
     email?: string;
     domain?: string;
     password?: string;
-    traefik?: AuthMethodModel;
-    domainperso?: string;
+    oauth_enabled?: boolean;
+    oauth_client?: string;
+    oauth_secret?: string;
+    oauth_mail?: string;
+    zurg_enabled?: boolean;
+    zurg_token?: string;
 };
 
 export type ValidationError = {

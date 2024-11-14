@@ -3,40 +3,144 @@
 source /home/${USER}/seedbox-compose/profile.sh
 
 # Chemins et variables
-json_file="${HOME}/projet-riven/riven-frontend/static/settings.json"
+json_file="${HOME}/projet-riven/riven/data/settings.json"
 compose_file="${HOME}/projet-riven/riven-frontend/scripts/docker-compose.yml"
 compose_file="docker-compose.yml"
 line=$1
 
 # Fonction pour générer le fichier docker-compose.yml pour stream-fusion
 generate_compose_file() {
-    echo "Création du fichier docker-compose.yml pour stream-fusion..."
+    echo "Création du fichier .env avec les variables d'environnement..."
 
+    # Génération du fichier .env
+    cat <<EOF > ${HOME}/projet-riven/riven-frontend/scripts/.env
+SECRET_API_KEY=$(jq -r '.scraping.yggflix.secret_api_key // "default-secret"' "$json_file")
+TMDB_API_KEY=$(jq -r '.scraping.yggflix.tmdb_api_key // "default-tmdb"' "$json_file")
+RD_TOKEN=$(jq -r '.downloaders.real_debrid.api_key // ""' "$json_file")
+AD_TOKEN=$(jq -r '.downloaders.all_debrid.api_key // ""' "$json_file")
+YGG_PASSKEY=$(jq -r '.scraping.yggflix.ygg_passkey // ""' "$json_file")
+POSTGRES_USER=stremio
+POSTGRES_PASSWORD=stremio
+POSTGRES_DB=zilean
+REDIS_HOST=stremio-redis
+POSTGRES_HOST=stremio-postgres
+USE_HTTPS=True
+PROXY_URL='http://warp:1080'
+TZ=Europe/Paris
+EOF
+
+    echo "Fichier .env créé avec succès."
+
+    echo "Création du fichier docker-compose.yml..."
+
+    # Génération du fichier docker-compose.yml
     cat <<EOF > ${HOME}/projet-riven/riven-frontend/scripts/docker-compose.yml
 networks:
-  proxy_network:
+  traefik_proxy:
     external: true
 
 services:
-  stream-fusion:
-    image: ghcr.io/limedrive/stream-fusion:latest
-    container_name: stream-fusion
+
+  warp:
+    image: caomingjun/warp
+    container_name: warp
+    restart: always
+    expose:
+      - 1080
     environment:
-      SECRET_API_KEY: ${secret_api_key}
-      TMDB_API_KEY: ${tmdb_api_key}
-      RD_TOKEN: ${rd_token}
-      AD_TOKEN: ${ad_token}
-      YGG_PASSKEY: ${ygg_passkey}
-      REDIS_HOST: 'stremio-redis'
-      TZ: 'Europe/Paris'
+      - WARP_SLEEP=2
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      - ./warp-data:/var/lib/cloudflare-warp
+    networks:
+      - traefik_proxy
+
+  streamfusion:
+    image: test
+    container_name: streamfusion
+    environment:
+      SECRET_API_KEY: \${SECRET_API_KEY:?Please provide a secret API key in the environment}
+      TMDB_API_KEY: \${TMDB_API_KEY:?Please provide a TMDB API key in the environment}
+      RD_TOKEN: \${RD_TOKEN:-''}
+      AD_TOKEN: \${AD_TOKEN:-''}
+      YGG_PASSKEY: \${YGG_PASSKEY:-''}
+      SHAREWOOD_PASSKEY: \${SHAREWOOD_PASSKEY:-''}
+      REDIS_HOST: \${REDIS_HOST:-stremio-redis}
+      PG_HOST: \${POSTGRES_HOST:-stremio-postgres}
+      PG_USER: \${POSTGRES_USER:-stremio}
+      PG_PASS: \${POSTGRES_PASSWORD:-stremio}
+      USE_HTTPS: \${USE_HTTPS:-True}
+      PROXY_URL: \${PROXY_URL:-'http://warp:1080'}
+      TZ: \${TZ:-Europe/Paris}
+    ports:
+      - 8081:8080
     volumes:
       - stream-fusion:/app/config
+    depends_on:
+      - stremio-postgres
+      - stremio-redis
+      - zilean
     restart: unless-stopped
     networks:
-      - proxy_network
+      - traefik_proxy
+
+  stremio-redis:
+    image: redis:latest
+    container_name: stremio-redis
+    expose:
+      - 6379
+    volumes:
+      - stremio-redis:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - traefik_proxy
+
+  zilean:
+    image: ipromknight/zilean:latest
+    container_name: zilean
+    restart: unless-stopped
+    ports:
+      - 8181:8181
+    volumes:
+      - zilean_data:/app/data
+    environment:
+      Zilean__Database__ConnectionString: \${ZILEAN_DB_CONNECTION_STRING:-Host=stremio-postgres;Port=5432;Database=zilean;Username=stremio;Password=stremio}
+      Zilean__Dmm__ImportBatched: \${ZILEAN_DMM_IMPORT_BATCHED:-True}
+      Zilean__Dmm__MaxFilteredResults: \${ZILEAN_DMM_MAX_FILTERED_RESULTS:-200}
+      Zilean__Dmm__MinimumScoreMatch: \${ZILEAN_DMM_MINIMUM_SCORE_MATCH:-0.85}
+      Zilean__Imdb__EnableEndpoint: \${ZILEAN_IMDB_ENABLE_ENDPOINT:-False}
+      Zilean__Imdb__EnableImportMatching: \${ZILEAN_IMDB_ENABLE_IMPORT_MATCHING:-False}
+    depends_on:
+      - stremio-postgres
+    networks:
+      - traefik_proxy
+
+  stremio-postgres:
+    image: postgres:16.3-alpine3.20
+    container_name: stremio-postgres
+    restart: unless-stopped
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: \${POSTGRES_USER:-stremio}
+      POSTGRES_PASSWORD: \${POSTGRES_PASSWORD:-stremio}
+      POSTGRES_DB: \${POSTGRES_DB:-zilean}
+    expose:
+      - 5432
+    volumes:
+      - stremio_postgres:/var/lib/postgresql/data/pgdata
+    networks:
+      - traefik_proxy
 
 volumes:
+  stremio_postgres:
+  stremio-redis:
   stream-fusion:
+  zilean_data:
 EOF
 
     echo "Fichier docker-compose.yml créé avec succès."
@@ -97,18 +201,6 @@ configure_plex() {
     done
 }
 
-# Fonction pour gérer les configurations spécifiques à stream-fusion
-configure_stream_fusion() {
-    secret_api_key=$(jq -r '.scraping.yggflix.secret_api_key // "default-secret"' "$json_file")
-    tmdb_api_key=$(jq -r '.scraping.yggflix.secret_api_key // "default-tmdb"' "$json_file")
-    rd_token=$(jq -r '.downloaders.real_debrid.api_key // ""' "$json_file")
-    ad_token=$(jq -r '.downloaders.all_debrid.api_key // ""' "$json_file")
-    ygg_passkey=$(jq -r '.scraping.yggflix.ygg_passkey // ""' "$json_file")
-
-    # Applique les configurations et génère le fichier docker-compose.yml
-    generate_compose_file
-}
-
 # Fonction pour exécuter le bon playbook Ansible en fonction des fichiers disponibles
 run_playbook() {
     local line="$1"
@@ -137,8 +229,8 @@ install_application() {
             ;;
         "streamfusion")
             cd ${HOME}/projet-riven/riven-frontend/scripts
-            configure_stream_fusion
-            docker compose up -d
+            generate_compose_file
+            docker compose up -d 2>/dev/null
             echo "terminé"
             return
             ;;
