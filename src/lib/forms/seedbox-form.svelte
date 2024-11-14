@@ -16,14 +16,13 @@
     import { goto } from '$app/navigation';
     import CheckboxField from './components/checkbox-field.svelte';
 
-
-    // Import du schéma des helpers pour la gestion des données
     export let data: SuperValidated<Infer<SeedboxSettingsSchema>>;
     export let actionUrl: string = '?/default';
     export let label = "";
     export let fieldDescription = ""; // Ajout de la description du champ
     export let name;
-    export let scriptName: string = 'infos'; 
+    export let scriptName: string = 'infos';
+    let isScriptCompleted = false;
 
     const formDebug: boolean = getContext('formDebug');
 
@@ -74,14 +73,19 @@
         }
     });
 
-function handleScriptCompleted() {
-    const currentPath = $page.url.pathname;  // Récupérer l'URL actuelle
-
-    if (currentPath === '/onboarding/2') {
-        // Attendre 2 secondes avant la redirection
-         goto('/onboarding/3');
+    function handleScriptCompleted() {
+        isScriptCompleted = true; // Marquer le script comme terminé
+        redirectToNextPage(); // Appeler la redirection une fois le script terminé
     }
-}
+
+    // Fonction de redirection conditionnelle
+    function redirectToNextPage() {
+        const currentPath = $page.url.pathname;
+
+        if (isScriptCompleted && currentPath === '/onboarding/2') {
+            goto('/onboarding/3'); // Redirige uniquement après la fin du script
+        }
+    }
 
 </script>
 

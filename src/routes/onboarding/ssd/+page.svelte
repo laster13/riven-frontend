@@ -48,11 +48,11 @@
         <Mountain class="h-16 w-16" />
     </div>
 
-    <h1 class="slide-up text-center text-3xl font-medium">L'installation SSD est maintenant terminée!</h1>
+    <h1 class="slide-up text-center text-3xl font-medium">L'installation SSDv2/Riven est maintenant terminée!</h1>
     <p
         class="slide-up max-w-lg text-center text-base text-muted-foreground md:max-w-2xl md:text-lg"
     >
-        Souhaitez vous poursuivre avec l'installation de Riven ?
+        Riven optimisé avec SSDv2 et l'API Yggflix pour un accès aux releases françaises.
     </p>
 
     <!-- Conteneur des boutons, organisé en ligne avec `flex-row` -->

@@ -55,11 +55,11 @@
 				<Button class="w-full font-semibold" href="/">Go back to home</Button>
 			</div>
 		{:else} -->
-		<h1 class="slide-up text-center text-3xl font-medium">Bienvenue sur SSD!</h1>
+		<h1 class="slide-up text-center text-3xl font-medium">Bienvenue sur l'adaptation de Riven avec SSDv2!</h1>
 		<p
 			class="slide-up max-w-lg text-center text-base text-muted-foreground md:max-w-2xl md:text-lg"
 		>
-			Avant d'utiliser SSD, il est nécessaire de procéder à son installation.
+			L'installation de Riven/SSDv2 est nécessaire pour l'utiliser.
 		</p>
 		<Button class="slide-up mt-4 w-full font-medium md:max-w-max" href="/onboarding/1">
 			<Rocket class="mr-2 h-4 w-4" />

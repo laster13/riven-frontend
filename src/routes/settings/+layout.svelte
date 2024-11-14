@@ -18,6 +18,10 @@
 			path: '/settings/seedbox'
 		},
 		{
+			name: 'Applications',
+			path: '/settings/applications'
+		},	
+		{
 			name: 'General',
 			path: '/settings/general'
 		},
@@ -40,11 +44,7 @@
 		{
 			name: 'About',
 			path: '/settings/about'
-		},
-		{
-			name: 'Applications',
-			path: '/settings/applications'
-		}		
+		}	
         ];
 </script>
 

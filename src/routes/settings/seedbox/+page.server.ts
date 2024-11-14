@@ -21,6 +21,8 @@ export const load: PageServerLoad = async () => {
         const toPassToSchema = seedboxSettingsToPass(data);
         console.log('Données après passage dans seedboxSettingsToPass:', toPassToSchema);
 
+	const scriptName = 'infos'; 
+
         return {
             form: await superValidate(toPassToSchema, zod(seedboxSettingsSchema)),
             scriptName: 'infos'  // Ajout de scriptName comme dans l'ancien fichier
@@ -59,10 +61,6 @@ export const actions: Actions = {
             return message(form, 'Unable to save settings. API is down.', {
                 status: 400
             });
-        }
-
-        if (event.url.searchParams.get('onboarding') === 'true') {
-            throw redirect(302, '/onboarding/3');
         }
 
         return message(form, 'Settings saved!');
