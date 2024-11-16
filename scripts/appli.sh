@@ -230,7 +230,7 @@ install_application() {
         "streamfusion")
             cd ${HOME}/projet-riven/riven-frontend/scripts
             generate_compose_file
-            docker compose up -d 2>/dev/null
+            docker compose up -d > /dev/null 2>&1
             echo "terminé"
             return
             ;;
