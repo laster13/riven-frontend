@@ -37,6 +37,7 @@
   manage_account_yml cloudflare.login "$cloudflare_login"
   manage_account_yml cloudflare.api "$cloudflare_api_key"
 
+  # oauth
   if [[ "$oauth_enabled" == true ]]; then
     # Applique les paramètres OAuth
     openssl=$(openssl rand -hex 16)
@@ -45,11 +46,15 @@
     manage_account_yml oauth.secret "$oauth_secret"
     manage_account_yml oauth.account "$oauth_mail"
   fi
-
+  
+  # zurg
   if [[ "$zurg_enabled" == true && -n "$zurg_token" ]]; then
     # Lancer le script si les conditions sont remplies
     manage_account_yml zurg.sponsor "$zurg_token"
     $HOME/projet-riven/riven-frontend/scripts/zurg.sh
+  elif [[ "$zurg_enabled" == false ]]; then
+    # Ne rien faire si zurg_enabled est false
+    echo "zurg_enabled est désactivé. Aucune action effectuée."
   else
     $HOME/projet-riven/riven-frontend/scripts/zurg_public.sh
   fi
@@ -63,9 +68,6 @@
   manage_account_yml user.htpwd $(htpasswd -nb $user $pass)
   manage_account_yml user.userid "$userid"
   manage_account_yml user.groupid "$grpid"
-
-  # Installation traefik
-  ansible-playbook ${SETTINGS_SOURCE}/includes/dockerapps/traefik.yml 2>/dev/null
 
   echo "Infos mise à jour avec succès."
 
