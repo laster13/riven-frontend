@@ -60,7 +60,7 @@ services:
       - traefik_proxy
 
   streamfusion:
-    image: test
+    image: ghcr.io/laster13/stream-fusion:riven
     container_name: streamfusion
     environment:
       SECRET_API_KEY: \${SECRET_API_KEY:?Please provide a secret API key in the environment}

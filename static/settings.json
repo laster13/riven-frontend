@@ -1,10 +1,55 @@
 {
-  "applications": [],
-  "dossiers": {
-    "on_item_type": [],
-    "authentification": {
-      "authappli": "basique"
+  "applications": [
+    {
+      "id": "1",
+      "label": "overseerr"
     },
-    "domaine": {}
+    {
+      "id": "2",
+      "label": "plex"
+    },
+    {
+      "id": "3",
+      "label": "streamfusion"
+    },
+    {
+      "id": "4",
+      "label": "traefik"
+    },
+    {
+      "id": "5",
+      "label": "zilean"
+    },
+    {
+      "id": "46",
+      "label": "jackett"
+    }
+  ],
+  "dossiers": {
+    "on_item_type": [
+      "overseerr",
+      "plex",
+      "streamfusion",
+      "traefik",
+      "zilean",
+      "jackett"
+    ],
+    "authentification": {
+      "authappli": "basique",
+      "plex": "aucune",
+      "streamfusion": "basique",
+      "traefik": "basique",
+      "zilean": "aucune",
+      "overseerr": "basique",
+      "jackett": "basique"
+    },
+    "domaine": {
+      "plex": "plex",
+      "streamfusion": "streamfusion",
+      "traefik": "traefik",
+      "zilean": "zilean",
+      "overseerr": "overseerr",
+      "jackett": "jackett"
+    }
   }
 }
