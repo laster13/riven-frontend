@@ -7,10 +7,17 @@ INSTALL_MODE="webui"
 
 # Absolute path this script is in
   SETTINGS_SOURCE=/home/${USER}/seedbox-compose
+  SETTINGS_STORAGE=/home/${USER}/seedbox
   export SETTINGS_SOURCE
   cd ${SETTINGS_SOURCE}
   source "${SETTINGS_SOURCE}/includes/functions.sh"
   source "${SETTINGS_SOURCE}/includes/menus.sh"
+
+  mkdir -p "${HOME}/.config/ssd/"
+  echo "SETTINGS_SOURCE=$HOME/seedbox-compose" >>"${HOME}/.config/ssd/env"
+  echo "SETTINGS_STORAGE=$HOME/seedbox" >>"${HOME}/.config/ssd/env"
+  mkdir -p ${SETTINGS_STORAGE}
+  source "${HOME}/.config/ssd/env"
 
 # lancement des fonctions
   check_docker_group
@@ -140,7 +147,6 @@ EOF
 
   stocke_public_ip
 
-  echo ""
   # On crée les fichier de status à 0
   status
   # Mise à jour du système
@@ -151,8 +157,7 @@ EOF
   install_docker
   install_environnement
   update_seedbox_param "installed" 1
-  echo -e "\e[33m"$(gettext "Les composants sont maintenants tous installés/réglés, poursuite de l'installation")"\e[0m"
-  echo ""
+  echo "Les composants sont maintenants tous installés/réglés, poursuite de l'installation"
   fi
 
 # On finit de setter les variables
@@ -161,8 +166,11 @@ EOF
   if [ "${emplacement_stockage}" == notfound ]; then
     manage_account_yml settings.storage "${SETTINGS_STORAGE}"
   fi
+# On ressource l'environnement
+  source "${SETTINGS_SOURCE}/profile.sh"
+  apply_patches
 
-echo "Installation SSDv2 terminée avec succès."
+  echo "Installation SSDv2 terminée avec succès."
 
 exit 0
 
