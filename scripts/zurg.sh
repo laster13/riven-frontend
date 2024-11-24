@@ -2,17 +2,12 @@
 
   source /home/${USER}/seedbox-compose/profile.sh
 
-  # Obtenir la version Zurg et Rclone depuis le fichier de configuration
-  ARCHITECTURE=$(dpkg --print-architecture)
-  RCLONE_VERSION=$(get_from_account_yml rclone.architecture)
-  ZURG_VERSION=$(get_from_account_yml zurg.version)
-  ZURG_SPONSOR=$(get_from_account_yml zurg.sponsor)
-
   sudo rm -rf $HOME/scripts/zurg*/
 
 function install_zurg() {
   update_release_zurg
 
+  sleep 2s
   # Déterminer l'architecture système
 
   # Créer le répertoire de configuration si nécessaire
@@ -35,8 +30,12 @@ function install_zurg() {
   # Authentification avec GitHub
   echo "$ZURG_SPONSOR" | gh auth login --with-token
 
-  # Obtenir le nom exact de l'asset pour l'architecture
-  ASSET_NAME=$(gh release view "$ZURG_VERSION" --repo debridmediamanager/zurg --json assets --jq ".assets[] | select(.name | test(\"linux-${ARCHITECTURE}\")) | .name") 
+  ASSET_NAME=$(jq -r --arg ZURG_VERSION "$ZURG_VERSION" --arg ARCHITECTURE "$ARCHITECTURE" '
+      .[]
+      | select(.tag_name == $ZURG_VERSION)
+      | .assets[]
+      | select(.name | test("zurg-[0-9\\.]+-nightly-linux-" + $ARCHITECTURE + "\\.zip"))
+      | .name' releases.json)
 
   if [[ -z "$ASSET_NAME" ]]; then
     echo "Erreur : Aucun asset trouvé pour l'architecture ${ARCHITECTURE}."
@@ -47,7 +46,10 @@ function install_zurg() {
   mkdir -p "${HOME}/scripts/zurg" && cd "${HOME}/scripts/zurg"
 
   # Télécharger et extraire l'asset
-  gh release download "$ZURG_VERSION" --repo debridmediamanager/zurg --pattern "$ASSET_NAME" 2>/dev/null
+  gh release download "$ZURG_VERSION" \
+      --repo debridmediamanager/zurg \
+      --pattern "$ASSET_NAME"
+
   unzip "$ASSET_NAME" -d "${HOME}/scripts/zurg" > /dev/null 2>&1
   rm "$ASSET_NAME" 2>/dev/null
 
@@ -57,26 +59,27 @@ function install_zurg() {
   # launch zurg
   ansible-playbook "${SETTINGS_SOURCE}/includes/config/playbooks/zurg.yml" 2>/dev/null
   ansible-playbook "${SETTINGS_SOURCE}/includes/config/roles/rclone/tasks/main.yml" 2>/dev/null
+
+  # Nettoyer le fichier temporaire
+  sudo rm $HOME/projet-riven/riven-frontend/scripts/releases.json 2>/dev/null
+  gh auth logout > /dev/null 2>&1
 }
 
 function update_release_zurg() {
+
+  # Obtenir la version Zurg et Rclone depuis le fichier de configuration
+  ARCHITECTURE=$(dpkg --print-architecture)
+  ZURG_SPONSOR=$(get_from_account_yml zurg.sponsor)
+
   # Télécharger les informations sur les releases depuis GitHub
   wget --header="Authorization: token $ZURG_SPONSOR" -O releases.json https://api.github.com/repos/debridmediamanager/zurg/releases 2>/dev/null
 
   # Récupérer la dernière version
-  CURRENT_VERSION=$(get_from_account_yml zurg.version)
-  LATEST_VERSION=$(jq -r '.[0].tag_name' releases.json)
+  ZURG_VERSION=$(jq -r '.[0].tag_name' releases.json)
 
-  # Mettre à jour la version si nécessaire
-  if [[ "$CURRENT_VERSION" == "notfound" ]] || [[ "$CURRENT_VERSION" != "$LATEST_VERSION" ]]; then
-    manage_account_yml zurg.version "$LATEST_VERSION"
-    echo "Version Zurg mise à jour : $LATEST_VERSION"
-  else 
-    echo "Version Zurg actuelle : $LATEST_VERSION"
-  fi
-
-  # Nettoyer le fichier temporaire
-  sudo rm releases.json 2>/dev/null
+  # Mettre à jour la version
+    manage_account_yml zurg.version "$ZURG_VERSION"
+    echo "Version Zurg mise à jour : $ZURG_VERSION"
 }
 
 # Exécuter l'installation

@@ -1,5 +1,4 @@
 #!/bin/bash
-INSTALL_MODE="webui"
 
 # On change tout de suite le PATH pour la suite
   export PATH="$HOME/.local/bin:$PATH"
@@ -26,8 +25,8 @@ INSTALL_MODE="webui"
   if [ ! -f "${SETTINGS_SOURCE}/ssddb" ]; then
   sudo chown -R ${USER}: ${SETTINGS_SOURCE}/
 
-  echo $(gettext "Certains composants doivent encore être installés/réglés")
-  echo $(gettext "Cette opération va prendre plusieurs minutes selon votre système")
+  echo "Certains composants doivent encore être installés/réglés"
+  echo "Cette opération va prendre plusieurs minutes selon votre système"
   echo "=================================================================="
 
   # Installation des paquets nécessaires
@@ -57,8 +56,6 @@ INSTALL_MODE="webui"
   pip install wheel
   pip install ansible docker shyaml netaddr dnspython configparser inquirer jsons colorama requests==2.31
 
-  echo $(gettext "Installation en cours ....")
-
   mkdir -p ~/.ansible/inventories
 
   # Configuration ansible pour le user courant
@@ -79,7 +76,6 @@ EOF
   log_path=${SETTINGS_SOURCE}/logs/ansible.log
 EOF
 
-  echo $(gettext "Création de la configuration en cours")
   # On crée la base de données
   sqlite3 "${SETTINGS_SOURCE}/ssddb" <<EOF
     create table seedbox_params(param varchar(50) PRIMARY KEY, value varchar(50));
@@ -151,10 +147,6 @@ EOF
   status
   # Mise à jour du système
   update_system
-  # Installation des packages de base
-  install_base_packages
-  # Installation de docker
-  install_docker
   install_environnement
   update_seedbox_param "installed" 1
   echo "Les composants sont maintenants tous installés/réglés, poursuite de l'installation"
@@ -168,7 +160,6 @@ EOF
   fi
 # On ressource l'environnement
   source "${SETTINGS_SOURCE}/profile.sh"
-  apply_patches
 
   echo "Installation SSDv2 terminée avec succès."
 

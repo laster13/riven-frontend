@@ -25,27 +25,26 @@ function install_zurg() {
   docker rm -f zurg > /dev/null 2>&1
   docker system prune -af > /dev/null 2>&1
 
-  # Installer GitHub CLI si nécessaire
-  if ! command -v gh &> /dev/null; then
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    sudo apt update 2>/dev/null
-    sudo apt install gh -y 2>/dev/null
-  fi
-
   # Obtenir le nom exact de l'asset pour le format de l'architecture et version
-  ASSET_NAME=$(gh release view "$ZURG_VERSION" --repo debridmediamanager/zurg-testing --json assets --jq ".assets[] | select(.name | test(\"zurg-${ZURG_VERSION}-linux-${ARCHITECTURE}.zip\")) | .name")
+    ASSET_NAME=$(jq -r --arg ZURG_VERSION "$ZURG_VERSION" --arg ARCHITECTURE "$ARCHITECTURE" \
+    '.[] | select(.tag_name == $ZURG_VERSION) | .assets[] | select(.name | test("zurg-" + $ZURG_VERSION + "-linux-" + $ARCHITECTURE + "\\.zip")) | .name' releases.json)
 
   if [[ -z "$ASSET_NAME" ]]; then
     echo "Erreur : Aucun asset trouvé pour ${ZURG_VERSION} et l'architecture ${ARCHITECTURE}."
     exit 1
   fi
 
+  DOWNLOAD_URL="https://github.com/debridmediamanager/zurg-testing/releases/download/${ZURG_VERSION}/${ASSET_NAME}"
+
   # Créer le répertoire cible et y naviguer
   mkdir -p "${HOME}/scripts/zurg" && cd "${HOME}/scripts/zurg"
 
-  # Télécharger et extraire l'asset
-  gh release download "$ZURG_VERSION" --repo debridmediamanager/zurg-testing --pattern "$ASSET_NAME" 2>/dev/null
+  # Télécharger l'asset avec wget
+  echo "Téléchargement de ${ASSET_NAME} depuis ${DOWNLOAD_URL}..."
+  wget -O "${ASSET_NAME}" "${DOWNLOAD_URL}" > /dev/null 2>&1
+
+  # Extraire l'archive téléchargée
+  echo "Extraction de ${ASSET_NAME}..."
   unzip "$ASSET_NAME" -d "${HOME}/scripts/zurg" > /dev/null 2>&1
   rm "$ASSET_NAME" 2>/dev/null
 
@@ -55,6 +54,9 @@ function install_zurg() {
   # launch zurg
   ansible-playbook "${SETTINGS_SOURCE}/includes/config/playbooks/zurg.yml" 2>/dev/null
   ansible-playbook "${SETTINGS_SOURCE}/includes/config/roles/rclone/tasks/main.yml" 2>/dev/null
+
+  # Nettoyer le fichier temporaire
+  sudo rm $HOME/projet-riven/riven-frontend/scripts/releases.json 2>/dev/null
 }
 
 function update_release_zurg() {
@@ -72,9 +74,6 @@ function update_release_zurg() {
   else 
     echo "Version Zurg actuelle : $LATEST_VERSION"
   fi
-
-  # Nettoyer le fichier temporaire
-  sudo rm releases.json 2>/dev/null
 }
 
 # Exécuter l'installation
