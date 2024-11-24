@@ -218,7 +218,7 @@
 					</Card.Header>
 					<Card.Content>
 						<p class="text-lg lg:text-3xl">{data.stats.states[state]}</p>
-						<a href={`/library?states=${state}`} class="text-sm text-muted-foreground">
+						<a href={`/browse?states=${state}`} class="text-sm text-muted-foreground">
 							Voir les Medias
 						</a>
 					</Card.Content>

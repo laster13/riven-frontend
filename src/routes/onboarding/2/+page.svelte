@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import SeedboxForm from '$lib/forms/seedbox-form.svelte';
+	import GeneralForm from '$lib/forms/general-form.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
@@ -16,10 +16,10 @@
 	<div class="flex w-full max-w-6xl flex-col items-start">
 		<Progress class="mb-2 w-full" max={6} value={$formProgress} />
 		<h1 class="mb-2 text-2xl font-bold md:text-3xl lg:text-4xl">Step 2/6</h1>
-		<p class="text-base md:text-lg">Configuration des infos, compléter si necessaire puis valider.</p>
+		<p class="text-base md:text-lg">Let's get started by configuring your general settings.</p>
 	</div>
 	<div class="mt-4 flex w-full max-w-6xl flex-col">
 		<Separator class="mb-8" />
-		<SeedboxForm data={data.form} actionUrl="/settings/seedbox?onboarding=true" />
+		<GeneralForm data={data.form} actionUrl="/settings/general?onboarding=true" />
 	</div>
 </div>

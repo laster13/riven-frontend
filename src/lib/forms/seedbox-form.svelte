@@ -82,8 +82,8 @@
     function redirectToNextPage() {
         const currentPath = $page.url.pathname;
 
-        if (isScriptCompleted && currentPath === '/onboarding/2') {
-            goto('/onboarding/3'); // Redirige uniquement après la fin du script
+        if (isScriptCompleted && currentPath === '/onboarding/3') {
+            goto('/onboarding/4'); // Redirige uniquement après la fin du script
         }
     }
 

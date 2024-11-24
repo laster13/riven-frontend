@@ -32,6 +32,7 @@ export const servicesObject: Record<string, string> = {
 	prowlarr: 'Prowlarr',
 	zilean: 'Zilean',
 	comet: 'Comet',
+        yggflix: 'Yggflix',
 	symlink: 'Symlink',
 	updater: 'Updater',
 	plexupdater: 'Plex Updater',
@@ -58,5 +59,6 @@ export const scrapingServices = [
 	'prowlarr',
 	'zilean',
 	'torbox',
-	'comet'
+	'comet',
+        'yggflix'
 ];
