@@ -37,6 +37,7 @@
     let showSpinner = false;
     let statusMessage = '';
     let showLogs = false;
+    let selectedAuth = "";
 
     const formDebug: boolean = getContext('formDebug');
 
@@ -48,6 +49,8 @@
 
     const { form: formData, enhance, message, delayed } = form;
     formData.domaine = typeof formData.domaine === 'object' && !Array.isArray(formData.domaine) ? formData.domaine : {};
+
+    $formData.authentification.authappli = "basique";
 
     onMount(() => {
         const uniqueParam = new Date().getTime();  // Crée un paramètre unique basé sur l'heure
@@ -261,6 +264,8 @@
         showLogs = event.target.checked;
     }
 
+
+
 </script>
 
 <style>
@@ -374,86 +379,150 @@
 <div class="flex flex-col items-start">
     <div class="flex items-center">
         <label style="font-size: 14px" for="showLogs" class="flex items-center">Afficher les logs</label>
-        <input type="checkbox" bind:checked={showLogs} class="ml-9" id="showLogs" />
+        <input type="checkbox" bind:checked={showLogs} class="ml-9" id="showLogs" style="width: 16px; height: 16px; margin-left: 110px; border: 0.5px solid #000; background-color: transparent;" />
     </div>
     <p class="text-gray-500 text-sm mt-1">Logs en temps réel</p>
 </div>
 
 {#if !showLogs}
-    <!-- Boutons radio pour choisir la méthode d'authentification -->
-<div class="flex items-center gap-4">
-    <label class="text-sm" for="authappli-basique">Authentification</label>
-    <div class="flex gap-10 ml-20">
-        <label class="flex items-center gap-2 text-sm" for="authappli-basique">
-            <input 
-                id="authappli-basique"
-                name="authappli" 
-                type="radio" 
-                bind:group={$formData.authentification.authappli} 
-                value="basique" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>basique</span>
+
+
+<div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+    <!-- Conteneur principal -->
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 20px; width: 100%;">
+        <!-- Label aligné à gauche -->
+        <label 
+            class="text-sm" 
+            for="authappli-basique" 
+            style="flex-shrink: 0; margin-right: 90px;"
+        >
+            Authentification
         </label>
-        <label class="flex items-center gap-2 text-sm" for="authappli-oauth">
-            <input 
-                id="authappli-oauth"
-                name="authappli" 
-                type="radio" 
-                bind:group={$formData.authentification.authappli} 
-                value="oauth" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>oauth</span>
-        </label>
-        <label class="flex items-center gap-2 text-sm" for="authappli-authelia">
-            <input 
-                id="authappli-authelia"
-                name="authappli" 
-                type="radio" 
-                bind:group={$formData.authentification.authappli} 
-                value="authelia" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>authelia</span>
-        </label>
-        <label class="flex items-center gap-2 text-sm" for="authappli-aucune">
-            <input 
-                id="authappli-aucune"
-                name="authappli" 
-                type="radio" 
-                bind:group={$formData.authentification.authappli} 
-                value="aucune" 
-                class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
-            />
-            <span>aucune</span>
-        </label>
+
+        <!-- Conteneur des boutons radio -->
+        <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+            <!-- Basique -->
+            <label 
+                class="flex items-center gap-2 text-sm" 
+                for="authappli-basique" 
+                style="display: flex; align-items: center; gap: 5px;"
+            >
+                <input 
+                    id="authappli-basique"
+                    name="authappli" 
+                    type="radio" 
+                    bind:group={$formData.authentification.authappli} 
+                    value="basique" 
+                    class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
+                />
+                <span>Basique</span>
+            </label>
+
+            <!-- Oauth -->
+            <label 
+                class="flex items-center gap-2 text-sm" 
+                for="authappli-oauth" 
+                style="display: flex; align-items: center; gap: 5px;"
+            >
+                <input 
+                    id="authappli-oauth"
+                    name="authappli" 
+                    type="radio" 
+                    bind:group={$formData.authentification.authappli} 
+                    value="oauth" 
+                    class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
+                />
+                <span>Oauth</span>
+            </label>
+
+            <!-- Authelia -->
+            <label 
+                class="flex items-center gap-2 text-sm" 
+                for="authappli-authelia" 
+                style="display: flex; align-items: center; gap: 5px;"
+            >
+                <input 
+                    id="authappli-authelia"
+                    name="authappli" 
+                    type="radio" 
+                    bind:group={$formData.authentification.authappli} 
+                    value="authelia" 
+                    class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
+                />
+                <span>Authelia</span>
+            </label>
+
+            <!-- Aucune -->
+            <label 
+                class="flex items-center gap-2 text-sm" 
+                for="authappli-aucune" 
+                style="display: flex; align-items: center; gap: 5px;"
+            >
+                <input 
+                    id="authappli-aucune"
+                    name="authappli" 
+                    type="radio" 
+                    bind:group={$formData.authentification.authappli} 
+                    value="aucune" 
+                    class="appearance-none border-2 border-teal-400 rounded-full checked:bg-teal-400 checked:border-teal-400 w-4 h-4" 
+                />
+                <span>Aucune</span>
+            </label>
+        </div>
     </div>
 </div>
+<div style="height: 10px;"></div>
 
-<Separator class="mt-4" />
+<div 
+    class="combobox-container" 
+    style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start; width: 100%;"
+>
+    <!-- Wrapper du label et du champ d'entrée -->
+    <div 
+        class="combobox-wrapper" 
+        style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%;"
+    >
+        <!-- Label aligné à gauche -->
+        <div 
+            class="label-container" 
+            style="flex-shrink: 0; white-space: nowrap;"
+        >
+            <p 
+                class="text-sm" 
+                style="margin: 0;"
+            >
+                Applications
+            </p>
+        </div>
 
-<div class="combobox-container">
-    <div class="label-container">
-        <p class="text-sm">Applications</p>
-    </div>
-    <div class="combobox-wrapper">
-        <div class="input-container">
+        <!-- Champ d'entrée -->
+        <div 
+            class="input-container" 
+            style="position: relative; display: flex; align-items: center; flex-grow: 1; min-width: 200px; max-width: 100%;"
+        >
             <input 
                 {...state?.aria.input}
                 class="input"
                 value={state?.inputValue || ""}
+                placeholder="Choisir Application"
                 bind:this={input}
                 on:input={(event) => dispatch({ type: "inputted-value", inputValue: event.currentTarget.value })}
                 on:focus={() => dispatch({ type: "focused-input" })}
                 on:blur={() => dispatch({ type: "blurred-input" })}
                 on:mousedown={() => dispatch({ type: "pressed-input" })}
                 on:keydown={onKeydown}
-                style="height: 37px; margin-left: -2px; width: 223px; padding: 6px; background-color: transparent;"
+                style="width: 300px; height: 37px; padding: 6px; background-color: transparent; border: 1px solid #ccc; border-radius: 4px; margin-left: 2px;"
             />
-            <ul {...state?.aria.itemList} class="suggestions" class:hide={!state?.isOpened}>
+
+            <!-- Liste déroulante alignée sous le champ -->
+            <ul 
+                {...state?.aria.itemList} 
+                class="suggestions" 
+                class:hide={!state?.isOpened} 
+                style="margin: 0; padding: 0; list-style: none; border: 1px solid #ccc; border-radius: 4px; max-height: 200px; overflow-y: auto; width: 300px; position: absolute; top: calc(100% + 4px); left: 0; background: #fff; z-index: 10;"
+            >
                 {#if state?.renderItems.length === 0}
-                    <li>No results</li>
+                    <li style="padding: 8px; text-align: center;">No results</li>
                 {/if}
                 {#each state?.renderItems as item, index}
                     <div
@@ -464,9 +533,7 @@
                         on:mousemove={() => dispatch({ type: "hovered-over-item", index })}
                         on:mousedown|preventDefault={() => dispatch({ type: "pressed-item", item: item.item })}
                         class="option"
-                        class:highlighted={item.status === "highlighted"}
-                        class:selected={item.status === "selected"}
-                        class:selected-and-highlighted={item.status === "selected-and-highlighted"}
+                        style="padding: 8px; cursor: pointer; background: {item.status === 'highlighted' ? '#f0f0f0' : 'transparent'}; border-bottom: 1px solid #eee;"
                     >
                         {item.inputValue}
                     </div>
@@ -476,7 +543,7 @@
     </div>
 </div>
 
-<Separator class="mt-4" />
+<div style="height: 10px;"></div>
 
 <CheckboxField {form} name="dossiers_enabled" label="Applications Installées" {formData} />
 {#if $formData.dossiers_enabled}
@@ -606,30 +673,45 @@
 {/if}
 
     <!-- Champ de saisie visible pour domaine -->
-    <div class="mt-4">
-        {#if selectedItem?.label}
-            <div class="flex items-center" transition:slide>
-                <!-- Label centré verticalement avec flexbox -->
-                <label for="domaine" class="text-sm font-medium" style="width: 150px;">
+<div class="mt-4" style="width: 100%;">
+    {#if selectedItem?.label}
+        <div 
+            class="combobox-wrapper" 
+            style="display: flex; align-items: center; gap: 0px; flex-wrap: wrap; width: 100%; max-width: 100%;"
+        >
+            <!-- Label pour Sous domaine -->
+            <div 
+                class="label-container" 
+                style="flex-shrink: 0; white-space: nowrap; font-size: 1rem; margin-bottom: 4px;"
+            >
+                <p 
+                    class="text-sm" 
+                    style="margin: 0;"
+                >
                     Sous domaine
-                    <span class="block text-sm text-gray-500">Default : {selectedItem.label}</span>
-                </label>
-                <!-- Champ de saisie avec le même espacement et style -->
+                    <span class="block text-sm text-gray-500">Personnalisé</span>
+                </p>
+            </div>
+
+            <!-- Champ de saisie aligné avec le label -->
+            <div 
+                class="input-container" 
+                style="display: flex; align-items: center; flex-grow: 1; min-width: 200px; max-width: 100%;"
+            >
                 <input 
                     type="text" 
                     name="domaine[{selectedItem.label}]" 
                     id="domaine" 
-                    placeholder="Sous domaine personnalisé"
-                    class="inline-block shadow-sm sm:text-sm border border-gray-300 rounded-md"
-                    style="width: 225px; height: 37px; margin-left: 44px; padding-left: 10px; outline: none;"
+                    placeholder="Sous domaine par défaut {selectedItem.label}"
+                    class="input inline-block shadow-sm sm:text-sm border border-gray-300 rounded-md"
+                    style="width: 100%; max-width: 300px; height: 37px; padding: 6px; background-color: transparent; border: 1px solid #ccc; border-radius: 4px;"
                     bind:value={$formData.domaine[selectedItem.label]}
                 />
             </div>
-        {/if}
-    </div>
+        </div>
+    {/if}
+</div>
 {/if}
-
-
 
     <input type="hidden" name="domaine" value={JSON.stringify(formData.domaine)} />
     <input type="hidden" name="selectedItemId" value={selectedItem?.id} />

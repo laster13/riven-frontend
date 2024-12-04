@@ -45,6 +45,19 @@
     manage_account_yml oauth.client "$oauth_client"
     manage_account_yml oauth.secret "$oauth_secret"
     manage_account_yml oauth.account "$oauth_mail"
+
+  echo '---
+  - name: "Wrapper Playbook for OAuth Setup"
+    hosts: all
+    vars_files:
+      - "{{ settings.source }}/includes/dockerapps/templates/generique/generique.yml"
+    tasks:
+      - name: "Include the OAuth playbook"
+        include_tasks: oauth.yml
+  ' > $HOME/seedbox-compose/includes/dockerapps/templates/traefik/run-oauth.yml
+
+  ansible-playbook $HOME/seedbox-compose/includes/dockerapps/templates/traefik/run-oauth.yml
+
   fi
   
   # zurg

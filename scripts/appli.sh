@@ -221,6 +221,8 @@ run_playbook() {
 install_application() {
     local line="$1"
     extract_domaine_auth "$line"
+    manage_account_yml sub.${line}.${line} "$domaine"
+    manage_account_yml sub.${line}.auth "$auth"
     
     case "$line" in
         "plex")
@@ -238,9 +240,6 @@ install_application() {
             run_playbook "$line"
             ;;
     esac
-
-    manage_account_yml sub.${line}.${line} "$domaine"
-    manage_account_yml sub.${line}.auth "$auth"
 
     if [[ "$line" != "stream-fusion" && $error -eq 0 ]]; then
         echo "Installation de ${line} terminée avec succès."
