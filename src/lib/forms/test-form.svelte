@@ -181,11 +181,11 @@
             <p style="font-size: 14px; color: orange;">Vérification de l'état de la seedbox en cours...</p>
         {:else if fileExists}
             <div class="py-1 px-2 bg-green-500 text-black rounded">
-                <p class="text-sm">SSD installé</p>
+                <p class="text-sm">SSDv2 installé</p>
             </div>
         {:else}
             <div class="py-1 px-2 bg-red-500 text-black rounded">
-                <p class="text-sm">SSD non installé</p>
+                <p class="text-sm">SSDv2 non installé</p>
             </div>
         {/if}
     </div>

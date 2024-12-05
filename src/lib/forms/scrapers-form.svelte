@@ -73,6 +73,8 @@
 
 	<GroupCheckboxField fieldTitle="Scrapers" fieldDescription="Installer streamfusion pour utiliser Yggflix -> Menu applications">
 		<CheckboxField {form} name="yggflix_enabled" label="Yggflix" {formData} isForGroup={true} />
+		<CheckboxField {form} name="xthor_enabled" label="Xthor" {formData} isForGroup={true} />
+		<CheckboxField {form} name="sharewood_enabled" label="Sharewood" {formData} isForGroup={true} />
 		<CheckboxField {form} name="jackett_enabled" label="Jackett" {formData} isForGroup={true} />
 		<CheckboxField {form} name="prowlarr_enabled" label="Prowlarr" {formData} isForGroup={true} />
 		<CheckboxField
@@ -278,6 +280,54 @@
 
 		<div transition:slide>
 			<CheckboxField {form} name="yggflix_ratelimit" {formData} />
+		</div>
+	{/if}
+
+	{#if $formData.xthor_enabled}
+		<div transition:slide>
+			<TextField {form} name="xthor_api_url" {formData} />
+		</div>
+
+		<div transition:slide>
+			<TextField {form} name="xthor_passkey" {formData}  />
+		</div>
+
+		<div transition:slide>
+			<NumberField
+				{form}
+				name="xthor_timeout"
+				{formData}
+				stepValue={1}
+				fieldDescription="en secondes"
+			/>
+		</div>
+
+		<div transition:slide>
+			<CheckboxField {form} name="xthor_ratelimit" {formData} />
+		</div>
+	{/if}
+
+	{#if $formData.sharewood_enabled}
+		<div transition:slide>
+			<TextField {form} name="sharewood_api_url" {formData} />
+		</div>
+
+		<div transition:slide>
+			<TextField {form} name="sharewood_passkey" {formData}  />
+		</div>
+
+		<div transition:slide>
+			<NumberField
+				{form}
+				name="sharewood_timeout"
+				{formData}
+				stepValue={1}
+				fieldDescription="en secondes"
+			/>
+		</div>
+
+		<div transition:slide>
+			<CheckboxField {form} name="sharewood_ratelimit" {formData} />
 		</div>
 	{/if}
 

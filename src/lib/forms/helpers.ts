@@ -476,7 +476,17 @@ export const scrapersSettingsSchema = z.object({
 	yggflix_ratelimit: z.boolean().default(true),
 	yggflix_ygg_passkey: z.string().optional(),
 	yggflix_tmdb_api_key: z.string().optional(),
-	yggflix_secret_api_key: z.string().optional()
+	yggflix_secret_api_key: z.string().optional(),
+	xthor_enabled: z.boolean().default(false),
+	xthor_api_url: z.string().optional().default('http://localhost:8081'),
+	xthor_timeout: z.coerce.number().gte(0).int().optional().default(30),
+	xthor_ratelimit: z.boolean().default(true),
+	xthor_passkey: z.string().optional(),
+	sharewood_enabled: z.boolean().default(false),
+	sharewood_api_url: z.string().optional().default('http://localhost:8081'),
+	sharewood_timeout: z.coerce.number().gte(0).int().optional().default(30),
+	sharewood_ratelimit: z.boolean().default(true),
+	sharewood_passkey: z.string().optional()
 });
 export type ScrapersSettingsSchema = typeof scrapersSettingsSchema;
 
@@ -535,7 +545,17 @@ export function scrapersSettingsToPass(data: any) {
 		yggflix_ratelimit: data.scraping.yggflix?.ratelimit,
                 yggflix_ygg_passkey: data.scraping.yggflix?.ygg_passkey,
                 yggflix_tmdb_api_key: data.scraping.yggflix?.tmdb_api_key,
-                yggflix_secret_api_key: data.scraping.yggflix?.secret_api_key
+                yggflix_secret_api_key: data.scraping.yggflix?.secret_api_key,
+		xthor_enabled: data.scraping.xthor?.enabled,
+		xthor_api_url: data.scraping.xthor?.api_url,
+		xthor_timeout: data.scraping.xthor?.timeout,
+		xthor_ratelimit: data.scraping.xthor?.ratelimit,
+                xthor_passkey: data.scraping.xthor?.passkey,
+		sharewood_enabled: data.scraping.sharewood?.enabled,
+		sharewood_api_url: data.scraping.sharewood?.api_url,
+		sharewood_timeout: data.scraping.sharewood?.timeout,
+		sharewood_ratelimit: data.scraping.sharewood?.ratelimit,
+                sharewood_passkey: data.scraping.sharewood?.passkey
 	};
 }
 
@@ -616,8 +636,21 @@ export function scrapersSettingsToSet(form: SuperValidated<Infer<ScrapersSetting
                                         ygg_passkey: form.data.yggflix_ygg_passkey,
                                         tmdb_api_key: form.data.yggflix_tmdb_api_key,
                                         secret_api_key: form.data.yggflix_secret_api_key
+				},
+				xthor: {
+					enabled: form.data.xthor_enabled,
+					api_url: form.data.xthor_api_url,
+					timeout: form.data.xthor_timeout,
+					ratelimit: form.data.xthor_ratelimit,
+                                        passkey: form.data.xthor_passkey,
+				},
+				sharewood: {
+					enabled: form.data.sharewood_enabled,
+					api_url: form.data.sharewood_api_url,
+					timeout: form.data.sharewood_timeout,
+					ratelimit: form.data.sharewood_ratelimit,
+                                        passkey: form.data.sharewood_passkey,
 				}
-
 			}
 		}
 	];
